@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Support\PageCache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Orchid\Attachment\Attachable;
@@ -46,4 +47,11 @@ class MenuItem extends Model
     {
         return $query->where('is_chef_pick', true);
     }
+    protected static function booted(): void
+    {
+        $flush = fn () => PageCache::flushAll();
+        static::saved($flush);
+        static::deleted($flush);
+    }
+
 }

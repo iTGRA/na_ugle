@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Support\PageCache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
@@ -29,6 +30,9 @@ class MenuCategory extends Model
                 $category->slug = Str::slug($category->name);
             }
         });
+        $flush = fn () => PageCache::flushAll();
+        static::saved($flush);
+        static::deleted($flush);
     }
 
     public function items(): HasMany

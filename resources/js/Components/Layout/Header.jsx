@@ -22,30 +22,35 @@ export default function Header({ variant = 'transparent' }) {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
-    // Solid state: either scrolled past threshold, or hovering the header, or page forces 'solid'
     const showSolid = scrolled || hovered || variant === 'solid';
-    const textClass = showSolid ? 'text-ink' : 'text-white';
+    const color = showSolid ? '#0A0A08' : '#ffffff';
 
     return (
         <>
             <div
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
-                className="w-full transition-[background,border,padding] duration-300"
+                className="w-full"
                 style={{
                     background: showSolid ? 'rgba(245,240,232,0.95)' : 'transparent',
                     backdropFilter: showSolid ? 'blur(10px)' : 'none',
                     WebkitBackdropFilter: showSolid ? 'blur(10px)' : 'none',
                     borderBottom: showSolid ? '1px solid rgba(10,10,8,0.15)' : '1px solid transparent',
-                    paddingTop: showSolid ? '12px' : '18px',
-                    paddingBottom: showSolid ? '12px' : '18px',
+                    paddingTop: '18px',
+                    paddingBottom: '18px',
+                    transition: 'background 0.25s ease, backdrop-filter 0.25s ease, border-color 0.25s ease',
                 }}
             >
                 <div className="shell flex items-center justify-between gap-6">
                     <Link
                         href="/"
-                        className={`font-bold tracking-tight transition-colors duration-300 ${textClass}`}
-                        style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.4rem)', letterSpacing: '-0.01em' }}
+                        className="font-bold tracking-tight"
+                        style={{
+                            fontSize: 'clamp(1.1rem, 1.8vw, 1.4rem)',
+                            letterSpacing: '-0.01em',
+                            color,
+                            transition: 'color 0.25s ease',
+                        }}
                     >
                         НА&nbsp;УГЛЕ
                     </Link>
@@ -54,11 +59,12 @@ export default function Header({ variant = 'transparent' }) {
                             <a
                                 key={l.href}
                                 href={l.href}
-                                className={`t-label transition-colors duration-300 ${textClass}`}
+                                className="t-label"
                                 style={{
+                                    color,
                                     borderBottom: '1px solid transparent',
                                     paddingBottom: '2px',
-                                    transition: 'color 0.3s, border-bottom-color 0.2s',
+                                    transition: 'color 0.25s ease, border-bottom-color 0.2s ease',
                                 }}
                                 onMouseEnter={(e) => { e.currentTarget.style.borderBottomColor = 'currentColor'; }}
                                 onMouseLeave={(e) => { e.currentTarget.style.borderBottomColor = 'transparent'; }}
@@ -69,12 +75,14 @@ export default function Header({ variant = 'transparent' }) {
                     </nav>
                     <a
                         href="#reservation"
-                        className={`hidden md:inline-block cta-plain transition-colors duration-300 ${textClass}`}
+                        className="hidden md:inline-block cta-plain"
+                        style={{ color, borderBottomColor: color, transition: 'color 0.25s ease, border-bottom-color 0.25s ease' }}
                     >
                         Забронировать
                     </a>
                     <button
-                        className={`md:hidden text-2xl leading-none transition-colors duration-300 ${textClass}`}
+                        className="md:hidden text-2xl leading-none"
+                        style={{ color, transition: 'color 0.25s ease' }}
                         onClick={() => setMenuOpen(true)}
                         aria-label="Открыть меню"
                     >

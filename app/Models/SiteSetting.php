@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\PageCache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
@@ -18,8 +19,12 @@ class SiteSetting extends Model
 
     protected static function booted(): void
     {
-        static::saved(fn () => Cache::forget(self::CACHE_KEY));
-        static::deleted(fn () => Cache::forget(self::CACHE_KEY));
+        $flush = function (): void {
+            Cache::forget(self::CACHE_KEY);
+            PageCache::flushAll();
+        };
+        static::saved($flush);
+        static::deleted($flush);
     }
 
     /**

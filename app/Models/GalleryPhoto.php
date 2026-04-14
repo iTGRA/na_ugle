@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Support\PageCache;
 use Illuminate\Database\Eloquent\Model;
 use Orchid\Attachment\Attachable;
 use Orchid\Filters\Filterable;
@@ -34,4 +35,11 @@ class GalleryPhoto extends Model
     {
         return $query->where('section', $section);
     }
+    protected static function booted(): void
+    {
+        $flush = fn () => PageCache::flushHome();
+        static::saved($flush);
+        static::deleted($flush);
+    }
+
 }

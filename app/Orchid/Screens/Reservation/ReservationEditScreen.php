@@ -15,7 +15,7 @@ use Orchid\Support\Facades\Toast;
 
 class ReservationEditScreen extends Screen
 {
-    public Reservation $reservation;
+    public ?Reservation $reservation = null;
 
     public function query(Reservation $reservation): iterable
     {
@@ -24,7 +24,7 @@ class ReservationEditScreen extends Screen
 
     public function name(): ?string
     {
-        return 'Заявка: '.($this->reservation->name ?? '—');
+        return 'Заявка: '.($this->reservation?->name ?? '—');
     }
 
     public function commandBar(): iterable
@@ -33,10 +33,10 @@ class ReservationEditScreen extends Screen
             Button::make('Сохранить')->method('save')->type(Color::PRIMARY),
             Button::make('Позвонить')->rawClick()
                 ->type(Color::DEFAULT)
-                ->attributes(['onclick' => "window.location='tel:".e($this->reservation->phone)."';return false;"])
-                ->canSee((bool) $this->reservation->phone),
+                ->attributes(['onclick' => "window.location='tel:".e($this->reservation?->phone)."';return false;"])
+                ->canSee((bool) $this->reservation?->phone),
             Button::make('Удалить')->method('remove')->type(Color::DANGER)
-                ->confirm('Удалить заявку?')->canSee($this->reservation->exists),
+                ->confirm('Удалить заявку?')->canSee(($this->reservation?->exists ?? false)),
         ];
     }
 

@@ -355,3 +355,58 @@ Pop-up гриль-бистро "НА УГЛЕ" — летний сезонный
 5. **Mobile-first всегда** — сначала телефон, потом десктоп
 6. **Orchid для всего контента** — ни один текст не должен быть захардкожен в коде
 7. **SSR обязателен** — Inertia SSR настроен, не отключать
+
+---
+
+## 🧪 ПРОЦЕСС РАЗРАБОТКИ
+
+### QA-прогон после любого изменения
+
+После ЛЮБОГО изменения кода (бэк, фронт, админка, конфиг) до коммита прогонять минимальный QA:
+
+**Публичные маршруты:**
+- `GET /` → 200, в HTML есть `data-server-rendered`, ключевой контент на месте
+- `GET /menu` → 200, SSR активен
+- `POST /reservation` — хотя бы один успешный prod-style тест после правок формы
+
+**Админка** (минимум после правок Orchid):
+- `/admin/main` — дашборд грузится
+- `/admin/hero-slides` + `/admin/hero-slides/create` + edit существующего — 200
+- `/admin/menu/categories` + edit
+- `/admin/menu/items` + edit
+- `/admin/gallery` + edit
+- `/admin/chef` — **singleton-экран, самый капризный**
+- `/admin/reservations` + edit
+- `/admin/settings` (все 5 вкладок)
+
+Любая 500-ка → читать `storage/logs/laravel.log`, чинить ДО коммита.
+
+### Root-cause → правило
+
+Когда ловим баг:
+1. Найти корневую причину (не симптом)
+2. Починить
+3. **Записать правило сюда, в раздел «Выращенные правила»**, чтобы не повторить
+
+---
+
+## 🌱 ВЫРАЩЕННЫЕ ПРАВИЛА
+
+### Orchid: public-свойства в Screen должны быть nullable
+
+В Screen-классах Orchid ВСЕ public-свойства-модели объявлять nullable с default `null`:
+
+```php
+// ✅ правильно
+public ?ChefProfile $chef = null;
+
+// ❌ неправильно — падает с
+// "Typed property ... must not be accessed before initialization"
+public ChefProfile $chef;
+```
+
+**Почему:** Orchid в v14 обращается к public-свойствам через reflection (меню, breadcrumbs, permissions) **до того**, как вызывается `query()`. Non-nullable типизированное свойство без default в этот момент валит PHP.
+
+**Как применять:** любой `public ModelClass $name;` в `app/Orchid/Screens/**/*.php` → `public ?ModelClass $name = null;`. Все обращения `$this->prop->xxx` → `$this->prop?->xxx`. В `query()` при желании дополнительно присвоить: `$this->prop = $loadedInstance;` — страховка.
+
+**Инцидент-триггер:** 2026-04-14 `/admin/chef` → 500 «Typed property $chef must not be accessed before initialization».

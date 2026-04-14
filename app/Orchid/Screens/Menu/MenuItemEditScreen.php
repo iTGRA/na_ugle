@@ -18,7 +18,7 @@ use Orchid\Support\Facades\Toast;
 
 class MenuItemEditScreen extends Screen
 {
-    public MenuItem $item;
+    public ?MenuItem $item = null;
 
     public function query(MenuItem $item): iterable
     {
@@ -27,7 +27,7 @@ class MenuItemEditScreen extends Screen
 
     public function name(): ?string
     {
-        return $this->item->exists ? 'Блюдо: '.$this->item->name : 'Новое блюдо';
+        return ($this->item?->exists ?? false) ? 'Блюдо: '.$this->item?->name : 'Новое блюдо';
     }
 
     public function commandBar(): iterable
@@ -35,7 +35,7 @@ class MenuItemEditScreen extends Screen
         return [
             Button::make('Сохранить')->method('save')->type(Color::PRIMARY)->icon('bs.check'),
             Button::make('Удалить')->method('remove')->type(Color::DANGER)->icon('bs.trash')
-                ->confirm('Удалить блюдо?')->canSee($this->item->exists),
+                ->confirm('Удалить блюдо?')->canSee(($this->item?->exists ?? false)),
         ];
     }
 
@@ -51,12 +51,12 @@ class MenuItemEditScreen extends Screen
                 Input::make('item.name')->title('Название')->required()->maxlength(150),
                 TextArea::make('item.description')->title('Описание')->rows(3),
                 Input::make('item.price')->type('number')->title('Цена, ₽')->required(),
-                CheckBox::make('item.is_available')->title('В наличии')->sendTrueOrFalse()->value($this->item->is_available ?? true),
-                CheckBox::make('item.is_featured')->title('Хит (показывать в блоке «Хиты»)')->sendTrueOrFalse()->value($this->item->is_featured ?? false),
-                CheckBox::make('item.is_chef_pick')->title('Рекомендует шеф (отдельный блок)')->sendTrueOrFalse()->value($this->item->is_chef_pick ?? false),
+                CheckBox::make('item.is_available')->title('В наличии')->sendTrueOrFalse()->value($this->item?->is_available ?? true),
+                CheckBox::make('item.is_featured')->title('Хит (показывать в блоке «Хиты»)')->sendTrueOrFalse()->value($this->item?->is_featured ?? false),
+                CheckBox::make('item.is_chef_pick')->title('Рекомендует шеф (отдельный блок)')->sendTrueOrFalse()->value($this->item?->is_chef_pick ?? false),
                 TextArea::make('item.chef_comment')->title('Комментарий шефа')->rows(2)
                     ->help('Появляется, если блюдо отмечено как «Рекомендует шеф»'),
-                Input::make('item.sort_order')->type('number')->title('Порядок в категории')->value($this->item->sort_order ?? 0),
+                Input::make('item.sort_order')->type('number')->title('Порядок в категории')->value($this->item?->sort_order ?? 0),
             ]),
         ];
     }

@@ -16,7 +16,7 @@ use Orchid\Support\Facades\Toast;
 
 class GalleryEditScreen extends Screen
 {
-    public GalleryPhoto $photo;
+    public ?GalleryPhoto $photo = null;
 
     public function query(GalleryPhoto $photo): iterable
     {
@@ -25,7 +25,7 @@ class GalleryEditScreen extends Screen
 
     public function name(): ?string
     {
-        return $this->photo->exists ? 'Фото галереи' : 'Новое фото';
+        return ($this->photo?->exists ?? false) ? 'Фото галереи' : 'Новое фото';
     }
 
     public function commandBar(): iterable
@@ -33,7 +33,7 @@ class GalleryEditScreen extends Screen
         return [
             Button::make('Сохранить')->method('save')->type(Color::PRIMARY),
             Button::make('Удалить')->method('remove')->type(Color::DANGER)
-                ->confirm('Удалить фото?')->canSee($this->photo->exists),
+                ->confirm('Удалить фото?')->canSee(($this->photo?->exists ?? false)),
         ];
     }
 
@@ -48,8 +48,8 @@ class GalleryEditScreen extends Screen
                     'team' => 'Команда / Кухня (блок шефа)',
                 ])->required(),
                 Input::make('photo.alt_text')->title('Alt-текст')->help('Для SEO и доступности'),
-                Input::make('photo.sort_order')->type('number')->title('Порядок')->value($this->photo->sort_order ?? 0),
-                CheckBox::make('photo.is_active')->title('Активна')->sendTrueOrFalse()->value($this->photo->is_active ?? true),
+                Input::make('photo.sort_order')->type('number')->title('Порядок')->value($this->photo?->sort_order ?? 0),
+                CheckBox::make('photo.is_active')->title('Активна')->sendTrueOrFalse()->value($this->photo?->is_active ?? true),
             ]),
         ];
     }

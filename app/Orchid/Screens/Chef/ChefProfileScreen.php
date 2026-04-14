@@ -17,11 +17,12 @@ use Orchid\Support\Facades\Toast;
 
 class ChefProfileScreen extends Screen
 {
-    public ChefProfile $chef;
+    public ?ChefProfile $chef = null;
 
     public function query(): iterable
     {
         $chef = ChefProfile::query()->firstOrNew(['is_active' => true]);
+        $this->chef = $chef;
         return [
             'chef' => $chef,
             'facts_text' => $this->factsToText($chef->facts ?? []),
@@ -48,7 +49,7 @@ class ChefProfileScreen extends Screen
                 TextArea::make('facts_text')->title('Факты')
                     ->rows(6)->help('По одному на строку в формате «Ключ: значение». Например: «Стаж: 14 лет»'),
                 TextArea::make('chef.lavolt_note')->title('Заметка о La Volte')->rows(2),
-                CheckBox::make('chef.is_active')->title('Показывать на сайте')->sendTrueOrFalse()->value($this->chef->is_active ?? true),
+                CheckBox::make('chef.is_active')->title('Показывать на сайте')->sendTrueOrFalse()->value($this->chef?->is_active ?? true),
             ]),
         ];
     }

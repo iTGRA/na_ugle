@@ -15,7 +15,7 @@ use Orchid\Support\Facades\Toast;
 
 class HeroSlideEditScreen extends Screen
 {
-    public HeroSlide $slide;
+    public ?HeroSlide $slide = null;
 
     public function query(HeroSlide $slide): iterable
     {
@@ -24,7 +24,7 @@ class HeroSlideEditScreen extends Screen
 
     public function name(): ?string
     {
-        return $this->slide->exists ? 'Редактировать слайд' : 'Новый слайд';
+        return ($this->slide?->exists ?? false) ? 'Редактировать слайд' : 'Новый слайд';
     }
 
     public function commandBar(): iterable
@@ -32,7 +32,7 @@ class HeroSlideEditScreen extends Screen
         return [
             Button::make('Сохранить')->method('save')->type(Color::PRIMARY)->icon('bs.check'),
             Button::make('Удалить')->method('remove')->type(Color::DANGER)->icon('bs.trash')
-                ->confirm('Удалить слайд?')->canSee($this->slide->exists),
+                ->confirm('Удалить слайд?')->canSee(($this->slide?->exists ?? false)),
         ];
     }
 
@@ -45,8 +45,8 @@ class HeroSlideEditScreen extends Screen
                 Input::make('slide.subtitle')->title('Подзаголовок')->maxlength(200),
                 Input::make('slide.cta_text')->title('Текст кнопки')->placeholder('Смотреть меню'),
                 Input::make('slide.cta_url')->title('Ссылка кнопки')->placeholder('#menu или /menu'),
-                Input::make('slide.sort_order')->type('number')->title('Порядок')->value($this->slide->sort_order ?? 0),
-                CheckBox::make('slide.is_active')->title('Активен')->sendTrueOrFalse()->value($this->slide->is_active ?? true),
+                Input::make('slide.sort_order')->type('number')->title('Порядок')->value($this->slide?->sort_order ?? 0),
+                CheckBox::make('slide.is_active')->title('Активен')->sendTrueOrFalse()->value($this->slide?->is_active ?? true),
             ]),
         ];
     }

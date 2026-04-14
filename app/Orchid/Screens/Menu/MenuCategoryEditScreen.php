@@ -14,7 +14,7 @@ use Orchid\Support\Facades\Toast;
 
 class MenuCategoryEditScreen extends Screen
 {
-    public MenuCategory $category;
+    public ?MenuCategory $category = null;
 
     public function query(MenuCategory $category): iterable
     {
@@ -23,7 +23,7 @@ class MenuCategoryEditScreen extends Screen
 
     public function name(): ?string
     {
-        return $this->category->exists ? 'Категория: '.$this->category->name : 'Новая категория';
+        return ($this->category?->exists ?? false) ? 'Категория: '.$this->category?->name : 'Новая категория';
     }
 
     public function commandBar(): iterable
@@ -31,7 +31,7 @@ class MenuCategoryEditScreen extends Screen
         return [
             Button::make('Сохранить')->method('save')->type(Color::PRIMARY)->icon('bs.check'),
             Button::make('Удалить')->method('remove')->type(Color::DANGER)->icon('bs.trash')
-                ->confirm('Удалить категорию со всеми блюдами?')->canSee($this->category->exists),
+                ->confirm('Удалить категорию со всеми блюдами?')->canSee(($this->category?->exists ?? false)),
         ];
     }
 
@@ -42,8 +42,8 @@ class MenuCategoryEditScreen extends Screen
                 Input::make('category.name')->title('Название')->required()->maxlength(100),
                 Input::make('category.slug')->title('Slug')->help('Оставьте пустым для автогенерации')->maxlength(100),
                 Input::make('category.icon')->title('Иконка / эмодзи')->placeholder('🥩')->maxlength(20),
-                Input::make('category.sort_order')->type('number')->title('Порядок')->value($this->category->sort_order ?? 0),
-                CheckBox::make('category.is_active')->title('Активна')->sendTrueOrFalse()->value($this->category->is_active ?? true),
+                Input::make('category.sort_order')->type('number')->title('Порядок')->value($this->category?->sort_order ?? 0),
+                CheckBox::make('category.is_active')->title('Активна')->sendTrueOrFalse()->value($this->category?->is_active ?? true),
             ]),
         ];
     }

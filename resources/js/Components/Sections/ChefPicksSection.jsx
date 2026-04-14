@@ -19,7 +19,7 @@ export default function ChefPicksSection({ items = [] }) {
                             {i.chef_comment && (
                                 <p className="t-body mb-4" style={{ opacity: 0.85 }}>«{i.chef_comment}»</p>
                             )}
-                            <div className="font-bold">{i.price} ₽</div>
+                            <div className="font-bold">{i.price > 0 ? `${i.price} ₽` : 'уточняйте'}</div>
                         </article>
                     ))}
                 </div>

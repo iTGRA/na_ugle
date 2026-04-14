@@ -106,7 +106,26 @@
       "Bash(scp /tmp/backend/SendReservationNotification.php na-ugle:/var/www/na-ugle/app/Jobs/SendReservationNotification.php)",
       "Bash(scp /tmp/models/SiteSetting.php na-ugle:/var/www/na-ugle/app/Models/SiteSetting.php)",
       "Bash(/usr/bin/rsync -az --exclude='node_modules' --exclude='vendor' na-ugle:/var/www/na-ugle/ ./)",
-      "Bash(git -c user.email=claude@na-ugle -c user.name=Claude commit -m 'Stage 1-3 complete: models, Orchid admin, landing page, reservation flow:*)"
+      "Bash(git -c user.email=claude@na-ugle -c user.name=Claude commit -m 'Stage 1-3 complete: models, Orchid admin, landing page, reservation flow:*)",
+      "Bash(scp /tmp/seed_slides.sql na-ugle:/tmp/seed_slides.sql)",
+      "Bash(grep -rn \"^    public [A-Z][a-zA-Z]* \\\\\\\\$\" app/Orchid/Screens/)",
+      "Bash(sed -i '' 's|^    public GalleryPhoto \\\\$photo;|    public ?GalleryPhoto $photo = null;|' app/Orchid/Screens/Gallery/GalleryEditScreen.php)",
+      "Bash(sed -i '' 's|^    public Reservation \\\\$reservation;|    public ?Reservation $reservation = null;|' app/Orchid/Screens/Reservation/ReservationEditScreen.php)",
+      "Bash(sed -i '' 's|^    public MenuItem \\\\$item;|    public ?MenuItem $item = null;|' app/Orchid/Screens/Menu/MenuItemEditScreen.php)",
+      "Bash(sed -i '' 's|^    public MenuCategory \\\\$category;|    public ?MenuCategory $category = null;|' app/Orchid/Screens/Menu/MenuCategoryEditScreen.php)",
+      "Bash(sed -i '' 's|^    public HeroSlide \\\\$slide;|    public ?HeroSlide $slide = null;|' app/Orchid/Screens/Hero/HeroSlideEditScreen.php)",
+      "Bash(grep -n '\\\\$this->\\\\\\(slide\\\\|category\\\\|item\\\\|photo\\\\|reservation\\\\|chef\\\\\\)->\\\\\\(exists\\\\|[a-z_]*\\\\\\) ?? ' 'app/Orchid/Screens/**/*.php')",
+      "Bash(python3)",
+      "Bash(grep -n '\\\\$this->\\\\\\(slide\\\\|category\\\\|item\\\\|photo\\\\|reservation\\\\|chef\\\\\\)->' 'app/Orchid/Screens/**/*.php')",
+      "Bash(mdls -name kMDItemNumberOfPages -name kMDItemPageHeight -name kMDItemPageWidth \"/Users/ilyakhalzov/Downloads/Telegram Desktop/Меню «На угле» 2.pdf\")",
+      "Bash(python3 -c \"import pdfplumber\")",
+      "Bash(python3 -c \"import PyPDF2\")",
+      "Bash(python3 -c \"import pypdf\")",
+      "Bash(python3 -c \"import fitz\")",
+      "Bash(python3 -c \"import fitz; print\\('fitz version:', fitz.__doc__\\)\")",
+      "Bash(scp \"/Users/ilyakhalzov/Downloads/Telegram Desktop/Меню «На угле» 2.pdf\" na-ugle:/tmp/menu.pdf)",
+      "Bash(scp database/seeders/MenuItemsSeeder.php na-ugle:/var/www/na-ugle/database/seeders/MenuItemsSeeder.php)",
+      "Bash(scp \"/Users/ilyakhalzov/Downloads/Telegram Desktop/Меню «На угле» 2.pdf\" na-ugle:/tmp/menu-na-ugle.pdf)"
     ]
   }
 }

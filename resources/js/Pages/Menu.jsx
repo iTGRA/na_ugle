@@ -2,7 +2,12 @@ import { Head, Link } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 import Footer from '../Components/Layout/Footer';
 
-export default function Menu({ categories = [], phone, address }) {
+function formatPrice(price) {
+    if (!price || price <= 0) return 'уточняйте';
+    return `${price} ₽`;
+}
+
+export default function Menu({ categories = [], phone, address, menuPdf, barMenuPdf, wineCardPdf }) {
     const [activeSlug, setActiveSlug] = useState(categories[0]?.slug || '');
     const sectionsRef = useRef({});
 
@@ -14,19 +19,30 @@ export default function Menu({ categories = [], phone, address }) {
                     if (e.isIntersecting) setActiveSlug(e.target.dataset.slug);
                 });
             },
-            { rootMargin: '-40% 0px -50% 0px' }
+            { rootMargin: '-35% 0px -55% 0px' }
         );
         Object.values(sectionsRef.current).forEach((el) => el && observer.observe(el));
         return () => observer.disconnect();
     }, [categories]);
 
+    const totalItems = categories.reduce((acc, c) => acc + c.items.length, 0);
+
     return (
         <div className="bg-paper text-ink min-h-screen">
             <Head title="Меню" />
-            <header className="border-b border-hair sticky top-0 bg-paper z-30">
-                <div className="shell py-5 flex items-center justify-between">
+
+            {/* Top bar */}
+            <header className="border-b border-hair sticky top-0 bg-paper/95 backdrop-blur-sm z-30">
+                <div className="shell py-5 flex items-center justify-between gap-6">
                     <Link href="/" className="font-bold" style={{ fontSize: '1.4rem' }}>НА УГЛЕ</Link>
-                    <Link href="/" className="t-label link-underline">← На главную</Link>
+                    <div className="flex items-center gap-6">
+                        {menuPdf && (
+                            <a href={menuPdf} target="_blank" rel="noopener" download className="hidden md:inline-flex items-center gap-2 t-label link-underline">
+                                ↓ Скачать PDF
+                            </a>
+                        )}
+                        <Link href="/" className="t-label link-underline">← На главную</Link>
+                    </div>
                 </div>
                 <nav className="border-t border-hair overflow-x-auto no-scrollbar">
                     <div className="shell flex gap-8 py-4 whitespace-nowrap">
@@ -44,29 +60,70 @@ export default function Menu({ categories = [], phone, address }) {
                 </nav>
             </header>
 
-            <main className="shell-narrow py-16">
+            {/* Intro */}
+            <section className="shell py-16 md:py-24">
+                <div className="max-w-3xl">
+                    <div className="t-label text-muted mb-4">Меню {totalItems > 0 && `· ${totalItems} позиций`}</div>
+                    <h1 className="t-h1 mb-8">Полное меню</h1>
+                    <p className="t-body-large text-muted mb-10">
+                        Еда на углях, собственные колбасы и домашние соусы. Если хотите забрать меню с собой — скачайте PDF.
+                    </p>
+                    <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+                        {menuPdf && (
+                            <a href={menuPdf} target="_blank" rel="noopener" download className="cta">
+                                ↓ Скачать меню PDF
+                            </a>
+                        )}
+                        {barMenuPdf && (
+                            <a href={barMenuPdf} target="_blank" rel="noopener" download className="cta-plain">
+                                Барная карта
+                            </a>
+                        )}
+                        {wineCardPdf && (
+                            <a href={wineCardPdf} target="_blank" rel="noopener" download className="cta-plain">
+                                Винная карта
+                            </a>
+                        )}
+                    </div>
+                </div>
+            </section>
+
+            {/* Categories */}
+            <main className="shell pb-24">
                 {categories.map((c) => (
                     <section
                         key={c.slug}
                         id={`cat-${c.slug}`}
                         data-slug={c.slug}
                         ref={(el) => (sectionsRef.current[c.slug] = el)}
-                        className="mb-20 scroll-mt-36"
+                        className="mb-20 md:mb-28 scroll-mt-40"
                     >
                         <div className="flex items-baseline justify-between mb-10 pb-4 border-b border-ink">
-                            <h2 className="t-h2">{c.name}</h2>
-                            <span className="t-label text-muted">{c.items.length} позиций</span>
+                            <h2 className="t-h2">{c.icon ? `${c.icon} ${c.name}` : c.name}</h2>
+                            <span className="t-label text-muted hidden md:inline">{c.items.length} {c.items.length === 1 ? 'позиция' : 'позиций'}</span>
                         </div>
-                        <div className="space-y-6">
+                        <div className="grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
                             {c.items.map((i) => (
-                                <article key={i.id} className="grid grid-cols-[1fr_auto] gap-6 items-baseline">
-                                    <div>
-                                        <h3 className="t-body-large">{i.name}</h3>
-                                        {i.description && (
-                                            <p className="t-small text-muted mt-1">{i.description}</p>
+                                <article key={i.id} className="group">
+                                    <div className="aspect-[4/3] photo-frame mb-4">
+                                        {i.photo ? (
+                                            <img
+                                                src={i.photo}
+                                                alt={i.name}
+                                                loading="lazy"
+                                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-paper/40 t-label">НА УГЛЕ</div>
                                         )}
                                     </div>
-                                    <div className="t-body-large font-bold whitespace-nowrap">{i.price} ₽</div>
+                                    <div className="flex items-baseline justify-between gap-4 mb-1.5">
+                                        <h3 className="t-body-large leading-tight">{i.name}</h3>
+                                        <span className="font-bold whitespace-nowrap">{formatPrice(i.price)}</span>
+                                    </div>
+                                    {i.description && (
+                                        <p className="t-small text-muted leading-snug">{i.description}</p>
+                                    )}
                                 </article>
                             ))}
                         </div>

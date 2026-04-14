@@ -37,6 +37,9 @@ class MenuController extends Controller
                 'categories' => $categories,
                 'phone' => SiteSetting::get('phone'),
                 'address' => SiteSetting::get('address'),
+                'menuPdf' => SiteSetting::get('menu_pdf'),
+                'barMenuPdf' => SiteSetting::get('bar_menu_pdf'),
+                'wineCardPdf' => SiteSetting::get('wine_card_pdf'),
             ];
         });
 

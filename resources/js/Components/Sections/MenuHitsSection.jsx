@@ -48,7 +48,7 @@ export default function MenuHitsSection({ items = [] }) {
                             )}
                             <div className="flex items-baseline justify-between gap-3">
                                 <h3 className="text-base">{i.name}</h3>
-                                <span className="font-bold whitespace-nowrap">{i.price} ₽</span>
+                                <span className="font-bold whitespace-nowrap">{i.price > 0 ? `${i.price} ₽` : 'уточняйте'}</span>
                             </div>
                         </article>
                     ))}

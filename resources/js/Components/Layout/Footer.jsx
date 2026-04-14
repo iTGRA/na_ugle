@@ -1,33 +1,34 @@
 export default function Footer({ settings }) {
     const year = new Date().getFullYear();
     return (
-        <footer className="bg-smoke text-cream py-12 px-6">
-            <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-8 text-sm">
+        <footer className="inverted py-16 px-6">
+            <div className="shell grid md:grid-cols-4 gap-10">
                 <div>
-                    <div className="font-hand text-3xl text-ember mb-3">НА УГЛЕ</div>
-                    <p className="text-ash">{settings?.season || 'Работаем май — сентябрь'}</p>
+                    <div className="font-bold mb-4" style={{ fontSize: '1.4rem' }}>НА УГЛЕ</div>
+                    <p className="text-muted t-small">{settings?.season || 'Работаем май — сентябрь'}</p>
                 </div>
                 <div>
-                    <h4 className="uppercase tracking-wider text-xs text-ash mb-3">Часы работы</h4>
-                    <p className="whitespace-pre-line">{settings?.work_hours || ''}</p>
+                    <div className="t-label mb-4 text-muted">Часы работы</div>
+                    <p className="t-small whitespace-pre-line">{settings?.work_hours || '—'}</p>
                 </div>
                 <div>
-                    <h4 className="uppercase tracking-wider text-xs text-ash mb-3">Контакты</h4>
-                    <p>{settings?.address}</p>
+                    <div className="t-label mb-4 text-muted">Контакты</div>
+                    <p className="t-small mb-2">{settings?.address}</p>
                     {settings?.phone && (
-                        <p><a href={`tel:${settings.phone.replace(/\D/g, '')}`} className="link-ember">{settings.phone}</a></p>
+                        <a href={`tel:${settings.phone.replace(/\D/g, '')}`} className="link-underline t-small">{settings.phone}</a>
                     )}
                 </div>
                 <div>
-                    <h4 className="uppercase tracking-wider text-xs text-ash mb-3">Соцсети</h4>
-                    <div className="flex gap-4">
-                        {settings?.instagram_url && <a href={settings.instagram_url} target="_blank" rel="noopener" className="link-ember">Instagram</a>}
-                        {settings?.telegram_url && <a href={settings.telegram_url} target="_blank" rel="noopener" className="link-ember">Telegram</a>}
+                    <div className="t-label mb-4 text-muted">Соцсети</div>
+                    <div className="flex gap-5 t-small">
+                        {settings?.instagram_url && <a href={settings.instagram_url} target="_blank" rel="noopener" className="link-underline">Instagram</a>}
+                        {settings?.telegram_url && <a href={settings.telegram_url} target="_blank" rel="noopener" className="link-underline">Telegram</a>}
                     </div>
                 </div>
             </div>
-            <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-wood text-xs text-ash text-center">
-                © {year} НА УГЛЕ
+            <div className="shell mt-16 pt-6 border-t border-hair-inverse flex items-center justify-between t-small text-muted">
+                <span>© {year} НА УГЛЕ</span>
+                <span>Самара</span>
             </div>
         </footer>
     );

@@ -1,56 +1,55 @@
 import { Link } from '@inertiajs/react';
-import CowMascot from '../UI/CowMascot';
 
 export default function MenuHitsSection({ items = [] }) {
     if (items.length === 0) {
         return (
-            <section id="menu" className="bg-smoke py-24 px-6 text-center">
-                <div className="max-w-xl mx-auto text-cream">
-                    <div className="opacity-30 mx-auto mb-6 w-fit text-ember">
-                        <CowMascot size={140} />
-                    </div>
-                    <h2 className="font-hand text-ember mb-4" style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)' }}>Меню скоро появится</h2>
-                    <p className="text-ash">Дурняша всё готовит. Возвращайтесь через пару часов.</p>
+            <section id="menu" className="section bg-paper text-center">
+                <div className="shell-narrow">
+                    <div className="t-label text-muted mb-6">Меню</div>
+                    <h2 className="t-h2 mb-6">Скоро появится</h2>
+                    <p className="t-body text-muted">Дурняша всё ещё готовит. Возвращайтесь через пару часов.</p>
                 </div>
             </section>
         );
     }
 
     return (
-        <section id="menu" className="bg-smoke py-24 px-6">
-            <div className="max-w-7xl mx-auto">
+        <section id="menu" className="section bg-paper">
+            <div className="shell">
                 <div className="flex items-end justify-between flex-wrap gap-4 mb-12">
-                    <h2 className="font-hand text-ember" style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)' }}>
-                        Хиты меню
-                    </h2>
-                    <Link href="/menu" className="link-ember text-cream uppercase tracking-wider text-sm">
-                        Смотреть полное меню →
+                    <div>
+                        <div className="t-label text-muted mb-3">Меню</div>
+                        <h2 className="t-h2">Хиты с хоспера</h2>
+                    </div>
+                    <Link href="/menu" className="cta-plain">
+                        Полное меню
                     </Link>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
                     {items.map((i) => (
                         <article key={i.id} className="group">
-                            <div className="aspect-[4/3] overflow-hidden bg-charcoal mb-3 relative">
+                            <div className="aspect-[4/5] photo-frame mb-4 relative">
                                 {i.photo ? (
                                     <img
                                         src={i.photo}
                                         alt={i.name}
                                         loading="lazy"
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                                     />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-ember opacity-40">
-                                        <CowMascot size={80} />
+                                    <div className="w-full h-full flex items-center justify-center text-paper opacity-50 font-bold text-xs tracking-widest">
+                                        НА УГЛЕ
                                     </div>
                                 )}
                             </div>
                             {i.category && (
-                                <div className="text-xs text-ash uppercase tracking-wider mb-1">
-                                    {i.category.name}
-                                </div>
+                                <div className="t-label text-muted mb-1.5">{i.category.name}</div>
                             )}
-                            <h3 className="text-cream text-base mb-1">{i.name}</h3>
-                            <div className="text-ember font-bold">{i.price} ₽</div>
+                            <div className="flex items-baseline justify-between gap-3">
+                                <h3 className="text-base">{i.name}</h3>
+                                <span className="font-bold whitespace-nowrap">{i.price} ₽</span>
+                            </div>
                         </article>
                     ))}
                 </div>

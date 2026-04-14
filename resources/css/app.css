@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -7,122 +6,177 @@
 @source '../js/**/*.jsx';
 
 @theme {
-  --color-charcoal: #1a1a18;
-  --color-wood: #5c3d2e;
-  --color-ember: #e8721c;
-  --color-amber: #f5a623;
-  --color-cream: #f5f0e8;
-  --color-smoke: #2d2d2a;
-  --color-ash: #888880;
-
+  --color-paper: #F5F0E8;
+  --color-ink: #0A0A08;
+  --color-ink-60: #5C5C58;
+  --color-ink-15: rgba(10,10,8,0.15);
+  --color-paper-60: rgba(245,240,232,0.6);
   --font-mono: "Courier New Cyr", "Courier New", "Courier", ui-monospace, monospace;
-  --font-hand: "Caveat", ui-serif, cursive;
   --font-sans: "Courier New Cyr", "Courier New", "Courier", ui-monospace, monospace;
 }
 
 :root {
-  --charcoal: #1a1a18;
-  --wood: #5c3d2e;
-  --ember: #e8721c;
-  --amber: #f5a623;
-  --cream: #f5f0e8;
-  --smoke: #2d2d2a;
-  --ash: #888880;
+  --paper: #F5F0E8;
+  --ink: #0A0A08;
+  --ink-60: #5C5C58;
+  --ink-15: rgba(10,10,8,0.15);
+  --paper-60: rgba(245,240,232,0.6);
 }
 
-@font-face {
-  font-family: "Courier New Cyr";
-  src: local("Courier New"), local("CourierNew");
-  font-display: swap;
-}
+* { -webkit-tap-highlight-color: transparent; }
 
 html, body {
-  background: var(--charcoal);
-  color: var(--cream);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-mono);
+  font-feature-settings: "ss01" on;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  -webkit-tap-highlight-color: transparent;
-}
+body { font-size: 18px; line-height: 1.55; }
 
-/* Brand utilities */
-.font-hand { font-family: var(--font-hand); }
-.bg-charcoal { background: var(--charcoal); }
-.bg-wood { background: var(--wood); }
-.bg-ember { background: var(--ember); }
-.bg-amber { background: var(--amber); }
-.bg-cream { background: var(--cream); }
-.bg-smoke { background: var(--smoke); }
-.text-charcoal { color: var(--charcoal); }
-.text-ember { color: var(--ember); }
-.text-amber { color: var(--amber); }
-.text-cream { color: var(--cream); }
-.text-ash { color: var(--ash); }
-.border-ember { border-color: var(--ember); }
-.border-wood { border-color: var(--wood); }
-
-/* Ember button */
-.btn-ember {
-  display: inline-block;
-  background: var(--ember);
-  color: #fff;
-  padding: 0.85rem 1.75rem;
-  font-family: var(--font-mono);
-  font-weight: bold;
+/* Type scale */
+.t-label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: 2px solid var(--ember);
-  transition: all 0.2s ease;
-  cursor: pointer;
+  font-weight: 700;
+  line-height: 1;
 }
-.btn-ember:hover {
-  background: transparent;
-  color: var(--ember);
-}
+.t-small { font-size: 14px; line-height: 1.55; }
+.t-body { font-size: 18px; line-height: 1.55; }
+.t-body-large { font-size: clamp(1.125rem, 1.6vw, 1.35rem); line-height: 1.55; }
+.t-h3 { font-size: clamp(1.35rem, 2.6vw, 1.9rem); font-weight: 700; line-height: 1.15; }
+.t-h2 { font-size: clamp(2.25rem, 6vw, 4.5rem); font-weight: 700; line-height: 0.98; letter-spacing: -0.01em; }
+.t-h1 { font-size: clamp(3.5rem, 11vw, 9.5rem); font-weight: 700; line-height: 0.9; letter-spacing: -0.02em; }
 
-.btn-outline {
-  display: inline-block;
-  background: transparent;
-  color: var(--cream);
-  padding: 0.85rem 1.75rem;
-  font-family: var(--font-mono);
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: 2px solid var(--cream);
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-.btn-outline:hover {
-  background: var(--cream);
-  color: var(--charcoal);
-}
+/* Surfaces */
+.bg-paper { background: var(--paper); }
+.bg-ink { background: var(--ink); }
+.text-ink { color: var(--ink); }
+.text-paper { color: var(--paper); }
+.text-muted { color: var(--ink-60); }
+.text-muted-inverse { color: rgba(245,240,232,0.65); }
+.border-ink { border-color: var(--ink); }
+.border-hair { border-color: var(--ink-15); }
+.border-hair-inverse { border-color: rgba(245,240,232,0.2); }
+.rule { height: 1px; background: var(--ink-15); width: 100%; }
+.rule-inverse { height: 1px; background: rgba(245,240,232,0.2); width: 100%; }
 
-/* Fade-in on scroll */
-.fade-in {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+/* Inverted section (black background) */
+.inverted {
+  background: var(--ink);
+  color: var(--paper);
 }
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+.inverted .text-muted { color: rgba(245,240,232,0.6); }
+.inverted .rule { background: rgba(245,240,232,0.2); }
 
-/* Ember underline on hover */
-.link-ember {
-  position: relative;
+/* Links: underline-only treatment */
+a, .link {
+  color: inherit;
   text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
 }
-.link-ember::after {
-  content: '';
-  position: absolute;
-  left: 0; bottom: -2px; height: 2px;
-  width: 0;
-  background: var(--ember);
-  transition: width 0.3s ease;
+a.link-underline,
+.link-underline {
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
 }
-.link-ember:hover::after { width: 100%; }
+a.link-underline:hover,
+.link-underline:hover {
+  border-bottom-color: transparent;
+}
+a.link-hover:hover,
+.link-hover:hover {
+  border-bottom-color: currentColor;
+}
+
+/* Primary CTA — heavy underline text */
+.cta {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 0 6px;
+  border-bottom: 3px solid currentColor;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+}
+.cta:hover { opacity: 0.55; }
+
+.cta-plain {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 0 6px;
+  border-bottom: 1px solid currentColor;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+}
+.cta-plain:hover { opacity: 0.55; }
+
+/* Form fields — inverted-context minimal */
+.field {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  padding: 14px 2px;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  transition: border-bottom-color 0.2s ease;
+}
+.field:focus {
+  outline: none;
+  border-bottom-width: 2px;
+  padding-bottom: 13px;
+}
+.field::placeholder {
+  color: currentColor;
+  opacity: 0.45;
+}
+
+/* Dotted leader — for menu price lists: dots between text and price */
+.leader {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  width: 100%;
+}
+.leader-name { flex: 0 1 auto; }
+.leader-dots {
+  flex: 1 1 auto;
+  border-bottom: 2px dotted currentColor;
+  opacity: 0.35;
+  transform: translateY(-5px);
+  min-width: 2rem;
+}
+.leader-price {
+  flex: 0 0 auto;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Containers */
+.shell { max-width: 1240px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+.shell-narrow { max-width: 880px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+.section { padding-top: 96px; padding-bottom: 96px; }
+@media (max-width: 768px) {
+  .section { padding-top: 64px; padding-bottom: 64px; }
+}
+
+/* Utility: scroll-hide scrollbars (horizontal scrollers) */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+
+/* Image treatment */
+.photo-frame { background: var(--ink); overflow: hidden; }
+.photo-frame img { display: block; width: 100%; height: 100%; object-fit: cover; }

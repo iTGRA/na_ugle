@@ -21,55 +21,52 @@ export default function Menu({ categories = [], phone, address }) {
     }, [categories]);
 
     return (
-        <div className="bg-charcoal text-cream min-h-screen">
+        <div className="bg-paper text-ink min-h-screen">
             <Head title="Меню" />
-            <header className="border-b border-wood sticky top-0 bg-charcoal z-30">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <Link href="/" className="font-hand text-2xl text-ember">НА УГЛЕ</Link>
-                    <Link href="/" className="link-ember text-sm uppercase tracking-wider">← Назад</Link>
+            <header className="border-b border-hair sticky top-0 bg-paper z-30">
+                <div className="shell py-5 flex items-center justify-between">
+                    <Link href="/" className="font-bold" style={{ fontSize: '1.4rem' }}>НА УГЛЕ</Link>
+                    <Link href="/" className="t-label link-underline">← На главную</Link>
                 </div>
-                <nav className="border-t border-wood overflow-x-auto">
-                    <div className="max-w-7xl mx-auto px-6 flex gap-6 py-3 whitespace-nowrap" style={{ scrollbarWidth: 'none' }}>
+                <nav className="border-t border-hair overflow-x-auto no-scrollbar">
+                    <div className="shell flex gap-8 py-4 whitespace-nowrap">
                         {categories.map((c) => (
                             <a
                                 key={c.slug}
                                 href={`#cat-${c.slug}`}
-                                className={`text-sm uppercase tracking-wider transition-colors ${activeSlug === c.slug ? 'text-ember' : 'text-ash hover:text-cream'}`}
+                                className={`t-label transition-opacity ${activeSlug === c.slug ? '' : 'opacity-50 hover:opacity-100'}`}
+                                style={activeSlug === c.slug ? { borderBottom: '2px solid currentColor', paddingBottom: '4px' } : undefined}
                             >
-                                {c.icon} {c.name}
+                                {c.name}
                             </a>
                         ))}
                     </div>
                 </nav>
             </header>
 
-            <main className="max-w-4xl mx-auto px-6 py-12">
+            <main className="shell-narrow py-16">
                 {categories.map((c) => (
                     <section
                         key={c.slug}
                         id={`cat-${c.slug}`}
                         data-slug={c.slug}
                         ref={(el) => (sectionsRef.current[c.slug] = el)}
-                        className="mb-16 scroll-mt-28"
+                        className="mb-20 scroll-mt-36"
                     >
-                        <h2 className="font-hand text-ember mb-8" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}>
-                            {c.icon} {c.name}
-                        </h2>
-                        <div className="grid gap-6">
+                        <div className="flex items-baseline justify-between mb-10 pb-4 border-b border-ink">
+                            <h2 className="t-h2">{c.name}</h2>
+                            <span className="t-label text-muted">{c.items.length} позиций</span>
+                        </div>
+                        <div className="space-y-6">
                             {c.items.map((i) => (
-                                <article key={i.id} className="grid grid-cols-[80px_1fr_auto] md:grid-cols-[120px_1fr_auto] gap-4 items-start border-b border-wood pb-6">
-                                    <div className="aspect-square bg-smoke overflow-hidden">
-                                        {i.photo ? (
-                                            <img src={i.photo} alt={i.name} loading="lazy" className="w-full h-full object-cover" />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-ember/30 text-2xl">🔥</div>
+                                <article key={i.id} className="grid grid-cols-[1fr_auto] gap-6 items-baseline">
+                                    <div>
+                                        <h3 className="t-body-large">{i.name}</h3>
+                                        {i.description && (
+                                            <p className="t-small text-muted mt-1">{i.description}</p>
                                         )}
                                     </div>
-                                    <div>
-                                        <h3 className="text-cream text-lg mb-1">{i.name}</h3>
-                                        {i.description && <p className="text-ash text-sm">{i.description}</p>}
-                                    </div>
-                                    <div className="text-ember font-bold whitespace-nowrap">{i.price} ₽</div>
+                                    <div className="t-body-large font-bold whitespace-nowrap">{i.price} ₽</div>
                                 </article>
                             ))}
                         </div>
@@ -77,7 +74,7 @@ export default function Menu({ categories = [], phone, address }) {
                 ))}
 
                 {categories.length === 0 && (
-                    <div className="text-center py-24 text-ash">
+                    <div className="text-center py-24 t-body text-muted">
                         Меню пока пустое. Возвращайтесь позже.
                     </div>
                 )}

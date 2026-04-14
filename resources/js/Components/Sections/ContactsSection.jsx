@@ -1,63 +1,52 @@
 export default function ContactsSection({ settings }) {
     if (!settings) return null;
     return (
-        <section id="contacts" className="bg-cream text-charcoal py-24 px-6">
-            <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12">
+        <section id="contacts" className="section bg-paper">
+            <div className="shell grid md:grid-cols-[1fr_1.2fr] gap-12 md:gap-20">
                 <div>
-                    <h2 className="font-hand text-ember mb-8" style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)' }}>
-                        Как нас найти
-                    </h2>
+                    <div className="t-label text-muted mb-3">Контакты</div>
+                    <h2 className="t-h2 mb-8">Как нас найти</h2>
                     {settings.address && (
-                        <p className="text-xl mb-3">{settings.address}</p>
+                        <p className="t-h3 mb-4" style={{ fontWeight: 400 }}>{settings.address}</p>
                     )}
                     {settings.how_to_find && (
-                        <p className="text-charcoal/70 mb-6">{settings.how_to_find}</p>
+                        <p className="t-body text-muted mb-10">{settings.how_to_find}</p>
                     )}
-                    <div className="flex flex-wrap gap-3 mb-8">
+                    <div className="flex flex-wrap gap-x-10 gap-y-3 mb-10 t-label">
                         {settings.yandex_maps_url && (
-                            <a href={settings.yandex_maps_url} target="_blank" rel="noopener" className="px-5 py-3 border border-charcoal hover:bg-charcoal hover:text-cream transition-colors text-sm uppercase tracking-wider">
-                                Яндекс.Карты
-                            </a>
+                            <a href={settings.yandex_maps_url} target="_blank" rel="noopener" className="link-underline">Яндекс.Карты</a>
                         )}
                         {settings['2gis_url'] && (
-                            <a href={settings['2gis_url']} target="_blank" rel="noopener" className="px-5 py-3 border border-charcoal hover:bg-charcoal hover:text-cream transition-colors text-sm uppercase tracking-wider">
-                                2GIS
-                            </a>
+                            <a href={settings['2gis_url']} target="_blank" rel="noopener" className="link-underline">2GIS</a>
                         )}
                     </div>
-                    <div className="space-y-2">
+                    <dl className="space-y-4 pt-6 border-t border-hair">
                         {settings.phone && (
-                            <p>
-                                <span className="text-charcoal/60 text-sm uppercase tracking-wider mr-3">Телефон:</span>
-                                <a href={`tel:${settings.phone.replace(/\D/g, '')}`} className="text-xl link-ember">
-                                    {settings.phone}
-                                </a>
-                            </p>
+                            <div>
+                                <dt className="t-label text-muted mb-1">Телефон</dt>
+                                <dd><a href={`tel:${settings.phone.replace(/\D/g, '')}`} className="t-h3 link-underline" style={{ fontWeight: 400 }}>{settings.phone}</a></dd>
+                            </div>
                         )}
                         {settings.work_hours && (
-                            <p className="whitespace-pre-line">
-                                <span className="text-charcoal/60 text-sm uppercase tracking-wider block">Режим:</span>
-                                {settings.work_hours}
-                            </p>
+                            <div>
+                                <dt className="t-label text-muted mb-1">Режим работы</dt>
+                                <dd className="t-body whitespace-pre-line">{settings.work_hours}</dd>
+                            </div>
                         )}
                         {settings.season && (
-                            <p>
-                                <span className="text-charcoal/60 text-sm uppercase tracking-wider mr-3">Сезон:</span>
-                                {settings.season}
-                            </p>
+                            <div>
+                                <dt className="t-label text-muted mb-1">Сезон</dt>
+                                <dd className="t-body">{settings.season}</dd>
+                            </div>
                         )}
-                    </div>
+                    </dl>
                 </div>
-                <div className="min-h-[400px] bg-smoke">
+                <div className="aspect-[4/3] md:aspect-auto md:min-h-[500px] photo-frame">
                     {settings.map_embed ? (
-                        <div
-                            className="w-full h-full"
-                            style={{ minHeight: '400px' }}
-                            dangerouslySetInnerHTML={{ __html: settings.map_embed }}
-                        />
+                        <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: settings.map_embed }} />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-cream/40 font-hand text-2xl" style={{ minHeight: '400px' }}>
-                            Карта скоро появится
+                        <div className="w-full h-full flex items-center justify-center text-paper t-label">
+                            КАРТА СКОРО ПОЯВИТСЯ
                         </div>
                     )}
                 </div>

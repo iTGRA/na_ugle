@@ -1,61 +1,65 @@
 export default function ChefSection({ chef, teamPhotos = [] }) {
     if (!chef) return null;
     return (
-        <section id="chef" className="bg-charcoal py-24 px-6">
-            <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12">
+        <section id="chef" className="section bg-paper">
+            <div className="shell grid md:grid-cols-[1fr_1.1fr] gap-12 md:gap-20">
                 <div>
-                    <div className="aspect-[3/4] bg-smoke overflow-hidden mb-4">
+                    <div className="aspect-[3/4] photo-frame mb-4">
                         {chef.photo ? (
-                            <img src={chef.photo} alt={chef.name} className="w-full h-full object-cover" loading="lazy" />
+                            <img src={chef.photo} alt={chef.name} loading="lazy" />
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center text-ash">
-                                <span className="font-hand text-6xl">шеф</span>
+                            <div className="w-full h-full flex items-center justify-center text-paper text-sm opacity-40">
+                                ФОТО ШЕФА
                             </div>
                         )}
                     </div>
                     {teamPhotos.length > 0 && (
-                        <div className="flex gap-2 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+                        <div className="no-scrollbar flex gap-3 overflow-x-auto">
                             {teamPhotos.slice(0, 8).map((p) => (
                                 <img
                                     key={p.id}
                                     src={p.photo}
                                     alt={p.alt || ''}
                                     loading="lazy"
-                                    className="flex-none w-24 h-24 object-cover"
+                                    className="flex-none w-28 h-28 object-cover photo-frame"
                                 />
                             ))}
                         </div>
                     )}
                 </div>
                 <div>
-                    <h2 className="font-hand text-ember mb-2" style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)' }}>
-                        {chef.name}
-                    </h2>
+                    <div className="t-label text-muted mb-3">Шеф-повар</div>
+                    <h2 className="t-h2 mb-2">{chef.name}</h2>
                     {chef.position && (
-                        <div className="text-ash uppercase tracking-wider text-xs mb-6">{chef.position}</div>
+                        <div className="t-label text-muted mb-8">{chef.position}</div>
                     )}
+
+                    {chef.quote && (
+                        <blockquote className="t-h3 mb-10 pl-6 border-l-2 border-ink" style={{ fontWeight: 400 }}>
+                            «{chef.quote}»
+                        </blockquote>
+                    )}
+
                     {chef.bio_text && (
-                        <div className="text-cream leading-relaxed mb-6" dangerouslySetInnerHTML={{ __html: chef.bio_text }} />
+                        <div className="t-body mb-10" dangerouslySetInnerHTML={{ __html: chef.bio_text }} />
                     )}
+
                     {chef.facts && Object.keys(chef.facts).length > 0 && (
-                        <dl className="grid gap-3 mb-6">
+                        <dl className="grid gap-2 mb-8">
                             {Object.entries(chef.facts).map(([k, v]) => (
-                                <div key={k} className="flex border-b border-wood pb-2 gap-4">
-                                    <dt className="text-ash uppercase tracking-wider text-xs w-32 flex-none">{k}</dt>
-                                    <dd className="text-cream">{v}</dd>
+                                <div key={k} className="leader t-body">
+                                    <dt className="leader-name t-label">{k}</dt>
+                                    <span className="leader-dots" />
+                                    <dd className="leader-price font-normal">{v}</dd>
                                 </div>
                             ))}
                         </dl>
                     )}
-                    {chef.quote && (
-                        <blockquote className="font-hand text-2xl md:text-3xl text-amber leading-snug my-8 pl-6 border-l-4 border-ember">
-                            «{chef.quote}»
-                        </blockquote>
-                    )}
+
                     {chef.lavolt_note && (
-                        <p className="text-ash text-sm border border-wood p-4">
+                        <div className="pt-6 mt-6 border-t border-hair t-small text-muted">
                             {chef.lavolt_note}
-                        </p>
+                        </div>
                     )}
                 </div>
             </div>

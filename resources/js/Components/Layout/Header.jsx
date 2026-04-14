@@ -11,6 +11,7 @@ const NAV = [
 
 export default function Header({ variant = 'transparent' }) {
     const [scrolled, setScrolled] = useState(false);
+    const [hovered, setHovered] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
@@ -21,12 +22,15 @@ export default function Header({ variant = 'transparent' }) {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
-    const showSolid = scrolled || variant === 'solid';
+    // Solid state: either scrolled past threshold, or hovering the header, or page forces 'solid'
+    const showSolid = scrolled || hovered || variant === 'solid';
     const textClass = showSolid ? 'text-ink' : 'text-white';
 
     return (
         <>
             <div
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
                 className="w-full transition-[background,border,padding] duration-300"
                 style={{
                     background: showSolid ? 'rgba(245,240,232,0.95)' : 'transparent',
@@ -40,7 +44,7 @@ export default function Header({ variant = 'transparent' }) {
                 <div className="shell flex items-center justify-between gap-6">
                     <Link
                         href="/"
-                        className={`font-bold tracking-tight transition-colors ${textClass}`}
+                        className={`font-bold tracking-tight transition-colors duration-300 ${textClass}`}
                         style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.4rem)', letterSpacing: '-0.01em' }}
                     >
                         НА&nbsp;УГЛЕ
@@ -50,20 +54,14 @@ export default function Header({ variant = 'transparent' }) {
                             <a
                                 key={l.href}
                                 href={l.href}
-                                className={`t-label transition-colors ${textClass}`}
+                                className={`t-label transition-colors duration-300 ${textClass}`}
                                 style={{
                                     borderBottom: '1px solid transparent',
                                     paddingBottom: '2px',
-                                    opacity: showSolid ? 0.8 : 0.85,
+                                    transition: 'color 0.3s, border-bottom-color 0.2s',
                                 }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.borderBottomColor = 'currentColor';
-                                    e.currentTarget.style.opacity = '1';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.borderBottomColor = 'transparent';
-                                    e.currentTarget.style.opacity = showSolid ? '0.8' : '0.85';
-                                }}
+                                onMouseEnter={(e) => { e.currentTarget.style.borderBottomColor = 'currentColor'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.borderBottomColor = 'transparent'; }}
                             >
                                 {l.label}
                             </a>
@@ -71,12 +69,12 @@ export default function Header({ variant = 'transparent' }) {
                     </nav>
                     <a
                         href="#reservation"
-                        className={`hidden md:inline-block cta-plain ${textClass}`}
+                        className={`hidden md:inline-block cta-plain transition-colors duration-300 ${textClass}`}
                     >
                         Забронировать
                     </a>
                     <button
-                        className={`md:hidden text-2xl leading-none transition-colors ${textClass}`}
+                        className={`md:hidden text-2xl leading-none transition-colors duration-300 ${textClass}`}
                         onClick={() => setMenuOpen(true)}
                         aria-label="Открыть меню"
                     >

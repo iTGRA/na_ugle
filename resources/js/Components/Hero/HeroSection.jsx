@@ -55,7 +55,6 @@ export default function HeroSection({ slides = [], slogan, description, durnyash
             onTouchStart={() => setPaused(true)}
             onTouchEnd={() => setPaused(false)}
         >
-            {/* Slides */}
             {slides.map((s, i) => (
                 <div
                     key={s.id}
@@ -74,30 +73,17 @@ export default function HeroSection({ slides = [], slogan, description, durnyash
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #2d2d2a, #0A0A08)' }} />
             )}
 
-            {/* Bottom→top gradient for text contrast */}
+            {/* Compound gradient: bottom-left strongest for content legibility */}
             <div
                 className="absolute inset-0 z-[2] pointer-events-none"
-                style={{ background: 'linear-gradient(180deg, rgba(10,10,8,0.35) 0%, rgba(10,10,8,0.2) 40%, rgba(10,10,8,0.85) 100%)' }}
+                style={{
+                    background:
+                        'linear-gradient(to top, rgba(10,10,8,0.85) 0%, rgba(10,10,8,0.35) 55%, rgba(10,10,8,0.25) 100%),' +
+                        'linear-gradient(to right, rgba(10,10,8,0.5) 0%, rgba(10,10,8,0.1) 55%, transparent 100%)',
+                }}
             />
 
-            {/* Stories progress bars */}
-            {hasMulti && (
-                <div className="absolute top-0 left-0 right-0 z-20 flex gap-1.5 px-6 pt-20 md:pt-24">
-                    {slides.map((_, i) => (
-                        <div key={i} className="flex-1 h-[3px] bg-white/25 overflow-hidden rounded-full">
-                            <div
-                                className="h-full bg-white"
-                                style={{
-                                    width: i < current ? '100%' : i === current ? `${progress * 100}%` : '0%',
-                                    transition: i === current ? 'none' : 'width 0.25s ease',
-                                }}
-                            />
-                        </div>
-                    ))}
-                </div>
-            )}
-
-            {/* Side click-areas (tap to navigate) */}
+            {/* Tap zones (mobile stories pattern) */}
             {hasMulti && (
                 <>
                     <button
@@ -113,27 +99,11 @@ export default function HeroSection({ slides = [], slogan, description, durnyash
                 </>
             )}
 
-            {/* Visible arrows (desktop) */}
-            {hasMulti && (
-                <>
-                    <button
-                        aria-label="Предыдущий"
-                        onClick={prev}
-                        className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center text-white/80 hover:text-white text-3xl leading-none transition-opacity"
-                    >‹</button>
-                    <button
-                        aria-label="Следующий"
-                        onClick={next}
-                        className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center text-white/80 hover:text-white text-3xl leading-none transition-opacity"
-                    >›</button>
-                </>
-            )}
-
-            {/* Content overlay */}
-            <div className="absolute inset-0 z-[15] flex flex-col justify-end pb-16 md:pb-20 px-6 pointer-events-none">
+            {/* Content overlay — bottom-left */}
+            <div className="absolute inset-0 z-[15] flex flex-col justify-end pb-28 md:pb-32 px-6 pointer-events-none">
                 <div className="shell w-full">
                     {active?.title && (
-                        <div className="t-label text-white/70 mb-4">
+                        <div className="t-label text-white/80 mb-4">
                             {String(current + 1).padStart(2, '0')} / {String(count).padStart(2, '0')} · {active.title}
                         </div>
                     )}
@@ -147,15 +117,14 @@ export default function HeroSection({ slides = [], slogan, description, durnyash
                             {active?.subtitle || description}
                         </p>
                     )}
-                    <div className="mt-8 flex flex-wrap items-baseline gap-x-10 gap-y-3 pointer-events-auto">
+                    <div className="mt-8 flex flex-wrap items-stretch gap-3 pointer-events-auto">
                         <a
                             href={active?.cta_url || '#menu'}
-                            className="cta text-white"
-                            style={{ borderBottomColor: '#fff' }}
+                            className="cta-filled"
                         >
                             {active?.cta_text || 'Смотреть меню'}
                         </a>
-                        <a href="#reservation" className="cta-plain text-white/80" style={{ borderBottomColor: 'rgba(255,255,255,0.6)' }}>
+                        <a href="#reservation" className="cta-outline">
                             Забронировать
                         </a>
                     </div>
@@ -166,6 +135,41 @@ export default function HeroSection({ slides = [], slogan, description, durnyash
                     )}
                 </div>
             </div>
+
+            {/* Compact slider controls — bottom-right */}
+            {hasMulti && (
+                <div className="absolute bottom-8 right-6 md:bottom-10 md:right-10 z-20 flex items-center gap-4">
+                    <button
+                        onClick={prev}
+                        aria-label="Предыдущий слайд"
+                        className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors text-xl leading-none"
+                    >‹</button>
+                    <div className="flex gap-1.5">
+                        {slides.map((_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => goTo(i)}
+                                aria-label={`Слайд ${i + 1}`}
+                                className="h-[2px] overflow-hidden"
+                                style={{ width: i === current ? '40px' : '24px', background: 'rgba(255,255,255,0.3)', transition: 'width 0.3s ease' }}
+                            >
+                                <div
+                                    className="h-full bg-white"
+                                    style={{
+                                        width: i < current ? '100%' : i === current ? `${progress * 100}%` : '0%',
+                                        transition: i === current ? 'none' : 'width 0.25s ease',
+                                    }}
+                                />
+                            </button>
+                        ))}
+                    </div>
+                    <button
+                        onClick={next}
+                        aria-label="Следующий слайд"
+                        className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors text-xl leading-none"
+                    >›</button>
+                </div>
+            )}
         </section>
     );
 }

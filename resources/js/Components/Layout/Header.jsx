@@ -9,7 +9,7 @@ const NAV = [
     { href: '#contacts', label: 'Контакты' },
 ];
 
-export default function Header() {
+export default function Header({ variant = 'transparent' }) {
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -21,45 +21,76 @@ export default function Header() {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
+    const showSolid = scrolled || variant === 'solid';
+    const textClass = showSolid ? 'text-ink' : 'text-white';
+
     return (
         <>
-            <header
-                className="fixed top-0 left-0 right-0 z-40 transition-all duration-300"
+            <div
+                className="w-full transition-[background,border,padding] duration-300"
                 style={{
-                    background: scrolled ? 'rgba(245,240,232,0.95)' : 'transparent',
-                    backdropFilter: scrolled ? 'blur(10px)' : 'none',
-                    borderBottom: scrolled ? '1px solid var(--ink-15)' : '1px solid transparent',
-                    padding: scrolled ? '0.8rem 0' : '1.2rem 0',
+                    background: showSolid ? 'rgba(245,240,232,0.95)' : 'transparent',
+                    backdropFilter: showSolid ? 'blur(10px)' : 'none',
+                    WebkitBackdropFilter: showSolid ? 'blur(10px)' : 'none',
+                    borderBottom: showSolid ? '1px solid rgba(10,10,8,0.15)' : '1px solid transparent',
+                    paddingTop: showSolid ? '12px' : '18px',
+                    paddingBottom: showSolid ? '12px' : '18px',
                 }}
             >
                 <div className="shell flex items-center justify-between gap-6">
-                    <Link href="/" className="font-bold tracking-tight" style={{ fontSize: 'clamp(1.2rem, 2.2vw, 1.6rem)', letterSpacing: '-0.01em' }}>
+                    <Link
+                        href="/"
+                        className={`font-bold tracking-tight transition-colors ${textClass}`}
+                        style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.4rem)', letterSpacing: '-0.01em' }}
+                    >
                         НА&nbsp;УГЛЕ
                     </Link>
                     <nav className="hidden md:flex items-center gap-8">
                         {NAV.map((l) => (
-                            <a key={l.href} href={l.href} className="t-label link-hover">
+                            <a
+                                key={l.href}
+                                href={l.href}
+                                className={`t-label transition-colors ${textClass}`}
+                                style={{
+                                    borderBottom: '1px solid transparent',
+                                    paddingBottom: '2px',
+                                    opacity: showSolid ? 0.8 : 0.85,
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.borderBottomColor = 'currentColor';
+                                    e.currentTarget.style.opacity = '1';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.borderBottomColor = 'transparent';
+                                    e.currentTarget.style.opacity = showSolid ? '0.8' : '0.85';
+                                }}
+                            >
                                 {l.label}
                             </a>
                         ))}
                     </nav>
-                    <a href="#reservation" className="hidden md:inline-block cta-plain">Забронировать</a>
+                    <a
+                        href="#reservation"
+                        className={`hidden md:inline-block cta-plain ${textClass}`}
+                    >
+                        Забронировать
+                    </a>
                     <button
-                        className="md:hidden text-2xl leading-none"
+                        className={`md:hidden text-2xl leading-none transition-colors ${textClass}`}
                         onClick={() => setMenuOpen(true)}
                         aria-label="Открыть меню"
                     >
                         ≡
                     </button>
                 </div>
-            </header>
+            </div>
 
             {menuOpen && (
-                <div className="fixed inset-0 z-50 bg-paper flex flex-col">
+                <div className="fixed inset-0 z-[60] bg-paper flex flex-col">
                     <div className="shell flex items-center justify-between py-5">
-                        <span className="font-bold" style={{ fontSize: '1.4rem' }}>НА УГЛЕ</span>
+                        <span className="font-bold text-ink" style={{ fontSize: '1.4rem' }}>НА УГЛЕ</span>
                         <button
-                            className="text-3xl leading-none"
+                            className="text-3xl leading-none text-ink"
                             onClick={() => setMenuOpen(false)}
                             aria-label="Закрыть"
                         >×</button>
@@ -70,13 +101,13 @@ export default function Header() {
                                 key={l.href}
                                 href={l.href}
                                 onClick={() => setMenuOpen(false)}
-                                className="t-h2 link-hover"
+                                className="t-h2 text-ink link-hover"
                             >{l.label}</a>
                         ))}
                         <a
                             href="#reservation"
                             onClick={() => setMenuOpen(false)}
-                            className="cta mt-6"
+                            className="cta mt-6 text-ink"
                         >Забронировать</a>
                     </nav>
                 </div>

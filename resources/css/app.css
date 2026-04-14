@@ -1,11 +1,128 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
-@source '../**/*.js';
+@source '../js/**/*.jsx';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+  --color-charcoal: #1a1a18;
+  --color-wood: #5c3d2e;
+  --color-ember: #e8721c;
+  --color-amber: #f5a623;
+  --color-cream: #f5f0e8;
+  --color-smoke: #2d2d2a;
+  --color-ash: #888880;
+
+  --font-mono: "Courier New Cyr", "Courier New", "Courier", ui-monospace, monospace;
+  --font-hand: "Caveat", ui-serif, cursive;
+  --font-sans: "Courier New Cyr", "Courier New", "Courier", ui-monospace, monospace;
 }
+
+:root {
+  --charcoal: #1a1a18;
+  --wood: #5c3d2e;
+  --ember: #e8721c;
+  --amber: #f5a623;
+  --cream: #f5f0e8;
+  --smoke: #2d2d2a;
+  --ash: #888880;
+}
+
+@font-face {
+  font-family: "Courier New Cyr";
+  src: local("Courier New"), local("CourierNew");
+  font-display: swap;
+}
+
+html, body {
+  background: var(--charcoal);
+  color: var(--cream);
+  font-family: var(--font-mono);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Brand utilities */
+.font-hand { font-family: var(--font-hand); }
+.bg-charcoal { background: var(--charcoal); }
+.bg-wood { background: var(--wood); }
+.bg-ember { background: var(--ember); }
+.bg-amber { background: var(--amber); }
+.bg-cream { background: var(--cream); }
+.bg-smoke { background: var(--smoke); }
+.text-charcoal { color: var(--charcoal); }
+.text-ember { color: var(--ember); }
+.text-amber { color: var(--amber); }
+.text-cream { color: var(--cream); }
+.text-ash { color: var(--ash); }
+.border-ember { border-color: var(--ember); }
+.border-wood { border-color: var(--wood); }
+
+/* Ember button */
+.btn-ember {
+  display: inline-block;
+  background: var(--ember);
+  color: #fff;
+  padding: 0.85rem 1.75rem;
+  font-family: var(--font-mono);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid var(--ember);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-ember:hover {
+  background: transparent;
+  color: var(--ember);
+}
+
+.btn-outline {
+  display: inline-block;
+  background: transparent;
+  color: var(--cream);
+  padding: 0.85rem 1.75rem;
+  font-family: var(--font-mono);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid var(--cream);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-outline:hover {
+  background: var(--cream);
+  color: var(--charcoal);
+}
+
+/* Fade-in on scroll */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Ember underline on hover */
+.link-ember {
+  position: relative;
+  text-decoration: none;
+}
+.link-ember::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -2px; height: 2px;
+  width: 0;
+  background: var(--ember);
+  transition: width 0.3s ease;
+}
+.link-ember:hover::after { width: 100%; }

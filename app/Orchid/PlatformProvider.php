@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Orchid;
 
+use App\Models\Reservation;
 use Orchid\Platform\Dashboard;
 use Orchid\Platform\ItemPermission;
 use Orchid\Platform\OrchidServiceProvider;
@@ -12,58 +13,47 @@ use Orchid\Support\Color;
 
 class PlatformProvider extends OrchidServiceProvider
 {
-    /**
-     * Bootstrap the application services.
-     *
-     * @param Dashboard $dashboard
-     *
-     * @return void
-     */
     public function boot(Dashboard $dashboard): void
     {
         parent::boot($dashboard);
-
-        // ...
     }
 
-    /**
-     * Register the application menu.
-     *
-     * @return Menu[]
-     */
     public function menu(): array
     {
         return [
-            Menu::make('Get Started')
-                ->icon('bs.book')
-                ->title('Navigation')
-                ->route(config('platform.index')),
+            Menu::make('Дашборд')
+                ->icon('bs.speedometer2')
+                ->route(config('platform.index'))
+                ->title('На Угле'),
 
-            Menu::make('Sample Screen')
-                ->icon('bs.collection')
-                ->route('platform.example')
-                ->badge(fn () => 6),
+            Menu::make('Бронирования')
+                ->icon('bs.calendar-check')
+                ->route('platform.reservations')
+                ->badge(fn () => Reservation::new()->count() ?: null, Color::DANGER),
 
-            Menu::make('Form Elements')
-                ->icon('bs.card-list')
-                ->route('platform.example.fields')
-                ->active('*/examples/form/*'),
+            Menu::make('Hero-слайдер')
+                ->icon('bs.images')
+                ->route('platform.hero'),
 
-            Menu::make('Layouts Overview')
-                ->icon('bs.window-sidebar')
-                ->route('platform.example.layouts'),
+            Menu::make('Меню')
+                ->icon('bs.menu-button-wide')
+                ->title('Контент')
+                ->list([
+                    Menu::make('Категории')->icon('bs.tags')->route('platform.menu.categories'),
+                    Menu::make('Блюда')->icon('bs.egg-fried')->route('platform.menu.items'),
+                ]),
 
-            Menu::make('Grid System')
-                ->icon('bs.columns-gap')
-                ->route('platform.example.grid'),
+            Menu::make('Галерея')
+                ->icon('bs.camera')
+                ->route('platform.gallery'),
 
-            Menu::make('Charts')
-                ->icon('bs.bar-chart')
-                ->route('platform.example.charts'),
+            Menu::make('Шеф-повар')
+                ->icon('bs.person-badge')
+                ->route('platform.chef'),
 
-            Menu::make('Cards')
-                ->icon('bs.card-text')
-                ->route('platform.example.cards')
+            Menu::make('Настройки сайта')
+                ->icon('bs.gear')
+                ->route('platform.settings')
                 ->divider(),
 
             Menu::make(__('Users'))
@@ -75,28 +65,10 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make(__('Roles'))
                 ->icon('bs.shield')
                 ->route('platform.systems.roles')
-                ->permission('platform.systems.roles')
-                ->divider(),
-
-            Menu::make('Documentation')
-                ->title('Docs')
-                ->icon('bs.box-arrow-up-right')
-                ->url('https://orchid.software/en/docs')
-                ->target('_blank'),
-
-            Menu::make('Changelog')
-                ->icon('bs.box-arrow-up-right')
-                ->url('https://github.com/orchidsoftware/platform/blob/master/CHANGELOG.md')
-                ->target('_blank')
-                ->badge(fn () => Dashboard::version(), Color::DARK),
+                ->permission('platform.systems.roles'),
         ];
     }
 
-    /**
-     * Register permissions for the application.
-     *
-     * @return ItemPermission[]
-     */
     public function permissions(): array
     {
         return [

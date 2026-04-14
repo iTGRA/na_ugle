@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'restaurantName' => config('app.name'),
-    ]);
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/menu', [MenuController::class, 'index'])->name('menu');
+Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');

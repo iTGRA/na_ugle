@@ -34,7 +34,7 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-body { font-size: 18px; line-height: 1.55; }
+body { font-size: 16px; line-height: 1.55; }
 
 /* Type scale */
 .t-label {
@@ -44,12 +44,12 @@ body { font-size: 18px; line-height: 1.55; }
   font-weight: 700;
   line-height: 1;
 }
-.t-small { font-size: 14px; line-height: 1.55; }
-.t-body { font-size: 18px; line-height: 1.55; }
-.t-body-large { font-size: clamp(1.125rem, 1.6vw, 1.35rem); line-height: 1.55; }
-.t-h3 { font-size: clamp(1.35rem, 2.6vw, 1.9rem); font-weight: 700; line-height: 1.15; }
-.t-h2 { font-size: clamp(2.25rem, 6vw, 4.5rem); font-weight: 700; line-height: 0.98; letter-spacing: -0.01em; }
-.t-h1 { font-size: clamp(3.5rem, 11vw, 9.5rem); font-weight: 700; line-height: 0.9; letter-spacing: -0.02em; }
+.t-small { font-size: 13px; line-height: 1.55; }
+.t-body { font-size: 16px; line-height: 1.55; }
+.t-body-large { font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.55; }
+.t-h3 { font-size: clamp(1.15rem, 1.8vw, 1.4rem); font-weight: 700; line-height: 1.2; }
+.t-h2 { font-size: clamp(1.5rem, 3.4vw, 2.5rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.01em; }
+.t-h1 { font-size: clamp(2rem, 5.2vw, 4rem); font-weight: 700; line-height: 1; letter-spacing: -0.015em; }
 
 /* Surfaces */
 .bg-paper { background: var(--paper); }

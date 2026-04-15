@@ -58,7 +58,7 @@ export default function MenuHitsSection({ items = [], menuPdf }) {
 
                 {menuPdf && (
                     <div className="mt-16 text-center">
-                        <a href={menuPdf} target="_blank" rel="noopener" download className="cta">
+                        <a href={menuPdf} target="_blank" rel="noopener" download className="btn">
                             ↓ Скачать меню
                         </a>
                     </div>

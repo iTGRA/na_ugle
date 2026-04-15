@@ -68,19 +68,19 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
                     <p className="t-body-large text-muted mb-10">
                         Еда на углях, собственные колбасы и домашние соусы. Если хотите забрать меню с собой — скачайте PDF.
                     </p>
-                    <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+                    <div className="flex flex-wrap items-center gap-4">
                         {menuPdf && (
-                            <a href={menuPdf} target="_blank" rel="noopener" download className="cta">
+                            <a href={menuPdf} target="_blank" rel="noopener" download className="btn">
                                 ↓ Скачать меню PDF
                             </a>
                         )}
                         {barMenuPdf && (
-                            <a href={barMenuPdf} target="_blank" rel="noopener" download className="cta-plain">
+                            <a href={barMenuPdf} target="_blank" rel="noopener" download className="btn-secondary">
                                 Барная карта
                             </a>
                         )}
                         {wineCardPdf && (
-                            <a href={wineCardPdf} target="_blank" rel="noopener" download className="cta-plain">
+                            <a href={wineCardPdf} target="_blank" rel="noopener" download className="btn-secondary">
                                 Винная карта
                             </a>
                         )}

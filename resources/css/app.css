@@ -168,6 +168,77 @@ a.link-hover:hover,
   border-color: #ffffff;
 }
 
+/* Neo-brutalist primary button — white fill, ink border, hard offset shadow */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55em;
+  padding: 14px 28px;
+  background: #ffffff;
+  color: var(--ink);
+  border: 2.5px solid var(--ink);
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 5px 5px 0 var(--ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+}
+.btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.btn:active {
+  transform: translate(5px, 5px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+/* Neo-brutalist secondary — transparent fill, fills on hover */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55em;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--ink);
+  border: 2.5px solid var(--ink);
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 5px 5px 0 var(--ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+}
+.btn-secondary:hover {
+  background: var(--ink);
+  color: var(--paper);
+  transform: translate(2px, 2px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.btn-secondary:active {
+  transform: translate(5px, 5px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+/* Override the global a-tag border-bottom for buttons */
+a.btn, a.btn-secondary {
+  border-bottom-color: var(--ink) !important;
+}
+
 /* Form fields — inverted-context minimal */
 .field {
   width: 100%;

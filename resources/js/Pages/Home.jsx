@@ -24,15 +24,15 @@ export default function Home({ settings = {}, heroSlides = [], featuredItems = [
                     slides={heroSlides}
                     slogan={settings.hero_slogan}
                     description={settings.hero_description}
-                    durnyashaQuote={settings.durnyasha_quote}
                 />
                 <ManifestoSection
                     headline={settings.manifesto_headline}
                     text={settings.manifesto_text}
+                    durnyashaQuote={settings.durnyasha_quote}
                     barMenuPdf={settings.bar_menu_pdf}
                     wineCardPdf={settings.wine_card_pdf}
                 />
-                <GallerySection photos={atmospherePhotos} />
+                <GallerySection photos={atmospherePhotos} instagramUrl={settings.instagram_url} />
                 <MenuHitsSection items={featuredItems} menuPdf={settings.menu_pdf} />
                 <ChefSection chef={chef} teamPhotos={teamPhotos} />
                 <ChefPicksSection items={chefPicks} />

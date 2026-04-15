@@ -1,36 +1,42 @@
-import { useRef } from 'react';
-
-export default function GallerySection({ photos = [] }) {
-    const scrollRef = useRef(null);
+export default function GallerySection({ photos = [], instagramUrl, headline, label }) {
     if (photos.length === 0) return null;
 
-    const scroll = (dir) => {
-        if (!scrollRef.current) return;
-        scrollRef.current.scrollBy({ left: dir * window.innerWidth * 0.7, behavior: 'smooth' });
-    };
-
     return (
-        <section id="gallery" className="section bg-paper overflow-hidden">
-            <div className="shell flex items-end justify-between mb-10">
-                <h2 className="t-h2">Атмосфера</h2>
-                <div className="hidden md:flex gap-6">
-                    <button onClick={() => scroll(-1)} className="t-label link-hover">← ПРЕД</button>
-                    <button onClick={() => scroll(1)} className="t-label link-hover">СЛЕД →</button>
+        <section id="gallery" className="section bg-paper">
+            <div className="shell">
+                {/* Heading */}
+                <div className="max-w-3xl mb-12 md:mb-16">
+                    <div className="t-label text-muted mb-4">{label || 'Атмосфера'}</div>
+                    <h2 className="t-h2" style={{ whiteSpace: 'pre-line' }}>
+                        {headline || 'Наслаждаемся закатами\nв нашей атмосфере'}
+                    </h2>
                 </div>
-            </div>
-            <div
-                ref={scrollRef}
-                className="no-scrollbar flex gap-6 overflow-x-auto pb-4 px-6 snap-x snap-mandatory"
-            >
-                {photos.map((p) => (
-                    <figure
-                        key={p.id}
-                        className="flex-none snap-center photo-frame"
-                        style={{ width: '80vw', maxWidth: '620px', height: '70vh', minHeight: '420px' }}
-                    >
-                        <img src={p.photo} alt={p.alt || ''} loading="lazy" />
-                    </figure>
-                ))}
+
+                {/* Editorial masonry — CSS columns flow */}
+                <div
+                    className="columns-1 sm:columns-2 lg:columns-3 gap-4 md:gap-6"
+                    style={{ columnFill: 'balance' }}
+                >
+                    {photos.map((p) => (
+                        <figure key={p.id} className="break-inside-avoid mb-4 md:mb-6 overflow-hidden bg-ink">
+                            <img
+                                src={p.photo}
+                                alt={p.alt || ''}
+                                loading="lazy"
+                                className="w-full h-auto block transition-transform duration-700 hover:scale-[1.03]"
+                            />
+                        </figure>
+                    ))}
+                </div>
+
+                {/* Footer link to Instagram if provided */}
+                {instagramUrl && (
+                    <div className="mt-12 md:mt-16 text-center">
+                        <a href={instagramUrl} target="_blank" rel="noopener" className="cta-plain">
+                            Больше — в Instagram
+                        </a>
+                    </div>
+                )}
             </div>
         </section>
     );

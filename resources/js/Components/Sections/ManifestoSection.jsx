@@ -1,4 +1,4 @@
-export default function ManifestoSection({ headline, text, barMenuPdf, wineCardPdf }) {
+export default function ManifestoSection({ headline, text, durnyashaQuote, barMenuPdf, wineCardPdf }) {
     return (
         <section id="about" className="section bg-paper">
             <div className="shell grid md:grid-cols-[1.1fr_1fr] gap-12 md:gap-20 items-start">
@@ -7,6 +7,11 @@ export default function ManifestoSection({ headline, text, barMenuPdf, wineCardP
                 </h2>
                 <div>
                     <p className="t-body-large">{text}</p>
+                    {durnyashaQuote && (
+                        <p className="t-small text-muted mt-8" style={{ fontStyle: 'italic' }}>
+                            {durnyashaQuote}
+                        </p>
+                    )}
                     {(barMenuPdf || wineCardPdf) && (
                         <div className="mt-12 flex flex-wrap gap-x-10 gap-y-3 t-label">
                             {barMenuPdf && <a href={barMenuPdf} target="_blank" rel="noopener" className="link-underline">Барное меню</a>}

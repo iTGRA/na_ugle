@@ -134,11 +134,6 @@ export default function HeroSection({ slides = [], slogan, description, durnyash
                             Забронировать
                         </a>
                     </div>
-                    {durnyashaQuote && (
-                        <p className="t-small text-white/55 mt-8 max-w-md" style={{ fontStyle: 'italic' }}>
-                            {durnyashaQuote}
-                        </p>
-                    )}
                 </div>
             </div>
 

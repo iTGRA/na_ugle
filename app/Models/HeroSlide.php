@@ -14,7 +14,7 @@ class HeroSlide extends Model
     use HasFactory, AsSource, Filterable, Attachable;
 
     protected $fillable = [
-        'photo', 'title', 'subtitle', 'cta_text', 'cta_url', 'sort_order', 'is_active',
+        'photo', 'title', 'slogan', 'subtitle', 'cta_text', 'cta_url', 'sort_order', 'is_active',
     ];
 
     protected $casts = [

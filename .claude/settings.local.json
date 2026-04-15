@@ -147,7 +147,8 @@
       "Bash(sed -i '' 's|->route\\('\\\\''platform.hero.edit'\\\\'', $s\\)|->route\\('\\\\''platform.hero.edit.existing'\\\\'', $s\\)|' app/Orchid/Screens/Hero/HeroSlideListScreen.php)",
       "Bash(sed -i '' 's|->route\\('\\\\''platform.menu.categories.edit'\\\\'', $c\\)|->route\\('\\\\''platform.menu.categories.edit.existing'\\\\'', $c\\)|' app/Orchid/Screens/Menu/MenuCategoryListScreen.php)",
       "Bash(sed -i '' 's|->route\\('\\\\''platform.menu.items.edit'\\\\'', $i\\)|->route\\('\\\\''platform.menu.items.edit.existing'\\\\'', $i\\)|g' app/Orchid/Screens/Menu/MenuItemListScreen.php)",
-      "Bash(grep -n \"platform\\\\..*edit\" app/Orchid/Screens/Gallery/*.php app/Orchid/Screens/Hero/*.php app/Orchid/Screens/Menu/*.php app/Orchid/Screens/Reservation/*.php)"
+      "Bash(grep -n \"platform\\\\..*edit\" app/Orchid/Screens/Gallery/*.php app/Orchid/Screens/Hero/*.php app/Orchid/Screens/Menu/*.php app/Orchid/Screens/Reservation/*.php)",
+      "Bash(scp /tmp/migration_add_slogan.php na-ugle:/var/www/na-ugle/database/migrations/2026_04_15_120000_add_slogan_to_hero_slides.php)"
     ]
   }
 }

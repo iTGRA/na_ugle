@@ -19,8 +19,8 @@ class SiteSettingsScreen extends Screen
     public const KEYS = [
         // Main
         'is_open', 'announcement_text', 'address', 'phone', 'work_hours', 'season',
-        // Hero + Manifesto
-        'hero_slogan', 'hero_description', 'durnyasha_quote',
+        // Manifesto + Durnyasha (Hero slogans now per-slide in /admin/hero-slides)
+        'durnyasha_quote',
         'manifesto_headline', 'manifesto_text',
         // Section headlines (editable)
         'gallery_headline', 'hits_headline', 'chef_picks_headline', 'contacts_headline',
@@ -95,15 +95,7 @@ class SiteSettingsScreen extends Screen
                         ->placeholder('Май — Сентябрь'),
                 ]),
 
-                'Hero и Манифест' => Layout::rows([
-                    TextArea::make('settings.hero_slogan')
-                        ->title('Hero: слоган')
-                        ->rows(4)
-                        ->help('Многострочный — каждая строка с новой. Огромным шрифтом поверх hero-фото.'),
-                    TextArea::make('settings.hero_description')
-                        ->title('Hero: описание')
-                        ->rows(4)
-                        ->help('Подзаголовок под слоганом. Дублируется как fallback, если у активного слайда нет своего subtitle.'),
+                'Манифест' => Layout::rows([
                     TextArea::make('settings.manifesto_headline')
                         ->title('Манифест: заголовок')
                         ->rows(3)

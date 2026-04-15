@@ -19,12 +19,7 @@ export default function Home({ settings = {}, heroSlides = [], featuredItems = [
                 <Header variant="solid" phone={settings.phone} address={settings.address} />
             </div>
             <main>
-                <HeroSection
-                    slides={heroSlides}
-                    slogan={settings.hero_slogan}
-                    description={settings.hero_description}
-                    phone={settings.phone}
-                />
+                <HeroSection slides={heroSlides} phone={settings.phone} />
                 <ManifestoSection
                     headline={settings.manifesto_headline}
                     text={settings.manifesto_text}

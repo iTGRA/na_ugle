@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 const AUTO_MS = 6000;
 
-export default function HeroSection({ slides = [], slogan, description, durnyashaQuote, phone }) {
+export default function HeroSection({ slides = [], phone }) {
     const [current, setCurrent] = useState(0);
     const [progress, setProgress] = useState(0);
     const [paused, setPaused] = useState(false);
@@ -113,14 +113,14 @@ export default function HeroSection({ slides = [], slogan, description, durnyash
                             {String(current + 1).padStart(2, '0')} / {String(count).padStart(2, '0')} · {active.title}
                         </div>
                     )}
-                    {slogan && (
+                    {active?.slogan && (
                         <h1 className="t-h1 text-white max-w-5xl" style={{ whiteSpace: 'pre-line' }}>
-                            {slogan}
+                            {active.slogan}
                         </h1>
                     )}
-                    {(description || active?.subtitle) && (
+                    {active?.subtitle && (
                         <p className="t-body-large text-white/85 max-w-2xl mt-6">
-                            {active?.subtitle || description}
+                            {active.subtitle}
                         </p>
                     )}
                     <div className="mt-8 flex flex-wrap items-stretch gap-x-4 gap-y-5 pointer-events-auto">

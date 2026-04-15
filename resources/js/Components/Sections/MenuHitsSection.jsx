@@ -28,8 +28,25 @@ export default function MenuHitsSection({ items = [], menuPdf }) {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
                     {items.map((i) => (
-                        <article key={i.id} className="group bg-white border border-ink p-3 pb-7 transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(10,10,8,0.12)]">
-                            <div className="aspect-[4/5] bg-ink overflow-hidden mb-5">
+                        <article
+                            key={i.id}
+                            className="group bg-white p-3 pb-7"
+                            style={{
+                                border: '2.5px solid var(--ink)',
+                                borderRadius: '10px',
+                                boxShadow: '6px 6px 0 var(--ink)',
+                                transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translate(2px, 2px)';
+                                e.currentTarget.style.boxShadow = '4px 4px 0 var(--ink)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translate(0, 0)';
+                                e.currentTarget.style.boxShadow = '6px 6px 0 var(--ink)';
+                            }}
+                        >
+                            <div className="aspect-[4/5] bg-ink overflow-hidden mb-5" style={{ borderRadius: '4px' }}>
                                 {i.photo ? (
                                     <img
                                         src={i.photo}

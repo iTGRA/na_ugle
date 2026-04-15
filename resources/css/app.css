@@ -316,8 +316,74 @@ a.link-hover:hover,
   box-shadow: 0 0 0 var(--ink);
 }
 
-a.btn, a.btn-secondary, a.btn-light, a.btn-light-secondary {
+a.btn, a.btn-secondary, a.btn-light, a.btn-light-secondary,
+a.btn-on-ink, a.btn-on-ink-secondary {
   border-bottom-color: currentColor !important;
+}
+
+/* Variants for inverted (ink) sections — paper border/shadow visible on dark */
+.btn-on-ink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55em;
+  padding: 14px 28px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2.5px solid var(--paper);
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 5px 5px 0 var(--paper);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+}
+.btn-on-ink:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 3px 3px 0 var(--paper);
+}
+.btn-on-ink:active {
+  transform: translate(5px, 5px);
+  box-shadow: 0 0 0 var(--paper);
+}
+
+.btn-on-ink-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55em;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--paper);
+  border: 2.5px solid var(--paper);
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 5px 5px 0 var(--paper);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+}
+.btn-on-ink-secondary:hover {
+  background: var(--paper);
+  color: var(--ink);
+  transform: translate(2px, 2px);
+  box-shadow: 3px 3px 0 var(--paper);
+}
+.btn-on-ink-secondary:active {
+  transform: translate(5px, 5px);
+  box-shadow: 0 0 0 var(--paper);
 }
 
 /* Override the global a-tag border-bottom for buttons */

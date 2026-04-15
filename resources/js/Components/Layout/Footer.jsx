@@ -34,7 +34,7 @@ export default function Footer() {
                         <img
                             src="/images/logo-footer.svg"
                             alt="НА УГЛЕ"
-                            className="w-64 md:w-80 h-auto mb-6"
+                            className="w-72 md:w-96 h-auto mb-6"
                         />
                         {address && (
                             <p className="t-body mb-2">{address}</p>
@@ -47,14 +47,21 @@ export default function Footer() {
                         {phoneTel && (
                             <a
                                 href={phoneTel}
-                                className="btn-light"
-                                style={{ fontSize: '15px', padding: '14px 28px' }}
+                                className="btn-on-ink"
+                                style={{ minWidth: '260px' }}
                             >
                                 {phone}
                             </a>
                         )}
                         {menu_pdf && (
-                            <a href={menu_pdf} target="_blank" rel="noopener" download className="btn-light-secondary">
+                            <a
+                                href={menu_pdf}
+                                target="_blank"
+                                rel="noopener"
+                                download
+                                className="btn-on-ink-secondary"
+                                style={{ minWidth: '260px' }}
+                            >
                                 Скачать меню
                             </a>
                         )}

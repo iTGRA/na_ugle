@@ -139,7 +139,8 @@
       "Bash(sed -i '' 's|src=\"/images/logo.svg\"|src=\"/images/logo-header.svg\"|g' resources/js/Pages/Menu.jsx)",
       "Bash(sed -i '' 's|className=\"h-10 w-auto\" /></Link>|className=\"h-12 w-auto\" /></Link>|' resources/js/Pages/Menu.jsx)",
       "Bash(/tmp/node_modules/.bin/svgo \"/Users/ilyakhalzov/Downloads/На угле согл-11.svg\" -o /tmp/logo-footer.svg --multipass --precision=1)",
-      "Bash(grep -oE \"#[0-9a-fA-F]{3,6}\" /tmp/logo-footer.svg)"
+      "Bash(grep -oE \"#[0-9a-fA-F]{3,6}\" /tmp/logo-footer.svg)",
+      "Bash(/tmp/node_modules/.bin/svgo \"/Users/ilyakhalzov/Downloads/На угле согл-11.svg\" -o /tmp/logo-footer-new.svg --multipass --precision=1)"
     ]
   }
 }

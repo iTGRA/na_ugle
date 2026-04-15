@@ -31,34 +31,44 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
         <div className="bg-paper text-ink min-h-screen">
             <Head title="Меню" />
 
-            {/* Top bar */}
-            <header className="border-b border-hair sticky top-0 bg-paper/95 backdrop-blur-sm z-30">
+            {/* Brand row — scrolls away with the page */}
+            <div className="bg-paper border-b border-hair">
                 <div className="shell py-5 flex items-center justify-between gap-6">
                     <Link href="/"><img src="/images/logo-header.svg" alt="НА УГЛЕ" className="h-12 w-auto" /></Link>
-                    <div className="flex items-center gap-6">
-                        {menuPdf && (
-                            <a href={menuPdf} target="_blank" rel="noopener" download className="hidden md:inline-flex items-center gap-2 t-label link-underline">
-                                ↓ Скачать PDF
-                            </a>
-                        )}
-                        <Link href="/" className="t-label link-underline">← На главную</Link>
-                    </div>
+                    <Link href="/" className="t-label link-underline">← На главную</Link>
                 </div>
-                <nav className="border-t border-hair overflow-x-auto no-scrollbar">
-                    <div className="shell flex gap-8 py-4 whitespace-nowrap">
-                        {categories.map((c) => (
-                            <a
-                                key={c.slug}
-                                href={`#cat-${c.slug}`}
-                                className={`t-label transition-opacity ${activeSlug === c.slug ? '' : 'opacity-50 hover:opacity-100'}`}
-                                style={activeSlug === c.slug ? { borderBottom: '2px solid currentColor', paddingBottom: '4px' } : undefined}
-                            >
-                                {c.name}
-                            </a>
-                        ))}
+            </div>
+
+            {/* Category nav — sticky on scroll, with download button inside */}
+            <nav className="sticky top-0 z-30 bg-paper/95 backdrop-blur-sm border-b border-hair">
+                <div className="shell flex items-center gap-6 py-3">
+                    <div className="flex-1 overflow-x-auto no-scrollbar">
+                        <div className="flex gap-7 whitespace-nowrap">
+                            {categories.map((c) => (
+                                <a
+                                    key={c.slug}
+                                    href={`#cat-${c.slug}`}
+                                    className={`t-label transition-opacity ${activeSlug === c.slug ? '' : 'opacity-50 hover:opacity-100'}`}
+                                    style={activeSlug === c.slug ? { borderBottom: '2px solid currentColor', paddingBottom: '4px' } : undefined}
+                                >
+                                    {c.name}
+                                </a>
+                            ))}
+                        </div>
                     </div>
-                </nav>
-            </header>
+                    {menuPdf && (
+                        <a
+                            href={menuPdf}
+                            target="_blank"
+                            rel="noopener"
+                            download
+                            className="btn btn-sm flex-shrink-0"
+                        >
+                            ↓ Скачать меню
+                        </a>
+                    )}
+                </div>
+            </nav>
 
             {/* Intro */}
             <section className="shell py-16 md:py-24">

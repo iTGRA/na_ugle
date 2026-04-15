@@ -3,7 +3,7 @@ export default function ContactsSection({ settings }) {
     return (
         <section id="contacts" className="section bg-paper">
             <div className="shell grid md:grid-cols-[1fr_1.2fr] gap-12 md:gap-20">
-                <div>
+                <div className="min-w-0">
                     <div className="t-label text-muted mb-3">Контакты</div>
                     <h2 className="t-h2 mb-8">Как нас найти</h2>
                     {settings.address && (

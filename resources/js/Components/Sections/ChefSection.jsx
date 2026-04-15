@@ -3,7 +3,7 @@ export default function ChefSection({ chef, teamPhotos = [] }) {
     return (
         <section id="chef" className="section bg-paper">
             <div className="shell grid md:grid-cols-[1fr_1.1fr] gap-12 md:gap-20">
-                <div>
+                <div className="min-w-0">
                     <div className="aspect-[3/4] photo-frame mb-4">
                         {chef.photo ? (
                             <img src={chef.photo} alt={chef.name} loading="lazy" />
@@ -27,7 +27,7 @@ export default function ChefSection({ chef, teamPhotos = [] }) {
                         </div>
                     )}
                 </div>
-                <div>
+                <div className="min-w-0">
                     <div className="t-label text-muted mb-3">Шеф-повар</div>
                     <h2 className="t-h2 mb-2">{chef.name}</h2>
                     {chef.position && (
@@ -45,12 +45,11 @@ export default function ChefSection({ chef, teamPhotos = [] }) {
                     )}
 
                     {chef.facts && Object.keys(chef.facts).length > 0 && (
-                        <dl className="grid gap-2 mb-8">
+                        <dl className="grid gap-5 mb-8">
                             {Object.entries(chef.facts).map(([k, v]) => (
-                                <div key={k} className="leader t-body">
-                                    <dt className="leader-name t-label">{k}</dt>
-                                    <span className="leader-dots" />
-                                    <dd className="leader-price font-normal">{v}</dd>
+                                <div key={k} className="border-t border-hair pt-3">
+                                    <dt className="t-label text-muted mb-1">{k}</dt>
+                                    <dd className="t-body">{v}</dd>
                                 </div>
                             ))}
                         </dl>

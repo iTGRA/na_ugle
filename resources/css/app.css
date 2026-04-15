@@ -32,9 +32,13 @@ html, body {
   font-feature-settings: "ss01" on;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-body { font-size: 16px; line-height: 1.55; }
+body { font-size: 16px; line-height: 1.55; overflow-wrap: break-word; }
+
+/* Защита для длинных моноширинных строк (русские слова длинной 10+ символов) */
+h1, h2, h3, p, dd, dt, blockquote, li, a { overflow-wrap: break-word; }
 
 /* Type scale */
 .t-label {

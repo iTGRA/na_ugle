@@ -125,7 +125,19 @@
       "Bash(python3 -c \"import fitz; print\\('fitz version:', fitz.__doc__\\)\")",
       "Bash(scp \"/Users/ilyakhalzov/Downloads/Telegram Desktop/Меню «На угле» 2.pdf\" na-ugle:/tmp/menu.pdf)",
       "Bash(scp database/seeders/MenuItemsSeeder.php na-ugle:/var/www/na-ugle/database/seeders/MenuItemsSeeder.php)",
-      "Bash(scp \"/Users/ilyakhalzov/Downloads/Telegram Desktop/Меню «На угле» 2.pdf\" na-ugle:/tmp/menu-na-ugle.pdf)"
+      "Bash(scp \"/Users/ilyakhalzov/Downloads/Telegram Desktop/Меню «На угле» 2.pdf\" na-ugle:/tmp/menu-na-ugle.pdf)",
+      "Bash(npm install:*)",
+      "Bash(/tmp/node_modules/.bin/svgo /Users/ilyakhalzov/Downloads/logo_main.svg -o /tmp/logo_main.optimized.svg --multipass)",
+      "Bash(/tmp/node_modules/.bin/svgo /Users/ilyakhalzov/Downloads/logo_main.svg -o /tmp/logo_main.tighter.svg --multipass --precision=1)",
+      "Bash(grep -oE \"#[0-9a-fA-F]{3,6}|rgb\\\\\\([^\\)]+\\\\\\)\" /tmp/logo_main.optimized.svg)",
+      "Bash(grep -oE \"#[0-9a-fA-F]{3,6}|rgb\\\\\\([^\\)]+\\\\\\)\" /tmp/logo_main.tighter.svg)",
+      "Bash(scp /Users/ilyakhalzov/Na_Ugle_Project/public/images/logo.svg /Users/ilyakhalzov/Na_Ugle_Project/public/images/logo-light.svg na-ugle:/var/www/na-ugle/public/images/)",
+      "Bash(/tmp/node_modules/.bin/svgo \"/Users/ilyakhalzov/Downloads/Logo Heder.svg\" -o /tmp/logo-header.svg --multipass --precision=1)",
+      "Bash(/tmp/node_modules/.bin/svgo \"/Users/ilyakhalzov/Downloads/cow_vert.svg\" -o /tmp/cow-vert.svg --multipass --precision=1)",
+      "Bash(grep -oE \"#[0-9a-fA-F]{3,6}\" /tmp/logo-header.svg)",
+      "Bash(grep -oE \"#[0-9a-fA-F]{3,6}\" /tmp/cow-vert.svg)",
+      "Bash(sed -i '' 's|src=\"/images/logo.svg\"|src=\"/images/logo-header.svg\"|g' resources/js/Pages/Menu.jsx)",
+      "Bash(sed -i '' 's|className=\"h-10 w-auto\" /></Link>|className=\"h-12 w-auto\" /></Link>|' resources/js/Pages/Menu.jsx)"
     ]
   }
 }

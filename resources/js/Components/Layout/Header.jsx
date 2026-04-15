@@ -9,7 +9,7 @@ const NAV = [
     { href: '#contacts', label: 'Контакты' },
 ];
 
-export default function Header({ variant = 'transparent' }) {
+export default function Header({ variant = 'transparent', phone = '', address = '' }) {
     const [scrolled, setScrolled] = useState(false);
     const [hovered, setHovered] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -73,6 +73,24 @@ export default function Header({ variant = 'transparent' }) {
                             </a>
                         ))}
                     </nav>
+                    <div className="hidden lg:flex flex-col items-end leading-[1.15] text-right" style={{ color }}>
+                        {phone && (
+                            <a
+                                href={`tel:${phone.replace(/\D/g, '')}`}
+                                className="t-label"
+                                style={{ color, borderBottom: '1px solid transparent', transition: 'border-bottom-color 0.2s ease' }}
+                                onMouseEnter={(e) => { e.currentTarget.style.borderBottomColor = 'currentColor'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.borderBottomColor = 'transparent'; }}
+                            >
+                                {phone}
+                            </a>
+                        )}
+                        {address && (
+                            <span className="t-small mt-0.5" style={{ opacity: 0.7 }}>
+                                {address}
+                            </span>
+                        )}
+                    </div>
                     <a
                         href="#reservation"
                         className="hidden md:inline-block cta-plain"

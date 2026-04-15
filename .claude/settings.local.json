@@ -140,7 +140,14 @@
       "Bash(sed -i '' 's|className=\"h-10 w-auto\" /></Link>|className=\"h-12 w-auto\" /></Link>|' resources/js/Pages/Menu.jsx)",
       "Bash(/tmp/node_modules/.bin/svgo \"/Users/ilyakhalzov/Downloads/На угле согл-11.svg\" -o /tmp/logo-footer.svg --multipass --precision=1)",
       "Bash(grep -oE \"#[0-9a-fA-F]{3,6}\" /tmp/logo-footer.svg)",
-      "Bash(/tmp/node_modules/.bin/svgo \"/Users/ilyakhalzov/Downloads/На угле согл-11.svg\" -o /tmp/logo-footer-new.svg --multipass --precision=1)"
+      "Bash(/tmp/node_modules/.bin/svgo \"/Users/ilyakhalzov/Downloads/На угле согл-11.svg\" -o /tmp/logo-footer-new.svg --multipass --precision=1)",
+      "Bash(grep -n \"platform\\\\..*\\\\.edit'.*\\\\\\\\\\\\$\" app/Orchid/Screens/**/*.php)",
+      "Bash(grep -n \"->route\\('platform\" app/Orchid/Screens/**/*.php)",
+      "Bash(sed -i '' 's|->route\\('\\\\''platform.gallery.edit'\\\\'', $p\\)|->route\\('\\\\''platform.gallery.edit.existing'\\\\'', $p\\)|' app/Orchid/Screens/Gallery/GalleryListScreen.php)",
+      "Bash(sed -i '' 's|->route\\('\\\\''platform.hero.edit'\\\\'', $s\\)|->route\\('\\\\''platform.hero.edit.existing'\\\\'', $s\\)|' app/Orchid/Screens/Hero/HeroSlideListScreen.php)",
+      "Bash(sed -i '' 's|->route\\('\\\\''platform.menu.categories.edit'\\\\'', $c\\)|->route\\('\\\\''platform.menu.categories.edit.existing'\\\\'', $c\\)|' app/Orchid/Screens/Menu/MenuCategoryListScreen.php)",
+      "Bash(sed -i '' 's|->route\\('\\\\''platform.menu.items.edit'\\\\'', $i\\)|->route\\('\\\\''platform.menu.items.edit.existing'\\\\'', $i\\)|g' app/Orchid/Screens/Menu/MenuItemListScreen.php)",
+      "Bash(grep -n \"platform\\\\..*edit\" app/Orchid/Screens/Gallery/*.php app/Orchid/Screens/Hero/*.php app/Orchid/Screens/Menu/*.php app/Orchid/Screens/Reservation/*.php)"
     ]
   }
 }

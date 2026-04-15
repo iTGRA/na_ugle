@@ -42,7 +42,7 @@ class GalleryListScreen extends Screen
                 TD::make('sort_order', '№'),
                 TD::make('is_active', 'Активна')->render(fn (GalleryPhoto $p) => $p->is_active ? '✅' : '—'),
                 TD::make('actions', '')->render(fn (GalleryPhoto $p) =>
-                    Link::make('Редактировать')->route('platform.gallery.edit', $p)),
+                    Link::make('Редактировать')->route('platform.gallery.edit.existing', $p)),
             ]),
         ];
     }

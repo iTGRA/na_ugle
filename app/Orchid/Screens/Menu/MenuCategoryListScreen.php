@@ -29,7 +29,7 @@ class MenuCategoryListScreen extends Screen
                 TD::make('sort_order', '№')->width('60px'),
                 TD::make('icon', 'Иконка')->width('80px'),
                 TD::make('name', 'Название')->render(fn (MenuCategory $c) =>
-                    Link::make($c->name)->route('platform.menu.categories.edit', $c)),
+                    Link::make($c->name)->route('platform.menu.categories.edit.existing', $c)),
                 TD::make('items_count', 'Блюд'),
                 TD::make('is_active', 'Активна')->render(fn (MenuCategory $c) => $c->is_active ? '✅' : '—'),
             ]),

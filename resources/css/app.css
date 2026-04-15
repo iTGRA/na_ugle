@@ -321,6 +321,30 @@ a.btn-on-ink, a.btn-on-ink-secondary {
   border-bottom-color: currentColor !important;
 }
 
+/* Brutalist chips for menu item flags (Хит, Шеф, etc.) */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 5px 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  box-shadow: 3px 3px 0 var(--ink);
+  white-space: nowrap;
+  line-height: 1;
+  user-select: none;
+}
+.chip-hit { background: #F5C842; }                       /* sunflower yellow — bright */
+.chip-chef { background: #E8721C; color: #fff; }         /* ember orange — Andrey's signature */
+.chip-new { background: #B8E04E; }                       /* leaf green — for «новинка» */
+.chip-spicy { background: #E54B2A; color: #fff; }        /* hot red — for «острое» */
+
 /* Variants for inverted (ink) sections — paper border/shadow visible on dark */
 .btn-on-ink {
   display: inline-flex;

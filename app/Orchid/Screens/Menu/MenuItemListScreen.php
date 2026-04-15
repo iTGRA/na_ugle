@@ -102,7 +102,7 @@ class MenuItemListScreen extends Screen
                         : '<div style="width:56px;height:42px;background:#f0f0f0;border:1px dashed #ccc;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888">нет</div>'
                 ),
                 TD::make('name', 'Название')->render(fn (MenuItem $i) =>
-                    Link::make($i->name)->route('platform.menu.items.edit', $i)),
+                    Link::make($i->name)->route('platform.menu.items.edit.existing', $i)),
                 TD::make('category', 'Категория')->render(fn (MenuItem $i) => $i->category?->name ?? '—'),
                 TD::make('price', 'Цена')->align(TD::ALIGN_RIGHT)->render(fn (MenuItem $i) =>
                     $i->price > 0 ? '<b>'.$i->price.' ₽</b>' : '<span style="color:#c33">— ₽</span>'),
@@ -110,7 +110,7 @@ class MenuItemListScreen extends Screen
                 TD::make('is_featured', 'Хит')->align(TD::ALIGN_CENTER)->render(fn (MenuItem $i) => $i->is_featured ? '⭐' : ''),
                 TD::make('is_chef_pick', 'Шеф')->align(TD::ALIGN_CENTER)->render(fn (MenuItem $i) => $i->is_chef_pick ? '👨‍🍳' : ''),
                 TD::make('actions', '')->align(TD::ALIGN_RIGHT)->render(fn (MenuItem $i) =>
-                    Link::make('Редактировать')->route('platform.menu.items.edit', $i)->icon('bs.pencil')->type(Color::PRIMARY)
+                    Link::make('Редактировать')->route('platform.menu.items.edit.existing', $i)->icon('bs.pencil')->type(Color::PRIMARY)
                 ),
             ]),
         ];

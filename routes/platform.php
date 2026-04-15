@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Admin\SettingsFileController;
 use App\Orchid\Screens\Chef\ChefProfileScreen;
 use App\Orchid\Screens\DashboardScreen;
 use App\Orchid\Screens\Examples\ExampleActionsScreen;
@@ -63,6 +64,8 @@ Route::screen('reservations/{reservation}/edit', ReservationEditScreen::class)->
 
 // Settings
 Route::screen('settings', SiteSettingsScreen::class)->name('platform.settings');
+Route::post('settings/upload-pdf/{key}', [SettingsFileController::class, 'uploadPdf'])->name('platform.settings.upload-pdf');
+Route::post('settings/delete-pdf/{key}', [SettingsFileController::class, 'deletePdf'])->name('platform.settings.delete-pdf');
 
 // Platform > Profile
 Route::screen('profile', UserProfileScreen::class)

@@ -158,18 +158,7 @@ class SiteSettingsScreen extends Screen
                         ->placeholder('https://t.me/...'),
                 ]),
 
-                'PDF меню' => Layout::rows([
-                    Input::make('settings.menu_pdf')
-                        ->title('URL основного меню PDF')
-                        ->placeholder('/files/menu-na-ugle.pdf')
-                        ->help('Кнопка «Скачать меню» в блоке «Хиты с хоспера», на странице /menu и в футере. Загрузите PDF на сервер (попросите разработчика) и впишите путь — например /files/menu.pdf.'),
-                    Input::make('settings.bar_menu_pdf')
-                        ->title('URL барной карты PDF')
-                        ->help('Появится кнопкой «Барная карта» в манифесте и на странице /menu.'),
-                    Input::make('settings.wine_card_pdf')
-                        ->title('URL винной карты PDF')
-                        ->help('Появится кнопкой «Винная карта» в манифесте и на странице /menu.'),
-                ]),
+                'PDF меню' => Layout::view('orchid.pdf-uploads'),
 
                 'Уведомления (Telegram)' => Layout::rows([
                     Input::make('settings.notification_email')

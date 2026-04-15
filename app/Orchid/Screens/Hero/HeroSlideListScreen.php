@@ -35,7 +35,7 @@ class HeroSlideListScreen extends Screen
             Layout::table('slides', [
                 TD::make('sort_order', '№')->width('60px')->sort(),
                 TD::make('title', 'Заголовок')->render(fn (HeroSlide $s) =>
-                    Link::make($s->title ?: '—')->route('platform.hero.edit', $s)
+                    Link::make($s->title ?: '—')->route('platform.hero.edit.existing', $s)
                 ),
                 TD::make('subtitle', 'Подзаголовок'),
                 TD::make('is_active', 'Активен')->render(fn (HeroSlide $s) => $s->is_active ? '✅' : '—'),

@@ -6,8 +6,8 @@ use App\Models\HeroSlide;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\CheckBox;
+use Orchid\Screen\Fields\Cropper;
 use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\Picture;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
 use Orchid\Support\Facades\Layout;
@@ -40,7 +40,12 @@ class HeroSlideEditScreen extends Screen
     {
         return [
             Layout::rows([
-                Picture::make('slide.photo')->title('Фотография слайда')->targetRelativeUrl(),
+                Cropper::make('slide.photo')
+                    ->title('Фотография слайда')
+                    ->targetRelativeUrl()
+                    ->width(1920)
+                    ->height(1080)
+                    ->help('Загрузите файл (JPG/PNG/WebP). Идеальный размер 1920×1080. После загрузки можно подрезать. Замените картинку, кликнув по миниатюре.'),
                 Input::make('slide.title')->title('Заголовок')->required()->maxlength(200),
                 Input::make('slide.subtitle')->title('Подзаголовок')->maxlength(200),
                 Input::make('slide.cta_text')->title('Текст кнопки')->placeholder('Смотреть меню'),

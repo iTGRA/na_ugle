@@ -46,7 +46,7 @@ export default function MenuHitsSection({ items = [], menuPdf, headline }) {
                                 e.currentTarget.style.boxShadow = '6px 6px 0 var(--ink)';
                             }}
                         >
-                            <div className="aspect-[4/3] bg-ink overflow-hidden mb-5" style={{ borderRadius: '4px' }}>
+                            <div className="aspect-[4/3] bg-ink overflow-hidden mb-5 relative" style={{ borderRadius: '4px' }}>
                                 {i.photo ? (
                                     <img
                                         src={i.photo}
@@ -59,6 +59,10 @@ export default function MenuHitsSection({ items = [], menuPdf, headline }) {
                                         НА УГЛЕ
                                     </div>
                                 )}
+                                <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+                                    {i.is_chef_pick && <span className="chip chip-chef">👨‍🍳 Шеф</span>}
+                                    {i.is_featured && <span className="chip chip-hit">★ Хит</span>}
+                                </div>
                             </div>
                             <div className="px-1">
                                 {i.category && (

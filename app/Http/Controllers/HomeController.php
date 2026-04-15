@@ -92,6 +92,8 @@ class HomeController extends Controller
             'price' => $i->price,
             'photo' => $i->photo,
             'chef_comment' => $i->chef_comment,
+            'is_featured' => (bool) $i->is_featured,
+            'is_chef_pick' => (bool) $i->is_chef_pick,
             'category' => $i->category ? ['id' => $i->category->id, 'name' => $i->category->name, 'slug' => $i->category->slug] : null,
         ];
     }

@@ -27,6 +27,8 @@ class MenuController extends Controller
                         'description' => $i->description,
                         'price' => $i->price,
                         'photo' => $i->photo,
+                        'is_featured' => (bool) $i->is_featured,
+                        'is_chef_pick' => (bool) $i->is_chef_pick,
                     ])->all(),
                 ])
                 ->filter(fn ($c) => count($c['items']) > 0)

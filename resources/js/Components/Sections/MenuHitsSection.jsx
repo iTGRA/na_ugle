@@ -21,7 +21,7 @@ export default function MenuHitsSection({ items = [], menuPdf }) {
                         <div className="t-label text-muted mb-3">Меню</div>
                         <h2 className="t-h2">Хиты с хоспера</h2>
                     </div>
-                    <Link href="/menu" className="cta-plain">
+                    <Link href="/menu" className="btn-secondary btn-sm">
                         Полное меню
                     </Link>
                 </div>

@@ -88,8 +88,7 @@ export default function Header({ variant = 'transparent', phone = '', address = 
                     </div>
                     <a
                         href="#reservation"
-                        className="hidden md:inline-block cta-plain"
-                        style={{ color, borderBottomColor: color, transition: 'color 0.25s ease, border-bottom-color 0.25s ease' }}
+                        className="hidden md:inline-flex btn btn-sm"
                     >
                         Забронировать
                     </a>

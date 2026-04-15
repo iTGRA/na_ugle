@@ -123,14 +123,14 @@ export default function HeroSection({ slides = [], slogan, description, durnyash
                             {active?.subtitle || description}
                         </p>
                     )}
-                    <div className="mt-8 flex flex-wrap items-stretch gap-3 pointer-events-auto">
+                    <div className="mt-8 flex flex-wrap items-stretch gap-x-4 gap-y-5 pointer-events-auto">
                         <a
                             href={active?.cta_url || '#menu'}
-                            className="cta-filled"
+                            className="btn-light"
                         >
                             {active?.cta_text || 'Смотреть меню'}
                         </a>
-                        <a href="#reservation" className="cta-outline">
+                        <a href="#reservation" className="btn-light-secondary">
                             Забронировать
                         </a>
                     </div>

@@ -48,7 +48,7 @@ export default function HeroSection({ slides = [], slogan, description, durnyash
 
     return (
         <section
-            className="bg-paper p-5 md:p-[72px]"
+            className="bg-paper px-5 pb-5 md:px-[72px] md:pb-[72px]"
         >
             <div
                 className="relative w-full overflow-hidden bg-ink"

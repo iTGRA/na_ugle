@@ -35,7 +35,7 @@ export default function Header({ variant = 'transparent', phone = '', address = 
                     background: showSolid ? 'rgba(245,240,232,0.95)' : 'transparent',
                     backdropFilter: showSolid ? 'blur(10px)' : 'none',
                     WebkitBackdropFilter: showSolid ? 'blur(10px)' : 'none',
-                    borderBottom: showSolid ? '1px solid rgba(10,10,8,0.15)' : '1px solid transparent',
+                    borderBottom: 'none',
                     paddingTop: '18px',
                     paddingBottom: '18px',
                     transition: 'background 0.25s ease, backdrop-filter 0.25s ease, border-color 0.25s ease',

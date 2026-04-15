@@ -29,12 +29,11 @@ export default function Home({ settings = {}, heroSlides = [], featuredItems = [
                 <ManifestoSection
                     headline={settings.manifesto_headline}
                     text={settings.manifesto_text}
-                    menuPdf={settings.menu_pdf}
                     barMenuPdf={settings.bar_menu_pdf}
                     wineCardPdf={settings.wine_card_pdf}
                 />
                 <GallerySection photos={atmospherePhotos} />
-                <MenuHitsSection items={featuredItems} />
+                <MenuHitsSection items={featuredItems} menuPdf={settings.menu_pdf} />
                 <ChefSection chef={chef} teamPhotos={teamPhotos} />
                 <ChefPicksSection items={chefPicks} />
                 <ReservationSection />

@@ -46,13 +46,13 @@ export default function MenuHitsSection({ items = [], menuPdf }) {
                                 e.currentTarget.style.boxShadow = '6px 6px 0 var(--ink)';
                             }}
                         >
-                            <div className="aspect-[4/5] bg-ink overflow-hidden mb-5" style={{ borderRadius: '4px' }}>
+                            <div className="aspect-[4/3] bg-ink overflow-hidden mb-5" style={{ borderRadius: '4px' }}>
                                 {i.photo ? (
                                     <img
                                         src={i.photo}
                                         alt={i.name}
                                         loading="lazy"
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                                        className="w-full h-full object-cover"
                                     />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-paper opacity-50 font-bold text-xs tracking-widest">

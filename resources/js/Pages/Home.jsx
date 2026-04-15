@@ -15,9 +15,9 @@ export default function Home({ settings = {}, heroSlides = [], featuredItems = [
     return (
         <>
             <Head title="Главная" />
-            <div className="fixed top-0 left-0 right-0 z-40">
+            <div className="sticky top-0 z-40 bg-paper">
                 <AnnouncementBar isOpen={settings.is_open} text={settings.announcement_text} />
-                <Header />
+                <Header variant="solid" />
             </div>
             <main>
                 <HeroSection

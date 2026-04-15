@@ -1,34 +1,124 @@
-export default function Footer({ settings }) {
+import { Link, usePage } from '@inertiajs/react';
+
+const PAGE_LINKS = [
+    { href: '/', label: 'Главная' },
+    { href: '/menu', label: 'Полное меню' },
+    { href: '/#about', label: 'О нас' },
+    { href: '/#chef', label: 'Шеф' },
+    { href: '/#gallery', label: 'Атмосфера' },
+    { href: '/#contacts', label: 'Контакты' },
+];
+
+export default function Footer() {
+    const { siteFooter = {} } = usePage().props;
+    const {
+        phone = '',
+        address = '',
+        work_hours = '',
+        season = '',
+        instagram_url = '',
+        telegram_url = '',
+        menu_pdf = '',
+        categories = [],
+    } = siteFooter;
+
     const year = new Date().getFullYear();
+    const phoneTel = phone ? `tel:${phone.replace(/\D/g, '')}` : null;
+
     return (
-        <footer className="inverted py-16 px-6">
-            <div className="shell grid md:grid-cols-4 gap-10">
-                <div>
-                    <img src="/images/logo-light.svg" alt="НА УГЛЕ" className="h-12 w-auto mb-4" />
-                    <p className="text-muted t-small">{settings?.season || 'Работаем май — сентябрь'}</p>
-                </div>
-                <div>
-                    <div className="t-label mb-4 text-muted">Часы работы</div>
-                    <p className="t-small whitespace-pre-line">{settings?.work_hours || '—'}</p>
-                </div>
-                <div>
-                    <div className="t-label mb-4 text-muted">Контакты</div>
-                    <p className="t-small mb-2">{settings?.address}</p>
-                    {settings?.phone && (
-                        <a href={`tel:${settings.phone.replace(/\D/g, '')}`} className="link-underline t-small">{settings.phone}</a>
-                    )}
-                </div>
-                <div>
-                    <div className="t-label mb-4 text-muted">Соцсети</div>
-                    <div className="flex gap-5 t-small">
-                        {settings?.instagram_url && <a href={settings.instagram_url} target="_blank" rel="noopener" className="link-underline">Instagram</a>}
-                        {settings?.telegram_url && <a href={settings.telegram_url} target="_blank" rel="noopener" className="link-underline">Telegram</a>}
+        <footer className="inverted pt-20 pb-12 px-6">
+            <div className="shell">
+                {/* Top: logo + tagline */}
+                <div className="grid md:grid-cols-[1.4fr_1fr] gap-12 md:gap-20 pb-16 border-b border-hair-inverse">
+                    <div>
+                        <img
+                            src="/images/logo-footer.svg"
+                            alt="НА УГЛЕ"
+                            className="w-64 md:w-80 h-auto mb-6"
+                        />
+                        {address && (
+                            <p className="t-body mb-2">{address}</p>
+                        )}
+                        {season && (
+                            <p className="t-small text-muted-inverse">{season}</p>
+                        )}
+                    </div>
+                    <div className="flex flex-col gap-4 items-start md:items-end">
+                        {phoneTel && (
+                            <a
+                                href={phoneTel}
+                                className="btn-light"
+                                style={{ fontSize: '15px', padding: '14px 28px' }}
+                            >
+                                {phone}
+                            </a>
+                        )}
+                        {menu_pdf && (
+                            <a href={menu_pdf} target="_blank" rel="noopener" download className="btn-light-secondary">
+                                Скачать меню
+                            </a>
+                        )}
                     </div>
                 </div>
-            </div>
-            <div className="shell mt-16 pt-6 border-t border-hair-inverse flex items-center justify-between t-small text-muted">
-                <span>© {year} НА УГЛЕ</span>
-                <span>Самара</span>
+
+                {/* Sitemap */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12 py-12">
+                    {/* Pages */}
+                    <div>
+                        <div className="t-label text-muted-inverse mb-5">Страницы</div>
+                        <ul className="space-y-3">
+                            {PAGE_LINKS.map((l) => (
+                                <li key={l.href}>
+                                    <Link href={l.href} className="t-small link-hover">
+                                        {l.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Menu categories */}
+                    <div className="md:col-span-2">
+                        <div className="t-label text-muted-inverse mb-5">Меню</div>
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+                            {categories.map((c) => (
+                                <li key={c.slug}>
+                                    <Link
+                                        href={`/menu#cat-${c.slug}`}
+                                        className="t-small link-hover"
+                                    >
+                                        {c.icon ? `${c.icon} ` : ''}{c.name}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Hours + social */}
+                    <div>
+                        <div className="t-label text-muted-inverse mb-5">Часы работы</div>
+                        <p className="t-small whitespace-pre-line mb-6">{work_hours || '—'}</p>
+                        {(instagram_url || telegram_url) && (
+                            <>
+                                <div className="t-label text-muted-inverse mb-3">Соцсети</div>
+                                <div className="flex flex-col gap-2 t-small">
+                                    {instagram_url && (
+                                        <a href={instagram_url} target="_blank" rel="noopener" className="link-underline">Instagram</a>
+                                    )}
+                                    {telegram_url && (
+                                        <a href={telegram_url} target="_blank" rel="noopener" className="link-underline">Telegram</a>
+                                    )}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+
+                {/* Bottom strip */}
+                <div className="pt-6 border-t border-hair-inverse flex flex-col md:flex-row items-start md:items-center justify-between gap-3 t-small text-muted-inverse">
+                    <span>© {year} НА УГЛЕ · Самара</span>
+                    <span>Pop-up гриль-бистро на набережной Волги</span>
+                </div>
             </div>
         </footer>
     );

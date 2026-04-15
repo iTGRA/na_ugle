@@ -40,6 +40,10 @@ class HomeController extends Controller
                     'menu_pdf' => $s['menu_pdf'] ?? null,
                     'bar_menu_pdf' => $s['bar_menu_pdf'] ?? null,
                     'wine_card_pdf' => $s['wine_card_pdf'] ?? null,
+                    'gallery_headline' => $s['gallery_headline'] ?? null,
+                    'hits_headline' => $s['hits_headline'] ?? null,
+                    'chef_picks_headline' => $s['chef_picks_headline'] ?? null,
+                    'contacts_headline' => $s['contacts_headline'] ?? null,
                 ],
                 'heroSlides' => HeroSlide::active()->get()->map(fn ($s) => [
                     'id' => $s->id,

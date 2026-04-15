@@ -1,10 +1,10 @@
-export default function ChefPicksSection({ items = [] }) {
+export default function ChefPicksSection({ items = [], headline }) {
     if (items.length === 0) return null;
     return (
         <section className="inverted section">
             <div className="shell">
                 <div className="text-center mb-16">
-                    <h2 className="t-h2">Рекомендации от шефа</h2>
+                    <h2 className="t-h2">{headline || 'Рекомендации от шефа'}</h2>
                 </div>
                 <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
                     {items.map((i) => (

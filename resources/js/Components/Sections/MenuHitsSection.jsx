@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 
-export default function MenuHitsSection({ items = [], menuPdf }) {
+export default function MenuHitsSection({ items = [], menuPdf, headline }) {
     if (items.length === 0) {
         return (
             <section id="menu" className="section bg-paper text-center">
@@ -19,7 +19,7 @@ export default function MenuHitsSection({ items = [], menuPdf }) {
                 <div className="flex items-end justify-between flex-wrap gap-4 mb-12">
                     <div>
                         <div className="t-label text-muted mb-3">Меню</div>
-                        <h2 className="t-h2">Хиты с хоспера</h2>
+                        <h2 className="t-h2">{headline || 'Хиты с хоспера'}</h2>
                     </div>
                     <Link href="/menu" className="btn-secondary btn-sm">
                         Полное меню

@@ -1,11 +1,11 @@
-export default function ContactsSection({ settings }) {
+export default function ContactsSection({ settings, headline }) {
     if (!settings) return null;
     return (
         <section id="contacts" className="section bg-paper">
             <div className="shell grid md:grid-cols-[1fr_1.2fr] gap-12 md:gap-20">
                 <div className="min-w-0">
                     <div className="t-label text-muted mb-3">Контакты</div>
-                    <h2 className="t-h2 mb-8">Как нас найти</h2>
+                    <h2 className="t-h2 mb-8">{headline || 'Как нас найти'}</h2>
                     {settings.address && (
                         <p className="t-h3 mb-4" style={{ fontWeight: 400 }}>{settings.address}</p>
                     )}

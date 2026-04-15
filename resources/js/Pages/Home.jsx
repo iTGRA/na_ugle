@@ -32,11 +32,19 @@ export default function Home({ settings = {}, heroSlides = [], featuredItems = [
                     barMenuPdf={settings.bar_menu_pdf}
                     wineCardPdf={settings.wine_card_pdf}
                 />
-                <GallerySection photos={atmospherePhotos} instagramUrl={settings.instagram_url} />
-                <MenuHitsSection items={featuredItems} menuPdf={settings.menu_pdf} />
+                <GallerySection
+                    photos={atmospherePhotos}
+                    instagramUrl={settings.instagram_url}
+                    headline={settings.gallery_headline}
+                />
+                <MenuHitsSection
+                    items={featuredItems}
+                    menuPdf={settings.menu_pdf}
+                    headline={settings.hits_headline}
+                />
                 <ChefSection chef={chef} teamPhotos={teamPhotos} />
-                <ChefPicksSection items={chefPicks} />
-                <ContactsSection settings={settings} />
+                <ChefPicksSection items={chefPicks} headline={settings.chef_picks_headline} />
+                <ContactsSection settings={settings} headline={settings.contacts_headline} />
             </main>
             <Footer settings={settings} />
         </>

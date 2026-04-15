@@ -48,13 +48,19 @@ export default function HeroSection({ slides = [], slogan, description, durnyash
 
     return (
         <section
-            className="relative w-full overflow-hidden bg-ink"
-            style={{ height: '100vh', minHeight: '600px' }}
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-            onTouchStart={() => setPaused(true)}
-            onTouchEnd={() => setPaused(false)}
+            className="bg-paper p-5 md:p-[72px]"
         >
+            <div
+                className="relative w-full overflow-hidden bg-ink"
+                style={{
+                    height: 'calc(80vh - 144px)',
+                    minHeight: '440px',
+                }}
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+                onTouchStart={() => setPaused(true)}
+                onTouchEnd={() => setPaused(false)}
+            >
             {slides.map((s, i) => (
                 <div
                     key={s.id}
@@ -170,6 +176,7 @@ export default function HeroSection({ slides = [], slogan, description, durnyash
                     >›</button>
                 </div>
             )}
+            </div>
         </section>
     );
 }

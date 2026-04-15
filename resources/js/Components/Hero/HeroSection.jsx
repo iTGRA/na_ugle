@@ -53,8 +53,8 @@ export default function HeroSection({ slides = [], phone }) {
             <div
                 className="relative w-full overflow-hidden bg-ink"
                 style={{
-                    height: 'calc(80vh - 144px)',
-                    minHeight: '440px',
+                    height: 'calc(100vh - 160px)',
+                    minHeight: '560px',
                 }}
                 onMouseEnter={() => setPaused(true)}
                 onMouseLeave={() => setPaused(false)}

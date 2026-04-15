@@ -410,3 +410,21 @@ public ChefProfile $chef;
 **Как применять:** любой `public ModelClass $name;` в `app/Orchid/Screens/**/*.php` → `public ?ModelClass $name = null;`. Все обращения `$this->prop->xxx` → `$this->prop?->xxx`. В `query()` при желании дополнительно присвоить: `$this->prop = $loadedInstance;` — страховка.
 
 **Инцидент-триггер:** 2026-04-14 `/admin/chef` → 500 «Typed property $chef must not be accessed before initialization».
+
+### CSS: `overflow-x: hidden` ломает `position: sticky`
+
+При защите от mobile horizontal-overflow использовать `overflow-x: clip` вместо `hidden`:
+
+```css
+/* ✅ правильно */
+html, body { overflow-x: clip; }
+
+/* ❌ неправильно — ломает position:sticky у всех потомков */
+html, body { overflow-x: hidden; }
+```
+
+**Почему:** `overflow: hidden` создаёт **scroll container** (containing block для sticky). Sticky-элемент начинает «прилипать» не к viewport, а к этому контейнеру — в результате визуального эффекта нет. `overflow: clip` обрезает аналогично, но НЕ создаёт scroll container.
+
+**Как применять:** для общей защиты body/html всегда использовать `overflow-x: clip`. Если по какой-то причине надо именно `hidden` — ставить только на конкретный wrapper, не на html/body, и убедиться что внутри него нет sticky-элементов.
+
+**Инцидент-триггер:** 2026-04-15 sticky-навигация на `/menu` (и sticky хедер на `/`) не работали — было `overflow-x: hidden` на html/body.

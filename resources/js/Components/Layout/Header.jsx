@@ -44,11 +44,9 @@ export default function Header({ variant = 'transparent', phone = '', address = 
                 <div className="shell flex items-center justify-between gap-6">
                     <Link href="/" className="block flex-shrink-0">
                         <img
-                            src="/images/logo.svg"
+                            src="/images/logo-header.svg"
                             alt="НА УГЛЕ"
-                            className="h-10 md:h-12 w-auto"
-                            width="240"
-                            height="48"
+                            className="h-12 md:h-14 w-auto"
                         />
                     </Link>
                     <nav className="hidden md:flex items-center gap-8">
@@ -109,7 +107,7 @@ export default function Header({ variant = 'transparent', phone = '', address = 
             {menuOpen && (
                 <div className="fixed inset-0 z-[60] bg-paper flex flex-col">
                     <div className="shell flex items-center justify-between py-5">
-                        <img src="/images/logo.svg" alt="НА УГЛЕ" className="h-10 w-auto" />
+                        <img src="/images/logo-header.svg" alt="НА УГЛЕ" className="h-12 w-auto" />
                         <button
                             className="text-3xl leading-none text-ink"
                             onClick={() => setMenuOpen(false)}

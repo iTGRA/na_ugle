@@ -34,7 +34,7 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
             {/* Top bar */}
             <header className="border-b border-hair sticky top-0 bg-paper/95 backdrop-blur-sm z-30">
                 <div className="shell py-5 flex items-center justify-between gap-6">
-                    <Link href="/"><img src="/images/logo.svg" alt="НА УГЛЕ" className="h-10 w-auto" /></Link>
+                    <Link href="/"><img src="/images/logo-header.svg" alt="НА УГЛЕ" className="h-12 w-auto" /></Link>
                     <div className="flex items-center gap-6">
                         {menuPdf && (
                             <a href={menuPdf} target="_blank" rel="noopener" download className="hidden md:inline-flex items-center gap-2 t-label link-underline">

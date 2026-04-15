@@ -9,9 +9,16 @@ export default function ManifestoSection({ headline, text, durnyashaQuote, barMe
                     <p className="t-body-large mt-10 mx-auto max-w-2xl">{text}</p>
                 )}
                 {durnyashaQuote && (
-                    <p className="t-small text-muted mt-8 mx-auto max-w-xl" style={{ fontStyle: 'italic' }}>
-                        {durnyashaQuote}
-                    </p>
+                    <div className="mt-12 md:mt-16">
+                        <img
+                            src="/images/cow-vert.svg"
+                            alt="Дурняша"
+                            className="mx-auto w-24 md:w-32 h-auto"
+                        />
+                        <p className="t-small text-muted mt-5 mx-auto max-w-xl" style={{ fontStyle: 'italic' }}>
+                            {durnyashaQuote}
+                        </p>
+                    </div>
                 )}
                 {(barMenuPdf || wineCardPdf) && (
                     <div className="mt-12 flex flex-wrap justify-center gap-x-10 gap-y-3 t-label">

@@ -4,7 +4,7 @@ export default function Footer({ settings }) {
         <footer className="inverted py-16 px-6">
             <div className="shell grid md:grid-cols-4 gap-10">
                 <div>
-                    <div className="font-bold mb-4" style={{ fontSize: '1.4rem' }}>НА УГЛЕ</div>
+                    <img src="/images/logo-light.svg" alt="НА УГЛЕ" className="h-12 w-auto mb-4" />
                     <p className="text-muted t-small">{settings?.season || 'Работаем май — сентябрь'}</p>
                 </div>
                 <div>

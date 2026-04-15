@@ -42,17 +42,14 @@ export default function Header({ variant = 'transparent', phone = '', address = 
                 }}
             >
                 <div className="shell flex items-center justify-between gap-6">
-                    <Link
-                        href="/"
-                        className="font-bold tracking-tight"
-                        style={{
-                            fontSize: 'clamp(1.1rem, 1.8vw, 1.4rem)',
-                            letterSpacing: '-0.01em',
-                            color,
-                            transition: 'color 0.25s ease',
-                        }}
-                    >
-                        НА&nbsp;УГЛЕ
+                    <Link href="/" className="block flex-shrink-0">
+                        <img
+                            src="/images/logo.svg"
+                            alt="НА УГЛЕ"
+                            className="h-10 md:h-12 w-auto"
+                            width="240"
+                            height="48"
+                        />
                     </Link>
                     <nav className="hidden md:flex items-center gap-8">
                         {NAV.map((l) => (
@@ -112,7 +109,7 @@ export default function Header({ variant = 'transparent', phone = '', address = 
             {menuOpen && (
                 <div className="fixed inset-0 z-[60] bg-paper flex flex-col">
                     <div className="shell flex items-center justify-between py-5">
-                        <span className="font-bold text-ink" style={{ fontSize: '1.4rem' }}>НА УГЛЕ</span>
+                        <img src="/images/logo.svg" alt="НА УГЛЕ" className="h-10 w-auto" />
                         <button
                             className="text-3xl leading-none text-ink"
                             onClick={() => setMenuOpen(false)}

@@ -12,6 +12,20 @@ export default function ContactsSection({ settings }) {
                     {settings.how_to_find && (
                         <p className="t-body text-muted mb-10">{settings.how_to_find}</p>
                     )}
+
+                    {settings.phone && (
+                        <div className="mb-10">
+                            <div className="t-label text-muted mb-3">Бронь и вопросы — звонком</div>
+                            <a
+                                href={`tel:${settings.phone.replace(/\D/g, '')}`}
+                                className="btn"
+                                style={{ fontSize: '16px', padding: '16px 32px' }}
+                            >
+                                {settings.phone}
+                            </a>
+                        </div>
+                    )}
+
                     <div className="flex flex-wrap gap-x-10 gap-y-3 mb-10 t-label">
                         {settings.yandex_maps_url && (
                             <a href={settings.yandex_maps_url} target="_blank" rel="noopener" className="link-underline">Яндекс.Карты</a>
@@ -21,12 +35,6 @@ export default function ContactsSection({ settings }) {
                         )}
                     </div>
                     <dl className="space-y-4 pt-6 border-t border-hair">
-                        {settings.phone && (
-                            <div>
-                                <dt className="t-label text-muted mb-1">Телефон</dt>
-                                <dd><a href={`tel:${settings.phone.replace(/\D/g, '')}`} className="t-h3 link-underline" style={{ fontWeight: 400 }}>{settings.phone}</a></dd>
-                            </div>
-                        )}
                         {settings.work_hours && (
                             <div>
                                 <dt className="t-label text-muted mb-1">Режим работы</dt>

@@ -8,7 +8,6 @@ import GallerySection from '../Components/Sections/GallerySection';
 import MenuHitsSection from '../Components/Sections/MenuHitsSection';
 import ChefSection from '../Components/Sections/ChefSection';
 import ChefPicksSection from '../Components/Sections/ChefPicksSection';
-import ReservationSection from '../Components/Sections/ReservationSection';
 import ContactsSection from '../Components/Sections/ContactsSection';
 
 export default function Home({ settings = {}, heroSlides = [], featuredItems = [], chefPicks = [], atmospherePhotos = [], teamPhotos = [], chef }) {
@@ -24,6 +23,7 @@ export default function Home({ settings = {}, heroSlides = [], featuredItems = [
                     slides={heroSlides}
                     slogan={settings.hero_slogan}
                     description={settings.hero_description}
+                    phone={settings.phone}
                 />
                 <ManifestoSection
                     headline={settings.manifesto_headline}
@@ -36,7 +36,6 @@ export default function Home({ settings = {}, heroSlides = [], featuredItems = [
                 <MenuHitsSection items={featuredItems} menuPdf={settings.menu_pdf} />
                 <ChefSection chef={chef} teamPhotos={teamPhotos} />
                 <ChefPicksSection items={chefPicks} />
-                <ReservationSection />
                 <ContactsSection settings={settings} />
             </main>
             <Footer settings={settings} />

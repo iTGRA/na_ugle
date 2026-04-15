@@ -252,14 +252,14 @@ a.link-hover:hover,
   box-shadow: 0 0 0 var(--ink);
 }
 
-/* Hero / dark-bg variant — white fill, ink border, paper-cream shadow (visible on dark photos) */
+/* Hero / dark-bg variant — paper fill (matches site bg), ink border, ink shadow */
 .btn-light {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.55em;
   padding: 14px 28px;
-  background: #ffffff;
+  background: var(--paper);
   color: var(--ink);
   border: 2.5px solid var(--ink);
   border-radius: 10px;
@@ -269,7 +269,7 @@ a.link-hover:hover,
   letter-spacing: 0.1em;
   text-transform: uppercase;
   white-space: nowrap;
-  box-shadow: 5px 5px 0 var(--paper);
+  box-shadow: 5px 5px 0 var(--ink);
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
   cursor: pointer;
   user-select: none;
@@ -277,22 +277,23 @@ a.link-hover:hover,
 }
 .btn-light:hover {
   transform: translate(2px, 2px);
-  box-shadow: 3px 3px 0 var(--paper);
+  box-shadow: 3px 3px 0 var(--ink);
 }
 .btn-light:active {
   transform: translate(5px, 5px);
-  box-shadow: 0 0 0 var(--paper);
+  box-shadow: 0 0 0 var(--ink);
 }
 
+/* Hero secondary — ink fill, paper text, ink border, ink shadow */
 .btn-light-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.55em;
   padding: 14px 28px;
-  background: transparent;
-  color: #ffffff;
-  border: 2.5px solid #ffffff;
+  background: var(--ink);
+  color: var(--paper);
+  border: 2.5px solid var(--ink);
   border-radius: 10px;
   font-family: var(--font-mono);
   font-weight: 700;
@@ -300,21 +301,19 @@ a.link-hover:hover,
   letter-spacing: 0.1em;
   text-transform: uppercase;
   white-space: nowrap;
-  box-shadow: 5px 5px 0 var(--paper);
+  box-shadow: 5px 5px 0 var(--ink);
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
   cursor: pointer;
   user-select: none;
   text-decoration: none;
 }
 .btn-light-secondary:hover {
-  background: #ffffff;
-  color: var(--ink);
   transform: translate(2px, 2px);
-  box-shadow: 3px 3px 0 var(--paper);
+  box-shadow: 3px 3px 0 var(--ink);
 }
 .btn-light-secondary:active {
   transform: translate(5px, 5px);
-  box-shadow: 0 0 0 var(--paper);
+  box-shadow: 0 0 0 var(--ink);
 }
 
 a.btn, a.btn-secondary, a.btn-light, a.btn-light-secondary {

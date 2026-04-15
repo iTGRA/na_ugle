@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 const AUTO_MS = 6000;
 
-export default function HeroSection({ slides = [], slogan, description, durnyashaQuote }) {
+export default function HeroSection({ slides = [], slogan, description, durnyashaQuote, phone }) {
     const [current, setCurrent] = useState(0);
     const [progress, setProgress] = useState(0);
     const [paused, setPaused] = useState(false);
@@ -130,9 +130,11 @@ export default function HeroSection({ slides = [], slogan, description, durnyash
                         >
                             {active?.cta_text || 'Смотреть меню'}
                         </a>
-                        <a href="#reservation" className="btn-light-secondary">
-                            Забронировать
-                        </a>
+                        {phone && (
+                            <a href={`tel:${phone.replace(/\D/g, '')}`} className="btn-light-secondary">
+                                Забронировать
+                            </a>
+                        )}
                     </div>
                 </div>
             </div>

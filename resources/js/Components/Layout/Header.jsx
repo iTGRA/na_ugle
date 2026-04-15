@@ -86,12 +86,14 @@ export default function Header({ variant = 'transparent', phone = '', address = 
                             </span>
                         )}
                     </div>
-                    <a
-                        href="#reservation"
-                        className="hidden md:inline-flex btn btn-sm"
-                    >
-                        Забронировать
-                    </a>
+                    {phone && (
+                        <a
+                            href={`tel:${phone.replace(/\D/g, '')}`}
+                            className="hidden md:inline-flex btn btn-sm"
+                        >
+                            Забронировать
+                        </a>
+                    )}
                     <button
                         className="md:hidden text-2xl leading-none"
                         style={{ color, transition: 'color 0.25s ease' }}
@@ -122,11 +124,13 @@ export default function Header({ variant = 'transparent', phone = '', address = 
                                 className="t-h2 text-ink link-hover"
                             >{l.label}</a>
                         ))}
-                        <a
-                            href="#reservation"
-                            onClick={() => setMenuOpen(false)}
-                            className="cta mt-6 text-ink"
-                        >Забронировать</a>
+                        {phone && (
+                            <a
+                                href={`tel:${phone.replace(/\D/g, '')}`}
+                                onClick={() => setMenuOpen(false)}
+                                className="btn mt-6"
+                            >Забронировать</a>
+                        )}
                     </nav>
                 </div>
             )}

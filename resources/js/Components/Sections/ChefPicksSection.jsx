@@ -4,8 +4,7 @@ export default function ChefPicksSection({ items = [] }) {
         <section className="inverted section">
             <div className="shell">
                 <div className="text-center mb-16">
-                    <div className="t-label text-muted-inverse mb-4">Шеф рекомендует</div>
-                    <h2 className="t-h2">Пять блюд от Андрея</h2>
+                    <h2 className="t-h2">Рекомендации от шефа</h2>
                 </div>
                 <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
                     {items.map((i) => (

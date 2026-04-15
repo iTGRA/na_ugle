@@ -26,10 +26,10 @@ export default function MenuHitsSection({ items = [], menuPdf }) {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
                     {items.map((i) => (
-                        <article key={i.id} className="group">
-                            <div className="aspect-[4/5] photo-frame mb-4 relative">
+                        <article key={i.id} className="group bg-white border border-ink p-3 pb-7 transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(10,10,8,0.12)]">
+                            <div className="aspect-[4/5] bg-ink overflow-hidden mb-5">
                                 {i.photo ? (
                                     <img
                                         src={i.photo}
@@ -43,12 +43,14 @@ export default function MenuHitsSection({ items = [], menuPdf }) {
                                     </div>
                                 )}
                             </div>
-                            {i.category && (
-                                <div className="t-label text-muted mb-1.5">{i.category.name}</div>
-                            )}
-                            <div className="flex items-baseline justify-between gap-3">
-                                <h3 className="text-base">{i.name}</h3>
-                                <span className="font-bold whitespace-nowrap">{i.price > 0 ? `${i.price} ₽` : 'уточняйте'}</span>
+                            <div className="px-1">
+                                {i.category && (
+                                    <div className="t-label text-muted mb-1.5">{i.category.name}</div>
+                                )}
+                                <div className="flex items-baseline justify-between gap-3">
+                                    <h3 className="text-base">{i.name}</h3>
+                                    <span className="font-bold whitespace-nowrap">{i.price > 0 ? `${i.price} ₽` : 'уточняйте'}</span>
+                                </div>
                             </div>
                         </article>
                     ))}

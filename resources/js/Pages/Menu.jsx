@@ -102,10 +102,10 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
                             <h2 className="t-h2">{c.icon ? `${c.icon} ${c.name}` : c.name}</h2>
                             <span className="t-label text-muted hidden md:inline">{c.items.length} {c.items.length === 1 ? 'позиция' : 'позиций'}</span>
                         </div>
-                        <div className="grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
                             {c.items.map((i) => (
-                                <article key={i.id} className="group">
-                                    <div className="aspect-[4/3] photo-frame mb-4">
+                                <article key={i.id} className="group bg-white border border-ink p-3 pb-7 transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(10,10,8,0.12)]">
+                                    <div className="aspect-[4/3] bg-ink overflow-hidden mb-5">
                                         {i.photo ? (
                                             <img
                                                 src={i.photo}
@@ -117,13 +117,15 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
                                             <div className="w-full h-full flex items-center justify-center text-paper/40 t-label">НА УГЛЕ</div>
                                         )}
                                     </div>
-                                    <div className="flex items-baseline justify-between gap-4 mb-1.5">
-                                        <h3 className="t-body-large leading-tight">{i.name}</h3>
-                                        <span className="font-bold whitespace-nowrap">{formatPrice(i.price)}</span>
+                                    <div className="px-1">
+                                        <div className="flex items-baseline justify-between gap-4 mb-1.5">
+                                            <h3 className="t-body-large leading-tight">{i.name}</h3>
+                                            <span className="font-bold whitespace-nowrap">{formatPrice(i.price)}</span>
+                                        </div>
+                                        {i.description && (
+                                            <p className="t-small text-muted leading-snug">{i.description}</p>
+                                        )}
                                     </div>
-                                    {i.description && (
-                                        <p className="t-small text-muted leading-snug">{i.description}</p>
-                                    )}
                                 </article>
                             ))}
                         </div>

@@ -204,68 +204,23 @@ export default function ParticleHero({
                 p.x += p.vx;
                 p.y += p.vy;
 
-                // Trail (only during dynamics)
-                if (envelope > 0.1) {
-                    p.trail.push({ x: p.x, y: p.y });
-                    if (p.trail.length > p.trailMax) p.trail.shift();
-                } else {
-                    if (p.trail.length > 0) p.trail.shift(); // drain trail back to dots
-                }
-
                 const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
                 const ef = edgeFade(p.x, p.y);
                 if (ef < 0.01) continue;
 
-                // --- Render ---
-                if (envelope > 0.1 && speed > 1 && p.trail.length > 2) {
-                    // NEON TRAIL (gradient, glow)
-                    const core = p.neon.core, glow = p.neon.glow;
-                    const lw = (p.size * 0.7 + Math.min(speed * 0.12, 1.5)) * (1 + envelope * 0.15);
-                    const trail = p.trail;
-                    const neonAlpha = envelope * ef * Math.min(speed * 0.08, 0.9);
-
-                    // Glow
-                    ctx.save();
-                    ctx.lineCap = 'round';
-                    ctx.lineWidth = lw * 3;
-                    ctx.globalAlpha = neonAlpha * 0.2;
-                    ctx.strokeStyle = `rgb(${glow[0]},${glow[1]},${glow[2]})`;
-                    ctx.beginPath();
-                    ctx.moveTo(trail[0].x, trail[0].y);
-                    for (let j = 1; j < trail.length; j++) ctx.lineTo(trail[j].x, trail[j].y);
-                    ctx.stroke();
-                    ctx.restore();
-
-                    // Core gradient
-                    ctx.save();
-                    ctx.lineCap = 'round';
-                    ctx.lineWidth = lw;
-                    ctx.globalAlpha = neonAlpha * 0.8;
-                    const grad = ctx.createLinearGradient(trail[0].x, trail[0].y, trail[trail.length - 1].x, trail[trail.length - 1].y);
-                    grad.addColorStop(0, `rgba(${core[0]},${core[1]},${core[2]},0)`);
-                    grad.addColorStop(1, `rgba(${glow[0]},${glow[1]},${glow[2]},1)`);
-                    ctx.strokeStyle = grad;
-                    ctx.beginPath();
-                    ctx.moveTo(trail[0].x, trail[0].y);
-                    for (let j = 1; j < trail.length; j++) ctx.lineTo(trail[j].x, trail[j].y);
-                    ctx.stroke();
-                    ctx.restore();
-                }
-
-                // DOT (always visible — the foundation)
-                const dotAlpha = ef * (0.6 + (1 - envelope) * 0.4); // brighter when in DOTS phase
-                const dotSize = p.size * (1 - envelope * 0.3); // slightly smaller during dynamics
-
-                // Color blend: dot color ↔ neon based on envelope
-                const dotR = Math.round(10 * (1 - envelope) + p.neon.core[0] * envelope);
-                const dotG = Math.round(10 * (1 - envelope) + p.neon.core[1] * envelope);
-                const dotB = Math.round(10 * (1 - envelope) + p.neon.core[2] * envelope);
+                // --- Render: always a black dot, stretched into ellipse when moving ---
+                const angle = Math.atan2(p.vy, p.vx);
+                const stretch = 1 + Math.min(speed * 0.6, 4) * envelope; // warp stretch only during dynamics
+                const dotSize = p.size * (1 + Math.min(speed * 0.05, 0.5) * envelope); // thicken slightly with speed
+                const dotAlpha = ef * (0.7 + (1 - envelope) * 0.3);
 
                 ctx.save();
                 ctx.globalAlpha = dotAlpha;
-                ctx.fillStyle = `rgb(${dotR},${dotG},${dotB})`;
+                ctx.translate(p.x, p.y);
+                ctx.rotate(angle);
+                ctx.fillStyle = DOT_COLOR;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, dotSize, 0, Math.PI * 2);
+                ctx.ellipse(0, 0, dotSize * stretch, dotSize / Math.max(stretch * 0.5, 1), 0, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.restore();
             }

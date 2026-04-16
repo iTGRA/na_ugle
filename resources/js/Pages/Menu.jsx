@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Footer from '../Components/Layout/Footer';
 
 function formatPrice(price) {
@@ -9,10 +9,27 @@ function formatPrice(price) {
 
 export default function Menu({ categories = [], phone, address, menuPdf, barMenuPdf, wineCardPdf }) {
     const [activeSlug, setActiveSlug] = useState(categories[0]?.slug || '');
+    const [activeFilter, setActiveFilter] = useState(null); // null | 'featured' | 'chef_pick'
     const sectionsRef = useRef({});
 
+    // Filtered categories: when filter active, keep only matching items per category, hide empty ones
+    const filteredCategories = useMemo(() => {
+        if (!activeFilter) return categories;
+        return categories
+            .map((c) => ({
+                ...c,
+                items: c.items.filter((i) =>
+                    activeFilter === 'featured' ? i.is_featured : i.is_chef_pick
+                ),
+            }))
+            .filter((c) => c.items.length > 0);
+    }, [categories, activeFilter]);
+
+    const totalItems = filteredCategories.reduce((acc, c) => acc + c.items.length, 0);
+
+    // Intersection observer for active category highlight (only when no filter)
     useEffect(() => {
-        if (typeof window === 'undefined') return;
+        if (typeof window === 'undefined' || activeFilter) return;
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((e) => {
@@ -23,15 +40,25 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
         );
         Object.values(sectionsRef.current).forEach((el) => el && observer.observe(el));
         return () => observer.disconnect();
-    }, [categories]);
+    }, [categories, activeFilter]);
 
-    const totalItems = categories.reduce((acc, c) => acc + c.items.length, 0);
+    const pageTitle =
+        activeFilter === 'featured'
+            ? '★ Хиты меню'
+            : activeFilter === 'chef_pick'
+              ? '👨‍🍳 Рекомендации шефа'
+              : 'Полное меню';
+
+    const toggleFilter = (f) => {
+        setActiveFilter((prev) => (prev === f ? null : f));
+        if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     return (
         <div className="bg-paper text-ink min-h-screen">
-            <Head title="Меню" />
+            <Head title={pageTitle} />
 
-            {/* Brand row — scrolls away with the page */}
+            {/* Brand row — scrolls away */}
             <div className="bg-paper border-b border-hair">
                 <div className="shell py-5 flex items-center justify-between gap-6">
                     <Link href="/"><img src="/images/logo-header.svg" alt="НА УГЛЕ" className="h-12 w-auto" /></Link>
@@ -39,12 +66,13 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
                 </div>
             </div>
 
-            {/* Category nav — sticky on scroll, with download button inside */}
+            {/* Sticky nav: categories + filter chips + download */}
             <nav className="sticky top-0 z-30 bg-paper/95 backdrop-blur-sm border-b border-hair">
-                <div className="shell flex items-center gap-6 py-3">
+                <div className="shell flex items-center gap-4 py-3">
                     <div className="flex-1 overflow-x-auto no-scrollbar">
-                        <div className="flex gap-7 whitespace-nowrap">
-                            {categories.map((c) => (
+                        <div className="flex items-center gap-5 whitespace-nowrap">
+                            {/* Category links (hidden when filter is active) */}
+                            {!activeFilter && categories.map((c) => (
                                 <a
                                     key={c.slug}
                                     href={`#cat-${c.slug}`}
@@ -54,16 +82,48 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
                                     {c.name}
                                 </a>
                             ))}
+
+                            {/* Active filter label + reset */}
+                            {activeFilter && (
+                                <span className="t-label font-bold">
+                                    {activeFilter === 'featured' ? '★ ХИТЫ' : '👨‍🍳 ШЕФ'} · {totalItems} позиций
+                                </span>
+                            )}
+
+                            {/* Separator */}
+                            <span className="w-px h-5 bg-ink/20 flex-shrink-0" />
+
+                            {/* Filter chips */}
+                            <button
+                                onClick={() => toggleFilter('featured')}
+                                className={`chip chip-hit flex-shrink-0 cursor-pointer ${activeFilter === 'featured' ? '' : 'opacity-60 hover:opacity-100'}`}
+                                style={activeFilter === 'featured' ? { boxShadow: '0 0 0 var(--ink)' } : undefined}
+                            >
+                                ★ Хит
+                            </button>
+                            <button
+                                onClick={() => toggleFilter('chef_pick')}
+                                className={`chip chip-chef flex-shrink-0 cursor-pointer ${activeFilter === 'chef_pick' ? '' : 'opacity-60 hover:opacity-100'}`}
+                                style={activeFilter === 'chef_pick' ? { boxShadow: '0 0 0 var(--ink)' } : undefined}
+                            >
+                                👨‍🍳 Шеф
+                            </button>
+
+                            {/* Reset */}
+                            {activeFilter && (
+                                <button
+                                    onClick={() => setActiveFilter(null)}
+                                    className="t-label opacity-70 hover:opacity-100 flex-shrink-0"
+                                    style={{ borderBottom: '1px solid currentColor', paddingBottom: '2px' }}
+                                >
+                                    ✕ Сбросить
+                                </button>
+                            )}
                         </div>
                     </div>
+
                     {menuPdf && (
-                        <a
-                            href={menuPdf}
-                            target="_blank"
-                            rel="noopener"
-                            download
-                            className="btn btn-sm flex-shrink-0"
-                        >
+                        <a href={menuPdf} target="_blank" rel="noopener" download className="btn btn-sm flex-shrink-0">
                             ↓ Скачать меню
                         </a>
                     )}
@@ -73,34 +133,40 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
             {/* Intro */}
             <section className="shell py-16 md:py-24">
                 <div className="max-w-3xl">
-                    <div className="t-label text-muted mb-4">Меню {totalItems > 0 && `· ${totalItems} позиций`}</div>
-                    <h1 className="t-h1 mb-8">Полное меню</h1>
-                    <p className="t-body-large text-muted mb-10">
-                        Еда на углях, собственные колбасы и домашние соусы. Если хотите забрать меню с собой — скачайте PDF.
-                    </p>
-                    <div className="flex flex-wrap items-center gap-4">
-                        {menuPdf && (
-                            <a href={menuPdf} target="_blank" rel="noopener" download className="btn">
-                                ↓ Скачать меню PDF
-                            </a>
-                        )}
-                        {barMenuPdf && (
-                            <a href={barMenuPdf} target="_blank" rel="noopener" download className="btn-secondary">
-                                Барная карта
-                            </a>
-                        )}
-                        {wineCardPdf && (
-                            <a href={wineCardPdf} target="_blank" rel="noopener" download className="btn-secondary">
-                                Винная карта
-                            </a>
-                        )}
+                    <div className="t-label text-muted mb-4">
+                        Меню {totalItems > 0 && `· ${totalItems} позиций`}
                     </div>
+                    <h1 className="t-h1 mb-8">{pageTitle}</h1>
+                    {!activeFilter && (
+                        <p className="t-body-large text-muted mb-10">
+                            Еда на углях, собственные колбасы и домашние соусы. Если хотите забрать меню с собой — скачайте PDF.
+                        </p>
+                    )}
+                    {!activeFilter && (
+                        <div className="flex flex-wrap items-center gap-4">
+                            {menuPdf && (
+                                <a href={menuPdf} target="_blank" rel="noopener" download className="btn">
+                                    ↓ Скачать меню PDF
+                                </a>
+                            )}
+                            {barMenuPdf && (
+                                <a href={barMenuPdf} target="_blank" rel="noopener" download className="btn-secondary">
+                                    Барная карта
+                                </a>
+                            )}
+                            {wineCardPdf && (
+                                <a href={wineCardPdf} target="_blank" rel="noopener" download className="btn-secondary">
+                                    Винная карта
+                                </a>
+                            )}
+                        </div>
+                    )}
                 </div>
             </section>
 
             {/* Categories */}
             <main className="shell pb-24">
-                {categories.map((c) => (
+                {filteredCategories.map((c) => (
                     <section
                         key={c.slug}
                         id={`cat-${c.slug}`}
@@ -110,7 +176,9 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
                     >
                         <div className="flex items-baseline justify-between mb-10 pb-4 border-b border-ink">
                             <h2 className="t-h2">{c.icon ? `${c.icon} ${c.name}` : c.name}</h2>
-                            <span className="t-label text-muted hidden md:inline">{c.items.length} {c.items.length === 1 ? 'позиция' : 'позиций'}</span>
+                            <span className="t-label text-muted hidden md:inline">
+                                {c.items.length} {c.items.length === 1 ? 'позиция' : 'позиций'}
+                            </span>
                         </div>
                         <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
                             {c.items.map((i) => (
@@ -165,14 +233,16 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
                     </section>
                 ))}
 
-                {categories.length === 0 && (
+                {filteredCategories.length === 0 && (
                     <div className="text-center py-24 t-body text-muted">
-                        Меню пока пустое. Возвращайтесь позже.
+                        {activeFilter
+                            ? 'Нет блюд с этой меткой. Попробуйте другой фильтр.'
+                            : 'Меню пока пустое. Возвращайтесь позже.'}
                     </div>
                 )}
             </main>
 
-            <Footer settings={{ phone, address }} />
+            <Footer />
         </div>
     );
 }

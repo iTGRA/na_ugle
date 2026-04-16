@@ -458,6 +458,17 @@ a.btn, a.btn-secondary {
   white-space: nowrap;
 }
 
+/* Gallery photos: B&W on desktop only (hover reveals color), full color on mobile (no hover) */
+@media (min-width: 768px) {
+  .gallery-photo {
+    filter: grayscale(100%) contrast(1.05);
+    transition: filter 0.5s ease;
+  }
+  .gallery-photo:hover {
+    filter: grayscale(0%) contrast(1) brightness(1.05);
+  }
+}
+
 /* Containers */
 .shell { max-width: 1240px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
 .shell-narrow { max-width: 880px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }

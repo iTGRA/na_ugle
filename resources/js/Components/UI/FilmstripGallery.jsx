@@ -140,7 +140,7 @@ export default function FilmstripGallery({
         return () => window.removeEventListener('keydown', h);
     }, [lightbox]);
 
-    const frameH = orientation === 'portrait' ? 'clamp(300px, 48vw, 480px)' : 'clamp(240px, 38vw, 400px)';
+    const frameH = orientation === 'portrait' ? 'clamp(345px, 55vw, 550px)' : 'clamp(276px, 44vw, 460px)';
     const frameAspect = orientation === 'portrait' ? '2/3' : '3/2';
 
     return (

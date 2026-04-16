@@ -12,6 +12,7 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import Footer from '../Components/Layout/Footer';
+import MenuCardCarousel from '../Components/UI/MenuCardCarousel';
 
 function formatPrice(price) {
     if (!price || price <= 0) return 'уточняйте';
@@ -191,7 +192,13 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
                                 {c.items.length} {c.items.length === 1 ? 'позиция' : 'позиций'}
                             </span>
                         </div>
-                        <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+                        {/* Mobile: horizontal carousel */}
+                        <div className="md:hidden -mx-6">
+                            <MenuCardCarousel items={c.items} formatPrice={formatPrice} />
+                        </div>
+
+                        {/* Desktop: 3-column grid */}
+                        <div className="hidden md:grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
                             {c.items.map((i) => (
                                 <article
                                     key={i.id}
@@ -213,12 +220,7 @@ export default function Menu({ categories = [], phone, address, menuPdf, barMenu
                                 >
                                     <div className="aspect-[4/3] bg-ink overflow-hidden mb-5 relative" style={{ borderRadius: '4px' }}>
                                         {i.photo ? (
-                                            <img
-                                                src={i.photo}
-                                                alt={i.name}
-                                                loading="lazy"
-                                                className="w-full h-full object-cover"
-                                            />
+                                            <img src={i.photo} alt={i.name} loading="lazy" className="w-full h-full object-cover" />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-paper/40 t-label">НА УГЛЕ</div>
                                         )}

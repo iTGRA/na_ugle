@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Контроллер страницы /menu.
+ * Кеш menu.page.v1 (5 мин). Автоинвалидация через MenuItem/MenuCategory.
+ */
 class MenuController extends Controller
 {
     public function index(): Response

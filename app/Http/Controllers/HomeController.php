@@ -11,8 +11,18 @@ use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Контроллер главной страницы.
+ * Собирает все данные для лендинга (settings, hero slides, menu hits, chef, gallery)
+ * и кеширует на 5 минут (home.page.v1). Кеш сбрасывается автоматически
+ * через booted() хуки моделей → PageCache::flushHome().
+ */
 class HomeController extends Controller
 {
+        /**
+     * GET / — отрисовка главной через Inertia SSR.
+     * Все данные обёрнуты в Cache::remember (5 мин).
+     */
     public function index(): Response
     {
         $data = Cache::remember('home.page.v1', 300, function () {
@@ -81,6 +91,10 @@ class HomeController extends Controller
         ]);
     }
 
+        /**
+     * Преобразует MenuItem в массив для Inertia-пропсов.
+     * Включает is_featured/is_chef_pick для чипов на карточках.
+     */
     protected function mapItem(MenuItem $i): array
     {
         return [

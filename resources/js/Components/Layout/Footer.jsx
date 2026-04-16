@@ -1,3 +1,12 @@
+/**
+ * Футер сайта с полной картой сайта.
+ *
+ * Данные берёт из shared Inertia props: usePage().props.siteFooter
+ * (кешируется 10 мин через HandleInertiaRequests → footer.shared.v1).
+ *
+ * Содержит: логотип, кнопки (телефон + скачать меню), ссылки на страницы,
+ * ссылки на все категории меню (/menu#cat-{slug}), часы работы, соцсети.
+ */
 import { Link, usePage } from '@inertiajs/react';
 
 const PAGE_LINKS = [

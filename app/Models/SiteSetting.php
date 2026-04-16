@@ -6,6 +6,18 @@ use App\Support\PageCache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Key-value хранилище настроек сайта.
+ *
+ * Кеш site_settings:all (1 час). Сбрасывается при каждом put().
+ * Также сбрасывает PageCache::flushAll() чтобы страницы получили свежие данные.
+ *
+ * Использование:
+ *   SiteSetting::get('phone')          // строка или null
+ *   SiteSetting::bool('is_open')       // boolean
+ *   SiteSetting::put('phone', '...')   // upsert + cache flush
+ *   SiteSetting::allSettings()          // array key=>value (кешированный)
+ */
 class SiteSetting extends Model
 {
     protected $primaryKey = 'key';

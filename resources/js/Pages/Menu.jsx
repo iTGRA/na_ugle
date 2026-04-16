@@ -1,3 +1,14 @@
+/**
+ * Страница полного меню /menu.
+ *
+ * Props (от MenuController):
+ *   categories — массив категорий с вложенными items (is_available=true)
+ *   phone, address — для контактного блока
+ *   menuPdf, barMenuPdf, wineCardPdf — URL'ы PDF файлов
+ *
+ * Клиентская фильтрация (useMemo): чипы ★Хит и 👨‍🍳Шеф в sticky-навигации.
+ * IntersectionObserver подсвечивает активную категорию при скролле.
+ */
 import { Head, Link } from '@inertiajs/react';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import Footer from '../Components/Layout/Footer';

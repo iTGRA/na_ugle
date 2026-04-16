@@ -1,3 +1,11 @@
+/**
+ * Hero-слайдер с fullscreen фото, per-slide слоганом/подзаголовком.
+ *
+ * Props: slides (массив), phone (для CTA «Забронировать» → tel:)
+ *
+ * UX: auto-rotate каждые 6 сек, stories-прогрессбары (bottom-right),
+ * стрелки ‹ ›, tap-зоны на мобиле, пауза при hover/touch.
+ */
 import { useEffect, useRef, useState } from 'react';
 
 const AUTO_MS = 6000;

@@ -1,3 +1,15 @@
+/**
+ * Главная страница лендинга НА УГЛЕ.
+ *
+ * Props (от HomeController):
+ *   settings    — SiteSetting key-value (manifesto, contacts, PDFs, section headlines)
+ *   heroSlides  — массив слайдов (photo, title, slogan, subtitle, cta)
+ *   featuredItems — блюда с is_featured=true (до 12)
+ *   chefPicks   — блюда с is_chef_pick=true (все)
+ *   atmospherePhotos — GalleryPhoto section=atmosphere
+ *   teamPhotos  — GalleryPhoto section=team
+ *   chef        — ChefProfile (single active)
+ */
 import { Head } from '@inertiajs/react';
 import AnnouncementBar from '../Components/AnnouncementBar';
 import Header from '../Components/Layout/Header';

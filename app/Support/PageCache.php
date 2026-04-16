@@ -4,6 +4,15 @@ namespace App\Support;
 
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Централизованный сброс page-level кешей.
+ *
+ * Вызывается из booted() хуков моделей (HeroSlide, MenuItem, etc.)
+ * при saved/deleted. Каждая модель знает какие кеши затрагивает:
+ *   HeroSlide, GalleryPhoto, ChefProfile → flushHome()
+ *   MenuItem, MenuCategory → flushAll()
+ *   SiteSetting → flushAll()
+ */
 class PageCache
 {
     public const HOME = 'home.page.v1';

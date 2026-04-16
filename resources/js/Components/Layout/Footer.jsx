@@ -65,10 +65,10 @@ export default function Footer() {
                                 href={phoneTel}
                                 className="btn btn-sm"
                                 style={{
-                                    background: 'transparent',
-                                    color: 'var(--paper)',
-                                    borderColor: 'rgba(245,240,232,0.4)',
-                                    boxShadow: '4px 4px 0 rgba(245,240,232,0.15)',
+                                    background: 'var(--paper)',
+                                    color: 'var(--ink)',
+                                    borderColor: 'var(--paper)',
+                                    boxShadow: '4px 4px 0 rgba(245,240,232,0.2)',
                                 }}
                             >
                                 {phone}
@@ -82,10 +82,10 @@ export default function Footer() {
                                 download
                                 className="btn btn-sm"
                                 style={{
-                                    background: 'transparent',
-                                    color: 'var(--paper)',
-                                    borderColor: 'rgba(245,240,232,0.4)',
-                                    boxShadow: '4px 4px 0 rgba(245,240,232,0.15)',
+                                    background: 'var(--paper)',
+                                    color: 'var(--ink)',
+                                    borderColor: 'var(--paper)',
+                                    boxShadow: '4px 4px 0 rgba(245,240,232,0.2)',
                                 }}
                             >
                                 Скачать меню

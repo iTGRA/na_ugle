@@ -67,7 +67,7 @@ export default function Footer() {
                                 style={{
                                     background: 'var(--paper)',
                                     color: 'var(--ink)',
-                                    borderColor: 'var(--paper)',
+                                    border: '2.5px solid var(--ink)',
                                     boxShadow: '4px 4px 0 rgba(245,240,232,0.2)',
                                 }}
                             >
@@ -84,7 +84,7 @@ export default function Footer() {
                                 style={{
                                     background: 'var(--paper)',
                                     color: 'var(--ink)',
-                                    borderColor: 'var(--paper)',
+                                    border: '2.5px solid var(--ink)',
                                     boxShadow: '4px 4px 0 rgba(245,240,232,0.2)',
                                 }}
                             >

@@ -1,21 +1,11 @@
 /**
- * ParticleHero — WARP-DRIVE with gradient color phases.
+ * ParticleHero — Neon Tunnel Warp.
  *
- * Color narrative (art direction):
- *   LAUNCH → cold energy (lime #CEFF88 → olive #92B075) — fresh blast
- *   ORBIT  → warm vortex (coral #FF7960 → peach #FFC3B9) — passion
- *   PULSE  → digital chill (lavender #CDCCE8 → cyan #B4F6FF) — pulsation
- *   DRIFT  → calm fade (lemon #FFF5BC → mist #EDEDED) — rest
- *
- * Each particle picks a random position on its phase gradient.
- * Phase transitions: 0.5s color crossfade via RGB lerp.
+ * Частицы летят из глубины экрана (центр = vanishing point) наружу по перспективе тоннеля.
+ * Неоновые флуоресцентные градиентные линии. Утолщаются при скорости.
+ * Растворяются в 150px зоне безопасности от краёв.
  */
 import { useEffect, useRef } from 'react';
-
-function smoothstep(a, b, x) {
-    const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
-    return t * t * (3 - 2 * t);
-}
 
 function hexToRgb(hex) {
     const v = parseInt(hex.replace('#', ''), 16);
@@ -30,22 +20,20 @@ function lerpColor(c1, c2, t) {
     ];
 }
 
-function rgbStr(c, a = 1) {
-    return a >= 1 ? `rgb(${c[0]},${c[1]},${c[2]})` : `rgba(${c[0]},${c[1]},${c[2]},${a})`;
-}
-
-// Phase color palettes — high contrast (Google/Apple inspired)
-const PHASE_COLORS = {
-    LAUNCH: [hexToRgb('#4285F4'), hexToRgb('#1A73E8')],  // Google Blue
-    ORBIT:  [hexToRgb('#EA4335'), hexToRgb('#D93025')],   // Google Red
-    PULSE:  [hexToRgb('#A259FF'), hexToRgb('#7B2FBE')],   // Purple (Apple-ish)
-    DRIFT:  [hexToRgb('#34A853'), hexToRgb('#1E8E3E')],   // Google Green
-};
+// Neon palette — 4 fluorescent gradients [core, glow]
+const NEON_PALETTES = [
+    { core: hexToRgb('#4285F4'), glow: hexToRgb('#80B4FF') },  // Electric Blue
+    { core: hexToRgb('#EA4335'), glow: hexToRgb('#FF8A80') },  // Neon Red
+    { core: hexToRgb('#A259FF'), glow: hexToRgb('#D4A5FF') },  // UV Purple
+    { core: hexToRgb('#34A853'), glow: hexToRgb('#81E89E') },  // Neon Green
+    { core: hexToRgb('#FBBC04'), glow: hexToRgb('#FFE082') },  // Neon Yellow
+    { core: hexToRgb('#FF6D00'), glow: hexToRgb('#FFAB40') },  // Neon Orange
+];
 
 export default function ParticleHero({
     text = 'swipe base',
     height = 600,
-    particleCount = 200,
+    particleCount = 250,
     bgColor = '#FFFFFF',
     textClassName = 'font-bold',
 }) {
@@ -58,7 +46,6 @@ export default function ParticleHero({
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
-        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         const canvas = canvasRef.current;
         const container = containerRef.current;
@@ -70,10 +57,31 @@ export default function ParticleHero({
         let W = 0, H = height;
         let centerX = 0, centerY = 0;
         let deadZone = { x: 0, y: 0, w: 0, h: 0 };
+        const EDGE_FADE = 150; // px from edge where particles dissolve
 
-        const PHASES = ['LAUNCH', 'ORBIT', 'PULSE', 'DRIFT'];
-        const DURATIONS = { LAUNCH: 2, ORBIT: 6, PULSE: 4, DRIFT: 4 };
-        const scene = { time: 0, phase: 'LAUNCH', phaseTime: 0, phaseIdx: 0, cycle: 0 };
+        const spawnParticle = (existing) => {
+            const angle = Math.random() * Math.PI * 2;
+            const startDist = 10 + Math.random() * 40; // spawn near center (vanishing point)
+            const palette = NEON_PALETTES[Math.floor(Math.random() * NEON_PALETTES.length)];
+
+            const p = existing || {};
+            p.x = centerX + Math.cos(angle) * startDist;
+            p.y = centerY + Math.sin(angle) * startDist;
+            p.vx = 0;
+            p.vy = 0;
+            p.angle = angle; // direction from center
+            p.speed = 1.5 + Math.random() * 3; // base outward speed
+            p.size = 1.5 + Math.random() * 2;
+            p.life = 0;
+            p.maxLife = 120 + Math.random() * 180; // frames
+            p.phase = Math.random() * Math.PI * 2;
+            p.palette = palette;
+            p.trail = [];
+            p.trailMax = 8 + Math.floor(Math.random() * 12);
+            p.wobble = (Math.random() - 0.5) * 0.02; // slight angle drift
+            p.accel = 1.01 + Math.random() * 0.03; // acceleration factor
+            return p;
+        };
 
         const init = () => {
             const rect = container.getBoundingClientRect();
@@ -100,39 +108,35 @@ export default function ParticleHero({
 
             const particles = [];
             for (let i = 0; i < particleCount; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const radius = Math.max(W, H) * 0.6 + Math.random() * Math.max(W, H) * 0.4;
-                const x = centerX + Math.cos(angle) * radius;
-                const y = centerY + Math.sin(angle) * radius;
-                const col = i % 14;
-                const row = Math.floor(i / 14) % 10;
-                const originX = (col + 0.5) * (W / 14) + (Math.random() - 0.5) * 20;
-                const originY = (row + 0.5) * (H / 10) + (Math.random() - 0.5) * 20;
-
-                particles.push({
-                    x, y, vx: 0, vy: 0,
-                    originX, originY,
-                    size: 1.5 + Math.random() * 2.5,
-                    phase: Math.random() * Math.PI * 2,
-                    opacity: 1,
-                    orbitDir: Math.random() > 0.5 ? 1 : -1,
-                    trailLength: 3 + Math.random() * 5,
-                    trail: [],
-                    colorSeed: Math.random(), // position on gradient
-                    currentColor: [0, 0, 0],
-                });
+                const p = spawnParticle();
+                p.life = Math.random() * p.maxLife; // stagger initial positions
+                // Pre-simulate to spread them out
+                const preSteps = Math.floor(p.life);
+                for (let s = 0; s < preSteps; s++) {
+                    p.speed *= p.accel;
+                    p.angle += p.wobble;
+                    p.x += Math.cos(p.angle) * p.speed * 0.3;
+                    p.y += Math.sin(p.angle) * p.speed * 0.3;
+                }
+                particles.push(p);
             }
             particlesRef.current = particles;
         };
 
-        const advancePhase = () => {
-            scene.phaseIdx = (scene.phaseIdx + 1) % PHASES.length;
-            scene.phase = PHASES[scene.phaseIdx];
-            scene.phaseTime = 0;
-            if (scene.phase === 'LAUNCH') scene.cycle++;
+        // Edge fade: opacity based on distance from edges
+        const getEdgeFade = (x, y) => {
+            const dLeft = x;
+            const dRight = W - x;
+            const dTop = y;
+            const dBottom = H - y;
+            const minDist = Math.min(dLeft, dRight, dTop, dBottom);
+            if (minDist >= EDGE_FADE) return 1;
+            if (minDist <= 0) return 0;
+            return minDist / EDGE_FADE;
         };
 
-        const getDeadZoneForce = (p, strength = 2.5) => {
+        // Dead zone deflection
+        const getDeadZoneForce = (p) => {
             const cx = deadZone.x + deadZone.w / 2;
             const cy = deadZone.y + deadZone.h / 2;
             const buffer = 80;
@@ -143,7 +147,7 @@ export default function ParticleHero({
             const dirX = p.x - cx;
             const dirY = p.y - cy;
             const len = Math.sqrt(dirX * dirX + dirY * dirY) || 1;
-            const s = ((buffer - dist) / buffer) ** 2 * strength;
+            const s = ((buffer - dist) / buffer) ** 2 * 3;
             return { fx: (dirX / len) * s, fy: (dirY / len) * s };
         };
 
@@ -153,124 +157,118 @@ export default function ParticleHero({
             const dy = p.y - mouseRef.current.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist > 180) return { fx: 0, fy: 0 };
-            const s = ((180 - dist) / 180) * 2;
+            const s = ((180 - dist) / 180) * 2.5;
             const len = dist || 1;
             return { fx: (dx / len) * s, fy: (dy / len) * s };
         };
 
+        let time = 0;
+
         const animate = () => {
-            scene.time += 0.016;
-            scene.phaseTime += 0.016;
-            if (scene.phaseTime >= DURATIONS[scene.phase]) advancePhase();
-            if (prefersReduced) scene.phase = 'DRIFT';
-
-            const t = scene.time;
-            const pt = scene.phaseTime;
-            const pd = DURATIONS[scene.phase];
-            const progress = pt / pd;
-
-            // Color: current phase palette + crossfade to next
-            const curColors = PHASE_COLORS[scene.phase];
-            const nextPhase = PHASES[(scene.phaseIdx + 1) % PHASES.length];
-            const nextColors = PHASE_COLORS[nextPhase];
-            const colorBlend = pt > pd - 0.5 ? smoothstep(pd - 0.5, pd, pt) : 0;
-
+            time += 0.016;
             ctx.clearRect(0, 0, W, H);
+
             const particles = particlesRef.current;
 
             for (const p of particles) {
-                let fx = 0, fy = 0;
+                p.life++;
 
-                const toCenterX = centerX - p.x;
-                const toCenterY = centerY - p.y;
-                const distToCenter = Math.sqrt(toCenterX * toCenterX + toCenterY * toCenterY) || 1;
-                const normToCX = toCenterX / distToCenter;
-                const normToCY = toCenterY / distToCenter;
-                const perpX = -normToCY * p.orbitDir;
-                const perpY = normToCX * p.orbitDir;
-
-                if (scene.phase === 'LAUNCH') {
-                    const pull = 4 + progress * 8;
-                    fx += normToCX * pull;
-                    fy += normToCY * pull;
-                    fx += perpX * progress * 3;
-                    fy += perpY * progress * 3;
-                } else if (scene.phase === 'ORBIT') {
-                    const orbitSpeed = 3 + Math.sin(t + p.phase) * 1;
-                    const centripetal = 1.5 + Math.sin(t * 0.5 + p.phase) * 0.5;
-                    fx += perpX * orbitSpeed + normToCX * centripetal;
-                    fy += perpY * orbitSpeed + normToCY * centripetal;
-                    fx += Math.sin(t + p.phase) * 0.3;
-                    fy += Math.cos(t * 0.7 + p.phase) * 0.3;
-                } else if (scene.phase === 'PULSE') {
-                    const wave = Math.sin(progress * Math.PI * 4 + p.phase * 0.5);
-                    fx += normToCX * wave * 4 + perpX * 1.5;
-                    fy += normToCY * wave * 4 + perpY * 1.5;
-                } else if (scene.phase === 'DRIFT') {
-                    fx += (p.originX - p.x) * 0.02 + Math.sin(t + p.phase) * 0.5;
-                    fy += (p.originY - p.y) * 0.02 + Math.cos(t * 0.6 + p.phase) * 0.5;
-                    if (progress > 0.75) {
-                        const ramp = (progress - 0.75) * 4;
-                        fx += normToCX * ramp * 2;
-                        fy += normToCY * ramp * 2;
-                    }
+                // Respawn when out of bounds or expired
+                if (p.life > p.maxLife || p.x < -50 || p.x > W + 50 || p.y < -50 || p.y > H + 50) {
+                    spawnParticle(p);
+                    continue;
                 }
 
-                const dead = getDeadZoneForce(p, scene.phase === 'LAUNCH' ? 5 : 2.5);
+                // Tunnel perspective: accelerate outward from center
+                p.speed *= p.accel;
+                p.angle += p.wobble + Math.sin(time * 2 + p.phase) * 0.003; // subtle sway
+
+                // Outward velocity from vanishing point
+                const outVX = Math.cos(p.angle) * p.speed;
+                const outVY = Math.sin(p.angle) * p.speed;
+
+                // Dead zone + mouse
+                const dead = getDeadZoneForce(p);
                 const mouse = getMouseForce(p);
-                fx += dead.fx + mouse.fx;
-                fy += dead.fy + mouse.fy;
 
-                p.vx += fx;
-                p.vy += fy;
-                const damp = scene.phase === 'LAUNCH' ? 0.92 : 0.88;
-                p.vx *= damp;
-                p.vy *= damp;
-                p.x += p.vx;
-                p.y += p.vy;
+                p.vx = outVX + dead.fx + mouse.fx;
+                p.vy = outVY + dead.fy + mouse.fy;
 
+                p.x += p.vx * 0.3;
+                p.y += p.vy * 0.3;
+
+                // Trail
                 p.trail.push({ x: p.x, y: p.y });
-                if (p.trail.length > p.trailLength) p.trail.shift();
+                if (p.trail.length > p.trailMax) p.trail.shift();
+
+                // Opacity: edge fade + life fade-in
+                const edgeFade = getEdgeFade(p.x, p.y);
+                const lifeFadeIn = Math.min(p.life / 20, 1); // fade in first 20 frames
+                const alpha = edgeFade * lifeFadeIn;
+
+                if (alpha < 0.01 || p.trail.length < 2) continue;
 
                 const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-                const angle = Math.atan2(p.vy, p.vx);
+                const distFromCenter = Math.sqrt((p.x - centerX) ** 2 + (p.y - centerY) ** 2);
+                const perspectiveScale = 0.3 + (distFromCenter / (Math.max(W, H) * 0.5)) * 0.7; // farther = thicker
 
-                // --- Color per particle ---
-                // Each particle has a colorSeed (0..1) that picks its position on the gradient
-                // Speed also shifts the color: fast particles → end of gradient
-                const speedShift = Math.min(speed * 0.05, 0.4);
-                const gradPos = Math.min(p.colorSeed * 0.6 + speedShift, 1);
+                // Line width: base + speed boost + perspective
+                const lineW = (p.size * 0.8 + Math.min(speed * 0.15, 2)) * perspectiveScale * 1.15;
 
-                let targetColor = lerpColor(curColors[0], curColors[1], gradPos);
-                if (colorBlend > 0) {
-                    const nextTarget = lerpColor(nextColors[0], nextColors[1], gradPos);
-                    targetColor = lerpColor(targetColor, nextTarget, colorBlend);
-                }
+                // --- Render gradient neon trail ---
+                const trail = p.trail;
+                const core = p.palette.core;
+                const glow = p.palette.glow;
 
-                // Smooth color transition
-                p.currentColor = lerpColor(p.currentColor, targetColor, 0.08);
-                const colorRgb = p.currentColor;
-
-                // --- Trail ---
-                if (speed > 1.5 && p.trail.length > 2) {
-                    ctx.save();
-                    ctx.strokeStyle = rgbStr(colorRgb, Math.min(speed * 0.06, 0.5));
-                    ctx.lineWidth = Math.min(p.size * 0.6, 2);
-                    ctx.beginPath();
-                    ctx.moveTo(p.trail[0].x, p.trail[0].y);
-                    for (let j = 1; j < p.trail.length; j++) ctx.lineTo(p.trail[j].x, p.trail[j].y);
-                    ctx.stroke();
-                    ctx.restore();
-                }
-
-                // --- Particle ---
-                const stretch = 1 + Math.min(speed * 0.5, 3);
+                // Glow layer (wider, transparent)
                 ctx.save();
-                ctx.translate(p.x, p.y);
-                ctx.rotate(angle);
-                ctx.fillStyle = rgbStr(colorRgb, Math.min(0.75 + speed * 0.04, 1));
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.lineWidth = lineW * 3;
+                ctx.globalAlpha = alpha * 0.15;
+
+                const glowGrad = ctx.createLinearGradient(
+                    trail[0].x, trail[0].y,
+                    trail[trail.length - 1].x, trail[trail.length - 1].y
+                );
+                glowGrad.addColorStop(0, `rgba(${glow[0]},${glow[1]},${glow[2]},0)`);
+                glowGrad.addColorStop(1, `rgba(${glow[0]},${glow[1]},${glow[2]},1)`);
+                ctx.strokeStyle = glowGrad;
+
                 ctx.beginPath();
-                ctx.ellipse(0, 0, p.size * stretch, p.size / stretch, 0, 0, Math.PI * 2);
+                ctx.moveTo(trail[0].x, trail[0].y);
+                for (let j = 1; j < trail.length; j++) ctx.lineTo(trail[j].x, trail[j].y);
+                ctx.stroke();
+                ctx.restore();
+
+                // Core line (sharp, gradient)
+                ctx.save();
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.lineWidth = lineW;
+                ctx.globalAlpha = alpha * 0.85;
+
+                const coreGrad = ctx.createLinearGradient(
+                    trail[0].x, trail[0].y,
+                    trail[trail.length - 1].x, trail[trail.length - 1].y
+                );
+                coreGrad.addColorStop(0, `rgba(${core[0]},${core[1]},${core[2]},0)`);
+                coreGrad.addColorStop(0.3, `rgba(${core[0]},${core[1]},${core[2]},0.6)`);
+                coreGrad.addColorStop(1, `rgba(${glow[0]},${glow[1]},${glow[2]},1)`);
+                ctx.strokeStyle = coreGrad;
+
+                ctx.beginPath();
+                ctx.moveTo(trail[0].x, trail[0].y);
+                for (let j = 1; j < trail.length; j++) ctx.lineTo(trail[j].x, trail[j].y);
+                ctx.stroke();
+                ctx.restore();
+
+                // Head dot (bright tip)
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = `rgb(${glow[0]},${glow[1]},${glow[2]})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, lineW * 0.6, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.restore();
             }

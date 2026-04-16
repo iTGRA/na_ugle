@@ -36,7 +36,6 @@ export default function Home({ settings = {}, featuredItems = [], atmospherePhot
                     photos={atmospherePhotos}
                     instagramUrl={settings.instagram_url}
                     headline={settings.gallery_headline}
-                    bgImage={settings.gallery_bg_image}
                 />
                 <MenuHitsSection
                     items={featuredItems}

@@ -23,7 +23,7 @@ class SiteSettingsScreen extends Screen
         'durnyasha_quote',
         'manifesto_headline', 'manifesto_text',
         // Section headlines (editable)
-        'gallery_headline', 'gallery_bg_image', 'hits_headline', 'contacts_headline',
+        'gallery_headline', 'hits_headline', 'contacts_headline',
         // Footer
         'footer_logo', 'footer_tagline',
         // Contacts
@@ -153,7 +153,6 @@ class SiteSettingsScreen extends Screen
 
                 'Изображения' => Layout::view('orchid.file-uploads', [
                     'uploads' => [
-                        ['key' => 'gallery_bg_image', 'label' => 'Фон галереи', 'help' => 'Атмосферное фото (закат, набережная) — подложка за фотографиями в блоке «Атмосфера». JPG/PNG/WebP.', 'accept' => 'image/*'],
                         ['key' => 'footer_logo', 'label' => 'Логотип футера', 'help' => 'SVG или PNG логотип для тёмного фона футера. Рекомендуется SVG.', 'accept' => 'image/*,.svg'],
                     ],
                 ]),

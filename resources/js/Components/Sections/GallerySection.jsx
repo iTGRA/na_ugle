@@ -3,7 +3,7 @@
  */
 import FilmstripGallery from '../UI/FilmstripGallery';
 
-export default function GallerySection({ photos = [], instagramUrl, headline, label, bgImage }) {
+export default function GallerySection({ photos = [], instagramUrl, headline, label }) {
     if (photos.length === 0) return null;
 
     const filmImages = photos.map((p, i) => ({
@@ -24,7 +24,6 @@ export default function GallerySection({ photos = [], instagramUrl, headline, la
             {/* Photo gallery on atmospheric background */}
             <FilmstripGallery
                 images={filmImages}
-                bgImage={bgImage}
                 autoScroll={true}
             />
 

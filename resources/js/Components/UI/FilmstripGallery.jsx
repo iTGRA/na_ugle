@@ -14,7 +14,6 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 
 export default function FilmstripGallery({
     images = [],
-    bgImage,
     autoScroll = true,
 }) {
     const trackRef = useRef(null);
@@ -91,20 +90,7 @@ export default function FilmstripGallery({
 
     return (
         <>
-            {/* Atmosphere background + photo strip */}
-            <div
-                className="relative w-full overflow-hidden"
-                style={{
-                    background: bgImage
-                        ? `url(${bgImage}) center/cover no-repeat`
-                        : 'linear-gradient(180deg, #2d2d2a 0%, #1a1a18 100%)',
-                    padding: 'clamp(40px, 8vh, 80px) 0',
-                }}
-            >
-                {/* Dark overlay for contrast */}
-                <div className="absolute inset-0" style={{ background: 'rgba(10,10,8,0.55)' }} />
-
-                {/* Photo track */}
+            <div className="relative w-full overflow-hidden">
                 <div
                     ref={trackRef}
                     className="relative z-[2] flex gap-5 md:gap-6 overflow-x-auto no-scrollbar px-6 md:px-12"

@@ -49,7 +49,6 @@ class HomeController extends Controller
                     'bar_menu_pdf' => $s['bar_menu_pdf'] ?? null,
                     'wine_card_pdf' => $s['wine_card_pdf'] ?? null,
                     'gallery_headline' => $s['gallery_headline'] ?? null,
-                    'gallery_bg_image' => $s['gallery_bg_image'] ?? null,
                     'hits_headline' => $s['hits_headline'] ?? null,
                     // chef_picks_headline removed in v0.2
                     'contacts_headline' => $s['contacts_headline'] ?? null,

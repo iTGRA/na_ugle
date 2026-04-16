@@ -40,26 +40,36 @@ export default function Footer() {
         <footer className="inverted pt-20 pb-12 px-6">
             <div className="shell">
                 {/* Top: logo + tagline */}
-                <div className="grid md:grid-cols-[1.4fr_1fr] gap-12 md:gap-20 pb-16 border-b border-hair-inverse">
+                {/* Top: logo */}
+                <div className="pb-10">
+                    <img
+                        src={footer_logo || '/images/logo-footer.svg'}
+                        alt="НА УГЛЕ"
+                        className="w-72 md:w-96 h-auto"
+                    />
+                </div>
+
+                {/* Address + buttons row */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pb-16 border-b border-hair-inverse">
                     <div>
-                        <img
-                            src={footer_logo || '/images/logo-footer.svg'}
-                            alt="НА УГЛЕ"
-                            className="w-72 md:w-96 h-auto mb-6"
-                        />
                         {address && (
-                            <p className="t-body mb-2">{address}</p>
+                            <p className="t-body mb-1">{address}</p>
                         )}
                         {season && (
                             <p className="t-small text-muted-inverse">{season}</p>
                         )}
                     </div>
-                    <div className="flex flex-col gap-4 items-start md:items-end">
+                    <div className="flex flex-wrap gap-3">
                         {phoneTel && (
                             <a
                                 href={phoneTel}
-                                className="btn-on-ink"
-                                style={{ minWidth: '260px' }}
+                                className="btn btn-sm"
+                                style={{
+                                    background: 'transparent',
+                                    color: 'var(--paper)',
+                                    borderColor: 'rgba(245,240,232,0.4)',
+                                    boxShadow: '4px 4px 0 rgba(245,240,232,0.15)',
+                                }}
                             >
                                 {phone}
                             </a>
@@ -70,8 +80,13 @@ export default function Footer() {
                                 target="_blank"
                                 rel="noopener"
                                 download
-                                className="btn-on-ink-secondary"
-                                style={{ minWidth: '260px' }}
+                                className="btn btn-sm"
+                                style={{
+                                    background: 'transparent',
+                                    color: 'var(--paper)',
+                                    borderColor: 'rgba(245,240,232,0.4)',
+                                    boxShadow: '4px 4px 0 rgba(245,240,232,0.15)',
+                                }}
                             >
                                 Скачать меню
                             </a>

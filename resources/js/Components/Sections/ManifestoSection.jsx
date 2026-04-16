@@ -15,7 +15,7 @@ function fixPrepositions(str) {
     return str.replace(/ (на|в|и|с|у|к|о|за|по|от|из|до|не|ни|же|ли|а) /gi, ' $1\u00A0');
 }
 
-export default function ManifestoSection({ headline, text, barMenuPdf, wineCardPdf }) {
+export default function ManifestoSection({ headline, text, phone, barMenuPdf, wineCardPdf }) {
     const defaultHeadline = 'Гриль, колбаски и\u00A0пиво.\nПростые удовольствия\nна\u00A0набережной Самары.';
 
     return (
@@ -67,11 +67,26 @@ export default function ManifestoSection({ headline, text, barMenuPdf, wineCardP
                     </p>
                 )}
 
+                {/* CTA кнопки */}
+                <div
+                    className="flex flex-wrap justify-center gap-4"
+                    style={{ marginTop: 'clamp(24px, 4vh, 48px)' }}
+                >
+                    {phone && (
+                        <a href={`tel:${phone.replace(/\D/g, '')}`} className="btn btn-sm">
+                            Забронировать
+                        </a>
+                    )}
+                    <a href="/menu" className="btn-secondary btn-sm">
+                        Меню
+                    </a>
+                </div>
+
                 {/* PDF-ссылки */}
                 {(barMenuPdf || wineCardPdf) && (
                     <div
                         className="flex flex-wrap justify-center gap-x-10 gap-y-3 t-label"
-                        style={{ marginTop: 'clamp(20px, 3vh, 40px)' }}
+                        style={{ marginTop: 'clamp(16px, 2vh, 28px)' }}
                     >
                         {barMenuPdf && <a href={barMenuPdf} target="_blank" rel="noopener" className="link-underline">Барное меню</a>}
                         {wineCardPdf && <a href={wineCardPdf} target="_blank" rel="noopener" className="link-underline">Винная карта</a>}

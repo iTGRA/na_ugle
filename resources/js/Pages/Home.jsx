@@ -28,6 +28,7 @@ export default function Home({ settings = {}, featuredItems = [], atmospherePhot
                 <ManifestoSection
                     headline={settings.manifesto_headline}
                     text={settings.manifesto_text}
+                    phone={settings.phone}
                     barMenuPdf={settings.bar_menu_pdf}
                     wineCardPdf={settings.wine_card_pdf}
                 />

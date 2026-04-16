@@ -1,39 +1,42 @@
 /**
- * ParticleHero — Neon Tunnel Warp.
+ * ParticleHero — Dots → Neon Warp → Möbius → Tunnel → Dots.
  *
- * Частицы летят из глубины экрана (центр = vanishing point) наружу по перспективе тоннеля.
- * Неоновые флуоресцентные градиентные линии. Утолщаются при скорости.
- * Растворяются в 150px зоне безопасности от краёв.
+ * Основа: ТОЧКИ. Всё начинается с точек, всё возвращается в точки.
+ * Между — неоновые вспышки динамики (warp, möbius, tunnel), но каждый паттерн
+ * затухает обратно в спокойное поле точек, которые реагируют на мышку.
+ *
+ * Цикл (20s):
+ *   DOTS    (4s)  — тихое поле, дыхание, мышка отталкивает
+ *   WARP    (4s)  — точки вытягиваются в неоновые линии, летят потоком
+ *   DOTS    (3s)  — возврат в точки
+ *   MOBIUS  (4s)  — точки закручиваются в ленту Мёбиуса вокруг текста
+ *   DOTS    (2s)  — возврат
+ *   TUNNEL  (3s)  — взрыв из центра наружу (tunnel perspective)
+ *   → повтор
  */
 import { useEffect, useRef } from 'react';
 
-function hexToRgb(hex) {
-    const v = parseInt(hex.replace('#', ''), 16);
-    return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+function smoothstep(a, b, x) {
+    const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
+    return t * t * (3 - 2 * t);
 }
+function hexToRgb(h) { const v = parseInt(h.replace('#', ''), 16); return [(v >> 16) & 255, (v >> 8) & 255, v & 255]; }
+function lerpC(a, b, t) { return [Math.round(a[0]+(b[0]-a[0])*t), Math.round(a[1]+(b[1]-a[1])*t), Math.round(a[2]+(b[2]-a[2])*t)]; }
 
-function lerpColor(c1, c2, t) {
-    return [
-        Math.round(c1[0] + (c2[0] - c1[0]) * t),
-        Math.round(c1[1] + (c2[1] - c1[1]) * t),
-        Math.round(c1[2] + (c2[2] - c1[2]) * t),
-    ];
-}
-
-// Neon palette — 4 fluorescent gradients [core, glow]
-const NEON_PALETTES = [
-    { core: hexToRgb('#4285F4'), glow: hexToRgb('#80B4FF') },  // Electric Blue
-    { core: hexToRgb('#EA4335'), glow: hexToRgb('#FF8A80') },  // Neon Red
-    { core: hexToRgb('#A259FF'), glow: hexToRgb('#D4A5FF') },  // UV Purple
-    { core: hexToRgb('#34A853'), glow: hexToRgb('#81E89E') },  // Neon Green
-    { core: hexToRgb('#FBBC04'), glow: hexToRgb('#FFE082') },  // Neon Yellow
-    { core: hexToRgb('#FF6D00'), glow: hexToRgb('#FFAB40') },  // Neon Orange
+const NEONS = [
+    { core: hexToRgb('#4285F4'), glow: hexToRgb('#80B4FF') },
+    { core: hexToRgb('#EA4335'), glow: hexToRgb('#FF8A80') },
+    { core: hexToRgb('#A259FF'), glow: hexToRgb('#D4A5FF') },
+    { core: hexToRgb('#34A853'), glow: hexToRgb('#81E89E') },
+    { core: hexToRgb('#FBBC04'), glow: hexToRgb('#FFE082') },
+    { core: hexToRgb('#FF6D00'), glow: hexToRgb('#FFAB40') },
 ];
+const DOT_COLOR = '#0A0A08';
 
 export default function ParticleHero({
     text = 'swipe base',
     height = 600,
-    particleCount = 250,
+    particleCount = 220,
     bgColor = '#FFFFFF',
     textClassName = 'font-bold',
 }) {
@@ -46,7 +49,6 @@ export default function ParticleHero({
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
-
         const canvas = canvasRef.current;
         const container = containerRef.current;
         const textEl = textRef.current;
@@ -54,33 +56,27 @@ export default function ParticleHero({
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        let W = 0, H = height;
-        let centerX = 0, centerY = 0;
+        let W = 0, H = height, cx = 0, cy = 0;
         let deadZone = { x: 0, y: 0, w: 0, h: 0 };
-        const EDGE_FADE = 150; // px from edge where particles dissolve
 
-        const spawnParticle = (existing) => {
-            const angle = Math.random() * Math.PI * 2;
-            const startDist = 10 + Math.random() * 40; // spawn near center (vanishing point)
-            const palette = NEON_PALETTES[Math.floor(Math.random() * NEON_PALETTES.length)];
+        // Phase sequence: dynamic phases separated by DOTS rest
+        const SEQUENCE = [
+            { name: 'DOTS', dur: 4 },
+            { name: 'WARP', dur: 4 },
+            { name: 'DOTS', dur: 3 },
+            { name: 'MOBIUS', dur: 4 },
+            { name: 'DOTS', dur: 2 },
+            { name: 'TUNNEL', dur: 3 },
+        ];
+        const TOTAL = SEQUENCE.reduce((s, p) => s + p.dur, 0);
 
-            const p = existing || {};
-            p.x = centerX + Math.cos(angle) * startDist;
-            p.y = centerY + Math.sin(angle) * startDist;
-            p.vx = 0;
-            p.vy = 0;
-            p.angle = angle; // direction from center
-            p.speed = 1.5 + Math.random() * 3; // base outward speed
-            p.size = 1.5 + Math.random() * 2;
-            p.life = 0;
-            p.maxLife = 120 + Math.random() * 180; // frames
-            p.phase = Math.random() * Math.PI * 2;
-            p.palette = palette;
-            p.trail = [];
-            p.trailMax = 8 + Math.floor(Math.random() * 12);
-            p.wobble = (Math.random() - 0.5) * 0.02; // slight angle drift
-            p.accel = 1.01 + Math.random() * 0.03; // acceleration factor
-            return p;
+        const getPhase = (globalTime) => {
+            let t = globalTime % TOTAL;
+            for (const p of SEQUENCE) {
+                if (t < p.dur) return { name: p.name, progress: t / p.dur, time: t, dur: p.dur };
+                t -= p.dur;
+            }
+            return { name: 'DOTS', progress: 0, time: 0, dur: 4 };
         };
 
         const init = () => {
@@ -92,183 +88,184 @@ export default function ParticleHero({
             canvas.style.width = `${W}px`;
             canvas.style.height = `${H}px`;
             ctx.scale(dpr, dpr);
+            cx = W / 2; cy = H / 2;
 
-            centerX = W / 2;
-            centerY = H / 2;
+            const tR = textEl.getBoundingClientRect();
+            const cR = container.getBoundingClientRect();
+            deadZone = { x: tR.left - cR.left - 100, y: tR.top - cR.top - 60, w: tR.width + 200, h: tR.height + 120 };
 
-            const tRect = textEl.getBoundingClientRect();
-            const cRect = container.getBoundingClientRect();
-            const px = 100, py = 60;
-            deadZone = {
-                x: tRect.left - cRect.left - px,
-                y: tRect.top - cRect.top - py,
-                w: tRect.width + px * 2,
-                h: tRect.height + py * 2,
-            };
-
+            const cols = 16, rows = Math.ceil(particleCount / cols);
             const particles = [];
             for (let i = 0; i < particleCount; i++) {
-                const p = spawnParticle();
-                p.life = Math.random() * p.maxLife; // stagger initial positions
-                // Pre-simulate to spread them out
-                const preSteps = Math.floor(p.life);
-                for (let s = 0; s < preSteps; s++) {
-                    p.speed *= p.accel;
-                    p.angle += p.wobble;
-                    p.x += Math.cos(p.angle) * p.speed * 0.3;
-                    p.y += Math.sin(p.angle) * p.speed * 0.3;
-                }
-                particles.push(p);
+                const col = i % cols, row = Math.floor(i / cols);
+                const originX = (col + 0.5) * (W / cols) + (Math.random() - 0.5) * 15;
+                const originY = (row + 0.5) * (H / rows) + (Math.random() - 0.5) * 15;
+                particles.push({
+                    x: originX, y: originY, vx: 0, vy: 0,
+                    originX, originY,
+                    size: 2 + Math.random() * 2.5,
+                    phase: Math.random() * Math.PI * 2,
+                    neon: NEONS[Math.floor(Math.random() * NEONS.length)],
+                    trail: [],
+                    trailMax: 10 + Math.floor(Math.random() * 10),
+                    orbitDir: Math.random() > 0.5 ? 1 : -1,
+                });
             }
             particlesRef.current = particles;
         };
 
-        // Edge fade: opacity based on distance from edges
-        const getEdgeFade = (x, y) => {
-            const dLeft = x;
-            const dRight = W - x;
-            const dTop = y;
-            const dBottom = H - y;
-            const minDist = Math.min(dLeft, dRight, dTop, dBottom);
-            if (minDist >= EDGE_FADE) return 1;
-            if (minDist <= 0) return 0;
-            return minDist / EDGE_FADE;
-        };
-
-        // Dead zone deflection
-        const getDeadZoneForce = (p) => {
-            const cx = deadZone.x + deadZone.w / 2;
-            const cy = deadZone.y + deadZone.h / 2;
-            const buffer = 80;
+        const deadForce = (p, str = 2.5) => {
+            const dcx = deadZone.x + deadZone.w / 2, dcy = deadZone.y + deadZone.h / 2;
+            const buf = 80;
             const dx = Math.max(deadZone.x - p.x, 0, p.x - (deadZone.x + deadZone.w));
             const dy = Math.max(deadZone.y - p.y, 0, p.y - (deadZone.y + deadZone.h));
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist > buffer) return { fx: 0, fy: 0 };
-            const dirX = p.x - cx;
-            const dirY = p.y - cy;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d > buf) return { fx: 0, fy: 0 };
+            const dirX = p.x - dcx, dirY = p.y - dcy;
             const len = Math.sqrt(dirX * dirX + dirY * dirY) || 1;
-            const s = ((buffer - dist) / buffer) ** 2 * 3;
+            const s = ((buf - d) / buf) ** 2 * str;
             return { fx: (dirX / len) * s, fy: (dirY / len) * s };
         };
 
-        const getMouseForce = (p) => {
+        const mouseForce = (p) => {
             if (!mouseRef.current.active) return { fx: 0, fy: 0 };
-            const dx = p.x - mouseRef.current.x;
-            const dy = p.y - mouseRef.current.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist > 180) return { fx: 0, fy: 0 };
-            const s = ((180 - dist) / 180) * 2.5;
-            const len = dist || 1;
-            return { fx: (dx / len) * s, fy: (dy / len) * s };
+            const dx = p.x - mouseRef.current.x, dy = p.y - mouseRef.current.y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d > 160) return { fx: 0, fy: 0 };
+            const s = ((160 - d) / 160) * 2;
+            return { fx: (dx / (d || 1)) * s, fy: (dy / (d || 1)) * s };
         };
 
-        let time = 0;
+        const edgeFade = (x, y) => {
+            const m = Math.min(x, W - x, y, H - y);
+            return m >= 120 ? 1 : Math.max(m / 120, 0);
+        };
+
+        let globalTime = 0;
 
         const animate = () => {
-            time += 0.016;
-            ctx.clearRect(0, 0, W, H);
+            globalTime += 0.016;
+            const phase = getPhase(globalTime);
+            const { name, progress, time: pt } = phase;
 
+            // Envelope for transitions: ramp in first 15%, ramp out last 15%
+            const envelope = name === 'DOTS' ? 0 : smoothstep(0, 0.15, progress) * smoothstep(1, 0.85, progress);
+
+            ctx.clearRect(0, 0, W, H);
             const particles = particlesRef.current;
+            const t = globalTime;
 
             for (const p of particles) {
-                p.life++;
+                // --- Always: spring to origin + breathing ---
+                const breathe = 1 - envelope * 0.7; // reduce breathing during dynamics
+                const bx = Math.sin(t + p.phase) * 3 * breathe;
+                const by = Math.cos(t * 0.8 + p.phase) * 3 * breathe;
+                const tgtX = p.originX + bx, tgtY = p.originY + by;
 
-                // Respawn when out of bounds or expired
-                if (p.life > p.maxLife || p.x < -50 || p.x > W + 50 || p.y < -50 || p.y > H + 50) {
-                    spawnParticle(p);
-                    continue;
+                const springK = 0.04 + (1 - envelope) * 0.04; // stronger spring when returning to dots
+                let fx = (tgtX - p.x) * springK;
+                let fy = (tgtY - p.y) * springK;
+
+                // --- Phase-specific forces (scaled by envelope) ---
+                const toCX = cx - p.x, toCY = cy - p.y;
+                const distC = Math.sqrt(toCX * toCX + toCY * toCY) || 1;
+                const nCX = toCX / distC, nCY = toCY / distC;
+                const perpX = -nCY * p.orbitDir, perpY = nCX * p.orbitDir;
+
+                if (name === 'WARP') {
+                    const angle = t * 1.5 + p.phase * 0.3;
+                    const warpFX = Math.cos(angle) * 5 * envelope;
+                    const warpFY = Math.sin(angle) * 5 * envelope;
+                    fx += warpFX;
+                    fy += warpFY;
+                } else if (name === 'MOBIUS') {
+                    // Möbius band: orbit around text + vertical sine wave
+                    const orbitSpeed = 4 * envelope;
+                    const vertWave = Math.sin(t * 3 + p.phase + distC * 0.01) * 2 * envelope;
+                    fx += perpX * orbitSpeed + nCX * 1.5 * envelope;
+                    fy += perpY * orbitSpeed + vertWave;
+                } else if (name === 'TUNNEL') {
+                    // Burst outward from center
+                    const pushStr = 6 * envelope * (0.5 + progress);
+                    fx += -nCX * pushStr;
+                    fy += -nCY * pushStr;
                 }
 
-                // Tunnel perspective: accelerate outward from center
-                p.speed *= p.accel;
-                p.angle += p.wobble + Math.sin(time * 2 + p.phase) * 0.003; // subtle sway
+                // --- Always: dead zone + mouse ---
+                const dz = deadForce(p, 2.5 + envelope * 2);
+                const mf = mouseForce(p);
+                fx += dz.fx + mf.fx;
+                fy += dz.fy + mf.fy;
 
-                // Outward velocity from vanishing point
-                const outVX = Math.cos(p.angle) * p.speed;
-                const outVY = Math.sin(p.angle) * p.speed;
+                p.vx += fx;
+                p.vy += fy;
+                p.vx *= 0.87;
+                p.vy *= 0.87;
+                p.x += p.vx;
+                p.y += p.vy;
 
-                // Dead zone + mouse
-                const dead = getDeadZoneForce(p);
-                const mouse = getMouseForce(p);
-
-                p.vx = outVX + dead.fx + mouse.fx;
-                p.vy = outVY + dead.fy + mouse.fy;
-
-                p.x += p.vx * 0.3;
-                p.y += p.vy * 0.3;
-
-                // Trail
-                p.trail.push({ x: p.x, y: p.y });
-                if (p.trail.length > p.trailMax) p.trail.shift();
-
-                // Opacity: edge fade + life fade-in
-                const edgeFade = getEdgeFade(p.x, p.y);
-                const lifeFadeIn = Math.min(p.life / 20, 1); // fade in first 20 frames
-                const alpha = edgeFade * lifeFadeIn;
-
-                if (alpha < 0.01 || p.trail.length < 2) continue;
+                // Trail (only during dynamics)
+                if (envelope > 0.1) {
+                    p.trail.push({ x: p.x, y: p.y });
+                    if (p.trail.length > p.trailMax) p.trail.shift();
+                } else {
+                    if (p.trail.length > 0) p.trail.shift(); // drain trail back to dots
+                }
 
                 const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-                const distFromCenter = Math.sqrt((p.x - centerX) ** 2 + (p.y - centerY) ** 2);
-                const perspectiveScale = 0.3 + (distFromCenter / (Math.max(W, H) * 0.5)) * 0.7; // farther = thicker
+                const ef = edgeFade(p.x, p.y);
+                if (ef < 0.01) continue;
 
-                // Line width: base + speed boost + perspective
-                const lineW = (p.size * 0.8 + Math.min(speed * 0.15, 2)) * perspectiveScale * 1.15;
+                // --- Render ---
+                if (envelope > 0.1 && speed > 1 && p.trail.length > 2) {
+                    // NEON TRAIL (gradient, glow)
+                    const core = p.neon.core, glow = p.neon.glow;
+                    const lw = (p.size * 0.7 + Math.min(speed * 0.12, 1.5)) * (1 + envelope * 0.15);
+                    const trail = p.trail;
+                    const neonAlpha = envelope * ef * Math.min(speed * 0.08, 0.9);
 
-                // --- Render gradient neon trail ---
-                const trail = p.trail;
-                const core = p.palette.core;
-                const glow = p.palette.glow;
+                    // Glow
+                    ctx.save();
+                    ctx.lineCap = 'round';
+                    ctx.lineWidth = lw * 3;
+                    ctx.globalAlpha = neonAlpha * 0.2;
+                    ctx.strokeStyle = `rgb(${glow[0]},${glow[1]},${glow[2]})`;
+                    ctx.beginPath();
+                    ctx.moveTo(trail[0].x, trail[0].y);
+                    for (let j = 1; j < trail.length; j++) ctx.lineTo(trail[j].x, trail[j].y);
+                    ctx.stroke();
+                    ctx.restore();
 
-                // Glow layer (wider, transparent)
+                    // Core gradient
+                    ctx.save();
+                    ctx.lineCap = 'round';
+                    ctx.lineWidth = lw;
+                    ctx.globalAlpha = neonAlpha * 0.8;
+                    const grad = ctx.createLinearGradient(trail[0].x, trail[0].y, trail[trail.length - 1].x, trail[trail.length - 1].y);
+                    grad.addColorStop(0, `rgba(${core[0]},${core[1]},${core[2]},0)`);
+                    grad.addColorStop(1, `rgba(${glow[0]},${glow[1]},${glow[2]},1)`);
+                    ctx.strokeStyle = grad;
+                    ctx.beginPath();
+                    ctx.moveTo(trail[0].x, trail[0].y);
+                    for (let j = 1; j < trail.length; j++) ctx.lineTo(trail[j].x, trail[j].y);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                // DOT (always visible — the foundation)
+                const dotAlpha = ef * (0.6 + (1 - envelope) * 0.4); // brighter when in DOTS phase
+                const dotSize = p.size * (1 - envelope * 0.3); // slightly smaller during dynamics
+
+                // Color blend: dot color ↔ neon based on envelope
+                const dotR = Math.round(10 * (1 - envelope) + p.neon.core[0] * envelope);
+                const dotG = Math.round(10 * (1 - envelope) + p.neon.core[1] * envelope);
+                const dotB = Math.round(10 * (1 - envelope) + p.neon.core[2] * envelope);
+
                 ctx.save();
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.lineWidth = lineW * 3;
-                ctx.globalAlpha = alpha * 0.15;
-
-                const glowGrad = ctx.createLinearGradient(
-                    trail[0].x, trail[0].y,
-                    trail[trail.length - 1].x, trail[trail.length - 1].y
-                );
-                glowGrad.addColorStop(0, `rgba(${glow[0]},${glow[1]},${glow[2]},0)`);
-                glowGrad.addColorStop(1, `rgba(${glow[0]},${glow[1]},${glow[2]},1)`);
-                ctx.strokeStyle = glowGrad;
-
+                ctx.globalAlpha = dotAlpha;
+                ctx.fillStyle = `rgb(${dotR},${dotG},${dotB})`;
                 ctx.beginPath();
-                ctx.moveTo(trail[0].x, trail[0].y);
-                for (let j = 1; j < trail.length; j++) ctx.lineTo(trail[j].x, trail[j].y);
-                ctx.stroke();
-                ctx.restore();
-
-                // Core line (sharp, gradient)
-                ctx.save();
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.lineWidth = lineW;
-                ctx.globalAlpha = alpha * 0.85;
-
-                const coreGrad = ctx.createLinearGradient(
-                    trail[0].x, trail[0].y,
-                    trail[trail.length - 1].x, trail[trail.length - 1].y
-                );
-                coreGrad.addColorStop(0, `rgba(${core[0]},${core[1]},${core[2]},0)`);
-                coreGrad.addColorStop(0.3, `rgba(${core[0]},${core[1]},${core[2]},0.6)`);
-                coreGrad.addColorStop(1, `rgba(${glow[0]},${glow[1]},${glow[2]},1)`);
-                ctx.strokeStyle = coreGrad;
-
-                ctx.beginPath();
-                ctx.moveTo(trail[0].x, trail[0].y);
-                for (let j = 1; j < trail.length; j++) ctx.lineTo(trail[j].x, trail[j].y);
-                ctx.stroke();
-                ctx.restore();
-
-                // Head dot (bright tip)
-                ctx.save();
-                ctx.globalAlpha = alpha;
-                ctx.fillStyle = `rgb(${glow[0]},${glow[1]},${glow[2]})`;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, lineW * 0.6, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, dotSize, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.restore();
             }
@@ -276,18 +273,11 @@ export default function ParticleHero({
             rafRef.current = requestAnimationFrame(animate);
         };
 
-        const onMove = (e) => {
-            const r = container.getBoundingClientRect();
-            mouseRef.current.x = e.clientX - r.left;
-            mouseRef.current.y = e.clientY - r.top;
-            mouseRef.current.active = true;
-        };
+        const onMove = (e) => { const r = container.getBoundingClientRect(); mouseRef.current.x = e.clientX - r.left; mouseRef.current.y = e.clientY - r.top; mouseRef.current.active = true; };
         const onLeave = () => { mouseRef.current.active = false; };
         const onResize = () => { init(); };
 
-        init();
-        animate();
-
+        init(); animate();
         container.addEventListener('mousemove', onMove);
         container.addEventListener('mouseleave', onLeave);
         window.addEventListener('resize', onResize);
@@ -300,18 +290,10 @@ export default function ParticleHero({
     }, [text, height, particleCount]);
 
     return (
-        <div
-            ref={containerRef}
-            className="relative w-full overflow-hidden"
-            style={{ height: `${height}px`, backgroundColor: bgColor }}
-        >
+        <div ref={containerRef} className="relative w-full overflow-hidden" style={{ height: `${height}px`, backgroundColor: bgColor }}>
             <canvas ref={canvasRef} className="absolute inset-0" />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div
-                    ref={textRef}
-                    className={textClassName}
-                    style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', letterSpacing: '-0.03em', color: '#0A0A08' }}
-                >
+                <div ref={textRef} className={textClassName} style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', letterSpacing: '-0.03em', color: '#0A0A08' }}>
                     {text}
                 </div>
             </div>

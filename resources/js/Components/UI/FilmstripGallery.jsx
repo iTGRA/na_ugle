@@ -106,22 +106,67 @@ export default function FilmstripGallery({
         };
     }, [autoScroll, images]);
 
-    // Drag scroll
+    // Drag scroll with threshold + momentum
     const onMouseDown = useCallback((e) => {
         const el = trackRef.current;
         if (!el) return;
-        setIsDragging(true);
-        dragStartX.current = e.pageX;
-        const scrollLeft = el.scrollLeft;
-        const move = (ev) => { el.scrollLeft = scrollLeft - (ev.pageX - dragStartX.current); };
+        const startX = e.pageX;
+        const startScroll = el.scrollLeft;
+        let moved = false;
+        let lastX = startX;
+        let lastTime = Date.now();
+        let velocity = 0;
+
+        const move = (ev) => {
+            const dx = ev.pageX - startX;
+            if (!moved && Math.abs(dx) < 5) return; // threshold: 5px before drag starts
+            moved = true;
+            setIsDragging(true);
+            el.style.cursor = 'grabbing';
+
+            const now = Date.now();
+            const dt = now - lastTime;
+            if (dt > 0) velocity = (ev.pageX - lastX) / dt;
+            lastX = ev.pageX;
+            lastTime = now;
+
+            el.scrollLeft = startScroll - dx;
+        };
         const up = () => {
-            setIsDragging(false);
+            el.style.cursor = 'grab';
             window.removeEventListener('mousemove', move);
             window.removeEventListener('mouseup', up);
+            // Momentum coast
+            if (moved && Math.abs(velocity) > 0.15) {
+                let v = velocity * 12; // amplify
+                const coast = () => {
+                    if (Math.abs(v) < 0.5) { setIsDragging(false); return; }
+                    el.scrollLeft -= v;
+                    v *= 0.95; // friction
+                    requestAnimationFrame(coast);
+                };
+                requestAnimationFrame(coast);
+            } else {
+                // Delayed reset so click handler sees isDragging correctly
+                setTimeout(() => setIsDragging(false), 10);
+            }
         };
         window.addEventListener('mousemove', move);
         window.addEventListener('mouseup', up);
     }, []);
+
+    // Wheel → horizontal scroll (desktop: scroll wheel moves filmstrip)
+    useEffect(() => {
+        const el = trackRef.current;
+        if (!el || typeof window === 'undefined') return;
+        const onWheel = (e) => {
+            if (Math.abs(e.deltaY) < 5) return;
+            e.preventDefault();
+            el.scrollLeft += e.deltaY * 1.5;
+        };
+        el.addEventListener('wheel', onWheel, { passive: false });
+        return () => el.removeEventListener('wheel', onWheel);
+    }, [images]);
 
     // Lightbox
     const openLightbox = (i) => { if (!isDragging) setLightbox(i); };
@@ -171,14 +216,14 @@ export default function FilmstripGallery({
                     {/* Frames track */}
                     <div
                         ref={trackRef}
-                        className="flex gap-3 md:gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory px-4 md:px-8 py-1"
-                        style={{ cursor: isDragging ? 'grabbing' : 'grab', WebkitOverflowScrolling: 'touch' }}
+                        className="flex gap-3 md:gap-4 overflow-x-auto no-scrollbar px-4 md:px-8 py-1"
+                        style={{ cursor: 'grab', WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto', scrollSnapType: 'none' }}
                         onMouseDown={onMouseDown}
                     >
                         {images.map((img, i) => {
                             const fn = img.frameNumber || String(i + 1).padStart(2, '0');
                             return (
-                                <div key={i} className="flex-shrink-0 snap-center">
+                                <div key={i} className="flex-shrink-0">
                                     <figure
                                         className="relative group overflow-hidden"
                                         style={{ height: frameH, aspectRatio: frameAspect }}

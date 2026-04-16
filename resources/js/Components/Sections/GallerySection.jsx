@@ -1,17 +1,14 @@
 /**
- * v0.2 Gallery Section — обёртка для FilmstripGallery.
- * Рендерит заголовок секции + плёнку + Instagram-ссылку.
+ * v0.2 Gallery Section — фото-карусель на атмосферном фоне.
  */
 import FilmstripGallery from '../UI/FilmstripGallery';
 
-export default function GallerySection({ photos = [], instagramUrl, headline, label }) {
+export default function GallerySection({ photos = [], instagramUrl, headline, label, bgImage }) {
     if (photos.length === 0) return null;
 
-    // Map gallery_photos → filmstrip images format
     const filmImages = photos.map((p, i) => ({
         src: p.photo,
         alt: p.alt || '',
-        frameNumber: String(i + 1).padStart(2, '0'),
     }));
 
     return (
@@ -24,13 +21,11 @@ export default function GallerySection({ photos = [], instagramUrl, headline, la
                 </h2>
             </div>
 
-            {/* Kodak BW400CN Filmstrip */}
+            {/* Photo gallery on atmospheric background */}
             <FilmstripGallery
                 images={filmImages}
-                filmLabel="НА УГЛЕ 400"
-                filmColor="#1a1a18"
+                bgImage={bgImage}
                 autoScroll={true}
-                orientation="landscape"
             />
 
             {/* Instagram link */}

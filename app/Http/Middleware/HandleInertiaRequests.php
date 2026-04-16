@@ -34,6 +34,8 @@ class HandleInertiaRequests extends Middleware
                     'instagram_url' => $s['instagram_url'] ?? null,
                     'telegram_url' => $s['telegram_url'] ?? null,
                     'menu_pdf' => $s['menu_pdf'] ?? null,
+                    'footer_logo' => $s['footer_logo'] ?? null,
+                    'footer_tagline' => $s['footer_tagline'] ?? null,
                     'categories' => MenuCategory::query()
                         ->where('is_active', true)
                         ->orderBy('sort_order')

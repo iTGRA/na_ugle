@@ -12,38 +12,46 @@ use Orchid\Support\Facades\Toast;
 
 class SettingsFileController extends Controller
 {
-    private const ALLOWED_KEYS = ['menu_pdf', 'bar_menu_pdf', 'wine_card_pdf'];
-    private const ALLOWED_LABELS = [
-        'menu_pdf' => 'основное меню',
-        'bar_menu_pdf' => 'барная карта',
-        'wine_card_pdf' => 'винная карта',
+    /**
+     * All uploadable settings with allowed mime types and labels.
+     */
+    private const UPLOADS = [
+        // PDFs
+        'menu_pdf'         => ['label' => 'основное меню',        'mimes' => 'pdf',              'dir' => 'files'],
+        'bar_menu_pdf'     => ['label' => 'барная карта',         'mimes' => 'pdf',              'dir' => 'files'],
+        'wine_card_pdf'    => ['label' => 'винная карта',         'mimes' => 'pdf',              'dir' => 'files'],
+        // Images
+        'gallery_bg_image' => ['label' => 'фон галереи',          'mimes' => 'jpg,jpeg,png,webp', 'dir' => 'images/uploads'],
+        'footer_logo'      => ['label' => 'логотип футера',       'mimes' => 'svg,png,jpg,webp',  'dir' => 'images/uploads'],
     ];
 
-    public function uploadPdf(Request $request, string $key): RedirectResponse
+    public function upload(Request $request, string $key): RedirectResponse
     {
-        abort_unless(in_array($key, self::ALLOWED_KEYS, true), 404);
+        $cfg = self::UPLOADS[$key] ?? null;
+        abort_unless($cfg, 404);
 
         $request->validate([
-            'pdf' => ['required', 'file', 'mimes:pdf', 'max:25600'],
+            'file' => ['required', 'file', 'mimes:' . $cfg['mimes'], 'max:25600'],
         ], [
-            'pdf.required' => 'Прикрепите PDF-файл.',
-            'pdf.mimes' => 'Файл должен быть в формате PDF.',
-            'pdf.max' => 'Файл больше 25 МБ — слишком большой.',
+            'file.required' => 'Прикрепите файл.',
+            'file.mimes' => 'Допустимые форматы: ' . $cfg['mimes'],
+            'file.max' => 'Файл слишком большой (макс 25 МБ).',
         ]);
 
-        $file = $request->file('pdf');
-        $dir = public_path('files');
+        $file = $request->file('file');
+        $dir = public_path($cfg['dir']);
         if (!File::isDirectory($dir)) {
             File::makeDirectory($dir, 0755, true);
         }
 
-        $filename = Str::slug(str_replace('_', '-', $key)) . '-' . time() . '.pdf';
+        $ext = $file->getClientOriginalExtension() ?: 'bin';
+        $filename = Str::slug(str_replace('_', '-', $key)) . '-' . time() . '.' . $ext;
         $file->move($dir, $filename);
-        $url = '/files/' . $filename;
+        $url = '/' . $cfg['dir'] . '/' . $filename;
 
-        // Optionally remove the previously stored file (if it lived under /files/)
+        // Remove previous file
         $prev = SiteSetting::get($key);
-        if ($prev && Str::startsWith($prev, '/files/') && $prev !== $url) {
+        if ($prev && Str::startsWith($prev, '/') && $prev !== $url) {
             $prevPath = public_path(ltrim($prev, '/'));
             if (File::exists($prevPath)) {
                 @File::delete($prevPath);
@@ -51,26 +59,41 @@ class SettingsFileController extends Controller
         }
 
         SiteSetting::put($key, $url);
-
-        Toast::info('Загружен файл «' . self::ALLOWED_LABELS[$key] . '».');
+        Toast::info('Загружен: «' . $cfg['label'] . '».');
 
         return back();
     }
 
-    public function deletePdf(string $key): RedirectResponse
+    public function delete(string $key): RedirectResponse
     {
-        abort_unless(in_array($key, self::ALLOWED_KEYS, true), 404);
+        $cfg = self::UPLOADS[$key] ?? null;
+        abort_unless($cfg, 404);
 
         $prev = SiteSetting::get($key);
-        if ($prev && Str::startsWith($prev, '/files/')) {
+        if ($prev && Str::startsWith($prev, '/')) {
             $prevPath = public_path(ltrim($prev, '/'));
             if (File::exists($prevPath)) {
                 @File::delete($prevPath);
             }
         }
         SiteSetting::put($key, '');
-        Toast::info('Файл «' . self::ALLOWED_LABELS[$key] . '» удалён.');
+        Toast::info('Удалён: «' . $cfg['label'] . '».');
 
         return back();
+    }
+
+    // Legacy aliases (PDF-specific routes still work)
+    public function uploadPdf(Request $request, string $key): RedirectResponse
+    {
+        // Remap old 'pdf' field name to 'file'
+        if (!$request->hasFile('file') && $request->hasFile('pdf')) {
+            $request->files->set('file', $request->file('pdf'));
+        }
+        return $this->upload($request, $key);
+    }
+
+    public function deletePdf(string $key): RedirectResponse
+    {
+        return $this->delete($key);
     }
 }

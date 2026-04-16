@@ -28,6 +28,8 @@ export default function Footer() {
         instagram_url = '',
         telegram_url = '',
         menu_pdf = '',
+        footer_logo = '',
+        footer_tagline = '',
         categories = [],
     } = siteFooter;
 
@@ -41,7 +43,7 @@ export default function Footer() {
                 <div className="grid md:grid-cols-[1.4fr_1fr] gap-12 md:gap-20 pb-16 border-b border-hair-inverse">
                     <div>
                         <img
-                            src="/images/logo-footer.svg"
+                            src={footer_logo || '/images/logo-footer.svg'}
                             alt="НА УГЛЕ"
                             className="w-72 md:w-96 h-auto mb-6"
                         />
@@ -133,7 +135,7 @@ export default function Footer() {
                 {/* Bottom strip */}
                 <div className="pt-6 border-t border-hair-inverse flex flex-col md:flex-row items-start md:items-center justify-between gap-3 t-small text-muted-inverse">
                     <span>© {year} НА УГЛЕ · Самара</span>
-                    <span>Pop-up гриль-бистро на набережной Волги</span>
+                    <span>{footer_tagline || 'Pop-up гриль-бистро на набережной Волги'}</span>
                 </div>
             </div>
         </footer>

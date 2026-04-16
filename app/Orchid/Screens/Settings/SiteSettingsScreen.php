@@ -23,7 +23,9 @@ class SiteSettingsScreen extends Screen
         'durnyasha_quote',
         'manifesto_headline', 'manifesto_text',
         // Section headlines (editable)
-        'gallery_headline', 'hits_headline', 'contacts_headline',
+        'gallery_headline', 'gallery_bg_image', 'hits_headline', 'contacts_headline',
+        // Footer
+        'footer_logo', 'footer_tagline',
         // Contacts
         'how_to_find', 'instagram_url', 'telegram_url',
         'yandex_maps_url', '2gis_url', 'map_embed',
@@ -148,6 +150,20 @@ class SiteSettingsScreen extends Screen
                 ]),
 
                 'PDF меню' => Layout::view('orchid.pdf-uploads'),
+
+                'Изображения' => Layout::view('orchid.file-uploads', [
+                    'uploads' => [
+                        ['key' => 'gallery_bg_image', 'label' => 'Фон галереи', 'help' => 'Атмосферное фото (закат, набережная) — подложка за фотографиями в блоке «Атмосфера». JPG/PNG/WebP.', 'accept' => 'image/*'],
+                        ['key' => 'footer_logo', 'label' => 'Логотип футера', 'help' => 'SVG или PNG логотип для тёмного фона футера. Рекомендуется SVG.', 'accept' => 'image/*,.svg'],
+                    ],
+                ]),
+
+                'Футер' => Layout::rows([
+                    Input::make('settings.footer_tagline')
+                        ->title('Подпись в футере')
+                        ->placeholder('Pop-up гриль-бистро на набережной Волги')
+                        ->help('Текст в нижней полоске футера, справа от копирайта.'),
+                ]),
 
                 'Уведомления (Telegram)' => Layout::rows([
                     Input::make('settings.notification_email')

@@ -66,6 +66,8 @@ Route::screen('reservations/{reservation}/edit', ReservationEditScreen::class)->
 Route::screen('settings', SiteSettingsScreen::class)->name('platform.settings');
 Route::post('settings/upload-pdf/{key}', [SettingsFileController::class, 'uploadPdf'])->name('platform.settings.upload-pdf');
 Route::post('settings/delete-pdf/{key}', [SettingsFileController::class, 'deletePdf'])->name('platform.settings.delete-pdf');
+Route::post('settings/upload-file/{key}', [SettingsFileController::class, 'upload'])->name('platform.settings.upload-file');
+Route::post('settings/delete-file/{key}', [SettingsFileController::class, 'delete'])->name('platform.settings.delete-file');
 
 // Platform > Profile
 Route::screen('profile', UserProfileScreen::class)

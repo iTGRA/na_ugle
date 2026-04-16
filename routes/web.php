@@ -8,3 +8,4 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
+Route::get('/lab', fn () => \Inertia\Inertia::render('Lab'))->name('lab');

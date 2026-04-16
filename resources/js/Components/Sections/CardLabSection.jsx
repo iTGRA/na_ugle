@@ -80,23 +80,23 @@ function CardVariant3({ item }) {
 function CardVariant4({ item }) {
     return (
         <article
-            className="flex gap-4 p-4 bg-white"
-            style={{ border: '2.5px solid var(--ink)', borderRadius: '10px', boxShadow: '5px 5px 0 var(--ink)' }}
+            className="p-3 pb-6"
+            style={{ background: 'var(--paper)', border: '2.5px solid var(--ink)', borderRadius: '10px', boxShadow: '6px 6px 0 var(--ink)' }}
         >
-            <div className="flex-shrink-0 w-28 h-28 overflow-hidden" style={{ borderRadius: '6px' }}>
+            <div className="relative overflow-hidden mb-4" style={{ aspectRatio: '4/5', borderRadius: '4px' }}>
                 <img src={item.photo} alt={item.name} className="w-full h-full object-cover" />
-            </div>
-            <div className="flex-1 min-w-0">
-                <div className="t-label text-muted mb-1">{item.category}</div>
-                <h3 className="t-body font-bold leading-tight mb-1">{item.name}</h3>
-                <p className="t-small text-muted leading-snug mb-2">{item.description}</p>
-                <div className="flex items-center justify-between">
-                    <span className="font-bold">{item.price} ₽</span>
-                    <div className="flex gap-1">
-                        {item.is_featured && <span className="chip chip-hit" style={{ fontSize: '9px', padding: '2px 5px' }}>★</span>}
-                        {item.is_chef_pick && <span className="chip chip-chef" style={{ fontSize: '9px', padding: '2px 5px' }}>👨‍🍳</span>}
-                    </div>
+                <div className="absolute top-2 left-2 flex gap-1.5">
+                    {item.is_featured && <span className="chip chip-hit" style={{ fontSize: '10px', padding: '3px 7px' }}>★ Хит</span>}
+                    {item.is_chef_pick && <span className="chip chip-chef" style={{ fontSize: '10px', padding: '3px 7px' }}>👨‍🍳 Шеф</span>}
                 </div>
+            </div>
+            <div className="px-1">
+                <div className="t-label text-muted mb-1">{item.category}</div>
+                <div className="flex items-baseline justify-between gap-3 mb-2">
+                    <h3 className="t-body font-bold leading-tight">{item.name}</h3>
+                    <span className="font-bold whitespace-nowrap">{item.price} ₽</span>
+                </div>
+                <p className="t-small text-muted leading-snug">{item.description}</p>
             </div>
         </article>
     );
@@ -161,7 +161,7 @@ const VARIANTS = [
     { Component: CardVariant1, name: '01 · Classic Polaroid', desc: 'Текущий стиль + описание + фото 4:5' },
     { Component: CardVariant2, name: '02 · Minimal Flat', desc: 'Без бордера/тени, hairline снизу, чистый' },
     { Component: CardVariant3, name: '03 · Magazine Editorial', desc: 'Фото 3:4 fullbleed, текст поверх с gradient' },
-    { Component: CardVariant4, name: '04 · Horizontal Price Tag', desc: 'Горизонтальная: мини-фото слева + текст справа' },
+    { Component: CardVariant4, name: '04 · Paper Polaroid', desc: 'Как 01, но фон карточки = фон сайта (paper #F5F0E8)' },
     { Component: CardVariant5, name: '05 · Stamp', desc: 'Квадратное фото 1:1, центрировано, острые углы, цена-badge' },
     { Component: CardVariant6, name: '06 · Overlay Compact', desc: 'Фото 4:5 fullbleed, название + цена-badge внизу' },
 ];

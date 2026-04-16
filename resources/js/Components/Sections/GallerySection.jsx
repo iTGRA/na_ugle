@@ -28,7 +28,7 @@ export default function GallerySection({ photos = [], instagramUrl, headline, la
             <FilmstripGallery
                 images={filmImages}
                 filmLabel="НА УГЛЕ 400"
-                filmColor="#C8400A"
+                filmColor="#1a1a18"
                 autoScroll={true}
                 orientation="landscape"
             />

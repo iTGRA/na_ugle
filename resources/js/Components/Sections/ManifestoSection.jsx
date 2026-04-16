@@ -35,7 +35,7 @@ export default function ManifestoSection({ headline, text, barMenuPdf, wineCardP
                     alt="Дурняша"
                     className="mx-auto h-auto"
                     style={{
-                        width: 'clamp(120px, 18vw, 260px)',
+                        width: 'clamp(96px, 14vw, 208px)',
                         marginBottom: 'clamp(24px, 4vh, 56px)',
                     }}
                 />

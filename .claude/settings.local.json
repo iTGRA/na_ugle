@@ -159,7 +159,9 @@
       "Bash(sips -g pixelWidth -g pixelHeight \"/Users/ilyakhalzov/Downloads/IMG_20260413_091847.webp\")",
       "Bash(sips -g pixelWidth -g pixelHeight \"/Users/ilyakhalzov/Downloads/IMG_20260413_091837.png\")",
       "Bash(sips -s format jpeg -s formatOptions 80 \"/Users/ilyakhalzov/Downloads/IMG_20260413_091837.png\" --out steel-texture.jpg)",
-      "Bash(sips -g pixelWidth -g pixelHeight steel-texture.jpg)"
+      "Bash(sips -g pixelWidth -g pixelHeight steel-texture.jpg)",
+      "Bash(ssh -o ConnectTimeout=10 na-ugle 'echo CONNECTED')",
+      "Bash(curl -sS --max-time 10 https://github.com)"
     ]
   }
 }

@@ -32,8 +32,9 @@ export default function MenuHitsSection({ items = [], menuPdf, headline }) {
                     {items.map((i) => (
                         <article
                             key={i.id}
-                            className="group bg-white p-3 pb-7"
+                            className="group p-3 pb-6"
                             style={{
+                                background: 'var(--paper)',
                                 border: '2.5px solid var(--ink)',
                                 borderRadius: '10px',
                                 boxShadow: '6px 6px 0 var(--ink)',
@@ -48,7 +49,7 @@ export default function MenuHitsSection({ items = [], menuPdf, headline }) {
                                 e.currentTarget.style.boxShadow = '6px 6px 0 var(--ink)';
                             }}
                         >
-                            <div className="aspect-[4/3] bg-ink overflow-hidden mb-5 relative" style={{ borderRadius: '4px' }}>
+                            <div className="aspect-[4/5] bg-ink overflow-hidden mb-4 relative" style={{ borderRadius: '4px' }}>
                                 {i.photo ? (
                                     <img
                                         src={i.photo}

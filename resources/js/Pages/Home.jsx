@@ -15,7 +15,7 @@ import MenuHitsSection from '../Components/Sections/MenuHitsSection';
 import ChefSection from '../Components/Sections/ChefSection';
 // ChefPicksSection removed in v0.2 — chef picks still available via /menu filter
 import ContactsSection from '../Components/Sections/ContactsSection';
-import CardLabSection from '../Components/Sections/CardLabSection';
+// CardLabSection removed — Paper Polaroid (variant 04) chosen and applied globally
 
 export default function Home({ settings = {}, featuredItems = [], atmospherePhotos = [], teamPhotos = [], chef }) {
     return (
@@ -44,7 +44,6 @@ export default function Home({ settings = {}, featuredItems = [], atmospherePhot
                     headline={settings.hits_headline}
                 />
                 <ChefSection chef={chef} teamPhotos={teamPhotos} />
-                <CardLabSection items={featuredItems} />
                 <ContactsSection settings={settings} headline={settings.contacts_headline} />
             </main>
             <Footer />

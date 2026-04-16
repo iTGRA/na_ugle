@@ -44,8 +44,9 @@ export default function MenuCardCarousel({ items = [], formatPrice }) {
                     <article
                         key={i.id}
                         data-card
-                        className="flex-shrink-0 bg-white p-3 pb-6"
+                        className="flex-shrink-0 p-3 pb-6"
                         style={{
+                            background: 'var(--paper)',
                             width: '78vw',
                             maxWidth: '340px',
                             scrollSnapAlign: 'center',
@@ -54,7 +55,7 @@ export default function MenuCardCarousel({ items = [], formatPrice }) {
                             boxShadow: '5px 5px 0 var(--ink)',
                         }}
                     >
-                        <div className="aspect-[4/3] bg-ink overflow-hidden mb-4 relative" style={{ borderRadius: '4px' }}>
+                        <div className="aspect-[4/5] bg-ink overflow-hidden mb-4 relative" style={{ borderRadius: '4px' }}>
                             {i.photo ? (
                                 <img src={i.photo} alt={i.name} loading={idx < 3 ? 'eager' : 'lazy'} className="w-full h-full object-cover" />
                             ) : (

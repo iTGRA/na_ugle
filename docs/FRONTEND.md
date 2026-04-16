@@ -105,14 +105,23 @@ resources/js/
 | `.chip-new` | leaf green | `#B8E04E` | Новинка (заготовка) |
 | `.chip-spicy` | hot red | `#E54B2A` | Острое (заготовка) |
 
-### Карточки блюд (polaroid-brutalist)
+### Карточки блюд (Paper Polaroid — v0.2)
+
+Выбран вариант «Paper Polaroid» (из 6 протестированных): фон карточки = фон сайта (paper), не белый.
 
 ```css
+background: var(--paper);     /* #F5F0E8 — сливается с фоном, бордер создаёт форму */
 border: 2.5px solid var(--ink);
 border-radius: 10px;
 box-shadow: 6px 6px 0 var(--ink);
+padding: 12px, bottom 24px;
 /* hover: translate(2,2) + shadow 4×4 */
 ```
+
+Фото внутри: `aspect-ratio: 4/5` (вертикальное), `border-radius: 4px`, без бордера.
+Чипы (Хит/Шеф) в левом верхнем углу фото.
+Текст: категория (t-label) → название + цена → описание.
+Мобильная карусель: тот же стиль, ширина 78vw, snap-to-card.
 
 ### Контейнеры
 

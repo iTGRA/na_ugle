@@ -155,7 +155,11 @@
       "Bash(sips -r 90 \"/Users/ilyakhalzov/Downloads/IMG_20260413_091837.png\" --out /tmp/steel_rotated.png)",
       "Bash(sips -g pixelHeight -g pixelWidth /tmp/steel_rotated.png)",
       "Bash(sips --cropToHeightWidth 600 1920 /tmp/steel_rotated.png --out /tmp/steel_strip.png)",
-      "Bash(sips -s format jpeg -s formatOptions 75 /tmp/steel_strip.png --out steel-texture.jpg)"
+      "Bash(sips -s format jpeg -s formatOptions 75 /tmp/steel_strip.png --out steel-texture.jpg)",
+      "Bash(sips -g pixelWidth -g pixelHeight \"/Users/ilyakhalzov/Downloads/IMG_20260413_091847.webp\")",
+      "Bash(sips -g pixelWidth -g pixelHeight \"/Users/ilyakhalzov/Downloads/IMG_20260413_091837.png\")",
+      "Bash(sips -s format jpeg -s formatOptions 80 \"/Users/ilyakhalzov/Downloads/IMG_20260413_091837.png\" --out steel-texture.jpg)",
+      "Bash(sips -g pixelWidth -g pixelHeight steel-texture.jpg)"
     ]
   }
 }

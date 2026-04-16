@@ -148,21 +148,8 @@ export default function FilmstripGallery({
             {/* Steel texture background + film overlay */}
             <div
                 className="relative w-full overflow-hidden"
-                style={{
-                    backgroundImage: 'url(/images/steel-texture.jpg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                }}
+                style={{ background: filmColor }}
             >
-                {/* Film color overlay (semi-transparent, blend) */}
-                <div
-                    className="absolute inset-0 z-[1]"
-                    style={{
-                        background: filmColor,
-                        opacity: 0.72,
-                        mixBlendMode: 'multiply',
-                    }}
-                />
 
                 {/* Grain texture */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none z-[2]" style={{ opacity: 0.08, mixBlendMode: 'overlay' }}>

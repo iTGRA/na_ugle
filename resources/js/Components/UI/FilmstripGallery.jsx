@@ -201,8 +201,15 @@ export default function FilmstripGallery({
                                             src={img.src}
                                             alt={img.alt || ''}
                                             loading={i < 4 ? 'eager' : 'lazy'}
-                                            className="w-full h-full block transition-[filter] duration-300 group-hover:brightness-[1.15]"
-                                            style={{ objectFit: 'cover', cursor: 'pointer' }}
+                                            className="w-full h-full block"
+                                            style={{
+                                                objectFit: 'cover',
+                                                cursor: 'pointer',
+                                                filter: 'grayscale(100%) contrast(1.05)',
+                                                transition: 'filter 0.5s ease',
+                                            }}
+                                            onMouseEnter={(e) => { e.currentTarget.style.filter = 'grayscale(0%) contrast(1) brightness(1.1)'; }}
+                                            onMouseLeave={(e) => { e.currentTarget.style.filter = 'grayscale(100%) contrast(1.05)'; }}
                                             draggable="false"
                                         />
                                         {/* Hover frame number */}

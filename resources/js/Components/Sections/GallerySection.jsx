@@ -17,7 +17,7 @@ export default function GallerySection({ photos = [], instagramUrl, headline, la
     return (
         <section id="gallery" className="section bg-paper overflow-hidden">
             {/* Heading */}
-            <div className="shell mb-10 md:mb-14">
+            <div className="shell mb-16 md:mb-20">
                 <div className="t-label text-muted mb-3">{label || 'Атмосфера'}</div>
                 <h2 className="t-h2" style={{ whiteSpace: 'pre-line' }}>
                     {headline || 'Наслаждаемся закатами\nв нашей атмосфере'}

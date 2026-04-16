@@ -79,39 +79,37 @@ export default function GallerySection({ photos = [], instagramUrl, headline, la
             </div>
 
             {/* Filmstrip */}
-            <div className="relative">
-                {/* Sprocket holes — top */}
-                <div className="absolute top-0 left-0 right-0 h-5 z-10 flex items-center justify-center pointer-events-none" style={{ background: 'var(--ink)' }}>
-                    <div className="flex gap-6 px-4">
-                        {Array.from({ length: 40 }).map((_, i) => (
+            <div className="relative mt-10 md:mt-14">
+                {/* Sprocket holes — top (punch-through to paper bg) */}
+                <div className="absolute top-0 left-0 right-0 h-6 z-10 flex items-center pointer-events-none overflow-hidden" style={{ background: 'var(--ink)' }}>
+                    <div className="flex gap-5 px-4 w-full justify-around">
+                        {Array.from({ length: 50 }).map((_, i) => (
                             <div
                                 key={`t${i}`}
                                 className="flex-shrink-0"
                                 style={{
-                                    width: '12px',
-                                    height: '8px',
-                                    borderRadius: '2px',
-                                    background: 'var(--ink)',
-                                    border: '1.5px solid rgba(245,240,232,0.35)',
+                                    width: '14px',
+                                    height: '10px',
+                                    borderRadius: '2.5px',
+                                    background: 'var(--paper)',
                                 }}
                             />
                         ))}
                     </div>
                 </div>
 
-                {/* Sprocket holes — bottom */}
-                <div className="absolute bottom-0 left-0 right-0 h-5 z-10 flex items-center justify-center pointer-events-none" style={{ background: 'var(--ink)' }}>
-                    <div className="flex gap-6 px-4">
-                        {Array.from({ length: 40 }).map((_, i) => (
+                {/* Sprocket holes — bottom (punch-through to paper bg) */}
+                <div className="absolute bottom-0 left-0 right-0 h-6 z-10 flex items-center pointer-events-none overflow-hidden" style={{ background: 'var(--ink)' }}>
+                    <div className="flex gap-5 px-4 w-full justify-around">
+                        {Array.from({ length: 50 }).map((_, i) => (
                             <div
                                 key={`b${i}`}
                                 className="flex-shrink-0"
                                 style={{
-                                    width: '12px',
-                                    height: '8px',
-                                    borderRadius: '2px',
-                                    background: 'var(--ink)',
-                                    border: '1.5px solid rgba(245,240,232,0.35)',
+                                    width: '14px',
+                                    height: '10px',
+                                    borderRadius: '2.5px',
+                                    background: 'var(--paper)',
                                 }}
                             />
                         ))}
@@ -120,7 +118,7 @@ export default function GallerySection({ photos = [], instagramUrl, headline, la
 
                 {/* Film strip body */}
                 <div
-                    style={{ background: 'var(--ink)', paddingTop: '20px', paddingBottom: '20px' }}
+                    style={{ background: 'var(--ink)', paddingTop: '24px', paddingBottom: '24px' }}
                 >
                     <div
                         ref={trackRef}

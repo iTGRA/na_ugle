@@ -149,7 +149,13 @@
       "Bash(sed -i '' 's|->route\\('\\\\''platform.menu.items.edit'\\\\'', $i\\)|->route\\('\\\\''platform.menu.items.edit.existing'\\\\'', $i\\)|g' app/Orchid/Screens/Menu/MenuItemListScreen.php)",
       "Bash(grep -n \"platform\\\\..*edit\" app/Orchid/Screens/Gallery/*.php app/Orchid/Screens/Hero/*.php app/Orchid/Screens/Menu/*.php app/Orchid/Screens/Reservation/*.php)",
       "Bash(scp /tmp/migration_add_slogan.php na-ugle:/var/www/na-ugle/database/migrations/2026_04_15_120000_add_slogan_to_hero_slides.php)",
-      "Bash(ssh -o ConnectTimeout=10 na-ugle 'echo CONNECTED && cd /var/www/na-ugle && git log --oneline | head -3 && echo \"---\" && curl -sS -k -o /dev/null -w \"/ -> %{http_code}\\\\n\" -H \"Host: landing.swipeandev.ru\" https://127.0.0.1/ && curl -sS -k -o /dev/null -w \"/menu -> %{http_code}\\\\n\" -H \"Host: landing.swipeandev.ru\" https://127.0.0.1/menu && sudo systemctl is-active na-ugle-ssr php8.3-fpm nginx mysql')"
+      "Bash(ssh -o ConnectTimeout=10 na-ugle 'echo CONNECTED && cd /var/www/na-ugle && git log --oneline | head -3 && echo \"---\" && curl -sS -k -o /dev/null -w \"/ -> %{http_code}\\\\n\" -H \"Host: landing.swipeandev.ru\" https://127.0.0.1/ && curl -sS -k -o /dev/null -w \"/menu -> %{http_code}\\\\n\" -H \"Host: landing.swipeandev.ru\" https://127.0.0.1/menu && sudo systemctl is-active na-ugle-ssr php8.3-fpm nginx mysql')",
+      "Read(//Users/ilyakhalzov/Downloads/**)",
+      "Bash(python3 -c \"from PIL import Image; print\\('PIL ok'\\)\")",
+      "Bash(sips -r 90 \"/Users/ilyakhalzov/Downloads/IMG_20260413_091837.png\" --out /tmp/steel_rotated.png)",
+      "Bash(sips -g pixelHeight -g pixelWidth /tmp/steel_rotated.png)",
+      "Bash(sips --cropToHeightWidth 600 1920 /tmp/steel_rotated.png --out /tmp/steel_strip.png)",
+      "Bash(sips -s format jpeg -s formatOptions 75 /tmp/steel_strip.png --out steel-texture.jpg)"
     ]
   }
 }

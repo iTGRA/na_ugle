@@ -161,7 +161,12 @@
       "Bash(sips -s format jpeg -s formatOptions 80 \"/Users/ilyakhalzov/Downloads/IMG_20260413_091837.png\" --out steel-texture.jpg)",
       "Bash(sips -g pixelWidth -g pixelHeight steel-texture.jpg)",
       "Bash(ssh -o ConnectTimeout=10 na-ugle 'echo CONNECTED')",
-      "Bash(curl -sS --max-time 10 https://github.com)"
+      "Bash(curl -sS --max-time 10 https://github.com)",
+      "Bash(sed -i '' 's/export default function ParticleHero/export default function ParticleV1/' ParticleV1_Breathing.jsx)",
+      "Bash(sed -i '' 's/export default function ParticleHero/export default function ParticleV2/' ParticleV2_Liquid.jsx)",
+      "Bash(sed -i '' 's/export default function ParticleHero/export default function ParticleV3/' ParticleV3_WarpDrive.jsx)",
+      "Bash(sed -i '' 's/export default function ParticleHero/export default function ParticleV4/' ParticleV4_NeonTunnel.jsx)",
+      "Bash(grep \"export default function\" *.jsx)"
     ]
   }
 }

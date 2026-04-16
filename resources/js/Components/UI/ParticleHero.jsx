@@ -1,26 +1,28 @@
 /**
- * ParticleHero — hero-блок с коллективной анимацией частиц (digital liquid).
+ * ParticleHero — WARP-DRIVE digital liquid hero.
  *
- * 4 фазы (18s цикл): REST → WARP → EMBRACE → DISSOLVE → REST...
- * Все частицы подчиняются общему векторному полю + spring к origin + dead zone + mouse.
- * Вдохновение: «Паприка» Сатоси Кона — пространство перетекает, не знает жёстких границ.
+ * Частицы стартуют мгновенно и летят к центру (тексту) как звёзды в гиперпространстве.
+ * Текст — гравитационный центр. Частицы притягиваются, разгоняются, вытягиваются в линии,
+ * огибают мёртвую зону текста и уносятся дальше, создавая вихрь вокруг слова.
  *
- * Props:
- *   text, height, particleCount, gridCols, gridRows, bgColor, particleColor, textClassName
+ * Фазы:
+ *   LAUNCH (0-2s)   — взрыв из краёв к центру, максимальная скорость
+ *   ORBIT  (2-8s)   — вихрь вокруг текста, частицы на орбите
+ *   PULSE  (8-12s)  — пульсация: притяжение-отталкивание волнами
+ *   DRIFT  (12-16s) — спокойный дрейф, затухание перед новым циклом
+ *   → повтор
  */
 import { useEffect, useRef } from 'react';
 
-function smoothstep(edge0, edge1, x) {
-    const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+function smoothstep(a, b, x) {
+    const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
     return t * t * (3 - 2 * t);
 }
 
 export default function ParticleHero({
     text = 'Swipe',
     height = 600,
-    particleCount = 100,
-    gridCols = 12,
-    gridRows = 8,
+    particleCount = 200,
     bgColor = '#F5F0E8',
     particleColor = '#0A0A08',
     textClassName = 'font-bold',
@@ -34,108 +36,87 @@ export default function ParticleHero({
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
-
-        // Respect reduced motion
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         const canvas = canvasRef.current;
         const container = containerRef.current;
         const textEl = textRef.current;
         if (!canvas || !container || !textEl) return;
-
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        let width = 0;
-        let canvasH = height;
+        let W = 0, H = height;
+        let centerX = 0, centerY = 0;
         let deadZone = { x: 0, y: 0, w: 0, h: 0 };
-        let maxDistFromCenter = 1;
 
-        // --- Scene state ---
-        const scene = {
-            time: 0,
-            phase: 'REST',
-            phaseTime: 0,
-            phaseIndex: 0,
-            warpAngle: Math.random() * Math.PI * 2,
-            embraceIntensity: 0,
-            dissolveProgress: 0,
-            restBreathAmplitude: 1,
-            cycleCount: 0,
-        };
+        const PHASES = ['LAUNCH', 'ORBIT', 'PULSE', 'DRIFT'];
+        const DURATIONS = { LAUNCH: 2, ORBIT: 6, PULSE: 4, DRIFT: 4 };
+        const scene = { time: 0, phase: 'LAUNCH', phaseTime: 0, phaseIdx: 0, cycle: 0 };
 
-        const BASE_DURATIONS = { REST: 6, WARP: 3, EMBRACE: 5, DISSOLVE: 4 };
-        const PHASE_ORDER = ['REST', 'WARP', 'EMBRACE', 'DISSOLVE'];
-        let phaseDurations = { ...BASE_DURATIONS };
-
-        const randomizeDurations = () => {
-            for (const k of Object.keys(BASE_DURATIONS)) {
-                phaseDurations[k] = BASE_DURATIONS[k] * (0.9 + Math.random() * 0.2);
-            }
-        };
-        randomizeDurations();
-
-        // --- Init ---
-        const initParticles = () => {
+        const init = () => {
             const rect = container.getBoundingClientRect();
-            width = rect.width;
+            W = rect.width;
             const dpr = window.devicePixelRatio || 1;
-
-            canvas.width = width * dpr;
-            canvas.height = canvasH * dpr;
-            canvas.style.width = `${width}px`;
-            canvas.style.height = `${canvasH}px`;
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            canvas.style.width = `${W}px`;
+            canvas.style.height = `${H}px`;
             ctx.scale(dpr, dpr);
 
-            const textRect = textEl.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-            const padX = 120;
-            const padY = 80;
+            centerX = W / 2;
+            centerY = H / 2;
+
+            const tRect = textEl.getBoundingClientRect();
+            const cRect = container.getBoundingClientRect();
+            const px = 100, py = 60;
             deadZone = {
-                x: textRect.left - containerRect.left - padX,
-                y: textRect.top - containerRect.top - padY,
-                w: textRect.width + padX * 2,
-                h: textRect.height + padY * 2,
+                x: tRect.left - cRect.left - px,
+                y: tRect.top - cRect.top - py,
+                w: tRect.width + px * 2,
+                h: tRect.height + py * 2,
             };
 
-            const cx = width / 2;
-            const cy = canvasH / 2;
-
             const particles = [];
-            const cellW = width / gridCols;
-            const cellH = canvasH / gridRows;
-
             for (let i = 0; i < particleCount; i++) {
-                const col = i % gridCols;
-                const row = Math.floor(i / gridCols) % gridRows;
-                const originX = col * cellW + cellW / 2 + (Math.random() - 0.5) * cellW * 0.4;
-                const originY = row * cellH + cellH / 2 + (Math.random() - 0.5) * cellH * 0.4;
-                const dx = originX - cx;
-                const dy = originY - cy;
+                // Spawn on edges / random positions far from center
+                const angle = Math.random() * Math.PI * 2;
+                const radius = Math.max(W, H) * 0.6 + Math.random() * Math.max(W, H) * 0.4;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+
+                // Origin = grid position (for drift phase)
+                const col = i % 14;
+                const row = Math.floor(i / 14) % 10;
+                const originX = (col + 0.5) * (W / 14) + (Math.random() - 0.5) * 20;
+                const originY = (row + 0.5) * (H / 10) + (Math.random() - 0.5) * 20;
 
                 particles.push({
-                    x: originX,
-                    y: originY,
-                    vx: 0,
-                    vy: 0,
-                    originX,
-                    originY,
-                    size: 2 + Math.random() * 3,
+                    x, y,
+                    vx: 0, vy: 0,
+                    originX, originY,
+                    size: 1.5 + Math.random() * 2.5,
                     phase: Math.random() * Math.PI * 2,
                     opacity: 1,
-                    distanceFromCenter: Math.sqrt(dx * dx + dy * dy),
+                    orbitDir: Math.random() > 0.5 ? 1 : -1, // CW or CCW
+                    trailLength: 3 + Math.random() * 5,
+                    trail: [],
                 });
             }
-
-            maxDistFromCenter = Math.max(...particles.map(p => p.distanceFromCenter), 1);
             particlesRef.current = particles;
         };
 
-        // --- Dead zone repulsion ---
-        const getDeadZoneForce = (p) => {
+        const advancePhase = () => {
+            scene.phaseIdx = (scene.phaseIdx + 1) % PHASES.length;
+            scene.phase = PHASES[scene.phaseIdx];
+            scene.phaseTime = 0;
+            if (scene.phase === 'LAUNCH') scene.cycle++;
+        };
+
+        // --- Forces ---
+        const getDeadZoneForce = (p, strength = 2.5) => {
             const cx = deadZone.x + deadZone.w / 2;
             const cy = deadZone.y + deadZone.h / 2;
-            const buffer = 100;
+            const buffer = 80;
             const dx = Math.max(deadZone.x - p.x, 0, p.x - (deadZone.x + deadZone.w));
             const dy = Math.max(deadZone.y - p.y, 0, p.y - (deadZone.y + deadZone.h));
             const dist = Math.sqrt(dx * dx + dy * dy);
@@ -143,209 +124,146 @@ export default function ParticleHero({
             const dirX = p.x - cx;
             const dirY = p.y - cy;
             const len = Math.sqrt(dirX * dirX + dirY * dirY) || 1;
-            const strength = ((buffer - dist) / buffer) ** 2 * 2.5;
-            return { fx: (dirX / len) * strength, fy: (dirY / len) * strength };
+            const s = ((buffer - dist) / buffer) ** 2 * strength;
+            return { fx: (dirX / len) * s, fy: (dirY / len) * s };
         };
 
-        // --- Mouse repulsion ---
         const getMouseForce = (p) => {
             if (!mouseRef.current.active) return { fx: 0, fy: 0 };
             const dx = p.x - mouseRef.current.x;
             const dy = p.y - mouseRef.current.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            const radius = 150;
-            if (dist > radius) return { fx: 0, fy: 0 };
-            const strength = ((radius - dist) / radius) * 1.5;
+            if (dist > 180) return { fx: 0, fy: 0 };
+            const s = ((180 - dist) / 180) * 2;
             const len = dist || 1;
-            return { fx: (dx / len) * strength, fy: (dy / len) * strength };
+            return { fx: (dx / len) * s, fy: (dy / len) * s };
         };
 
-        // --- Embrace force: attract to dead zone boundary ---
-        const getEmbraceForce = (p, intensity) => {
-            if (intensity < 0.01) return { fx: 0, fy: 0 };
-            // Nearest point on dead zone boundary (buffer/2 outside)
-            const bufferHalf = 50;
-            const targetX = Math.max(deadZone.x - bufferHalf, Math.min(p.x, deadZone.x + deadZone.w + bufferHalf));
-            const targetY = Math.max(deadZone.y - bufferHalf, Math.min(p.y, deadZone.y + deadZone.h + bufferHalf));
-            // Clamp to boundary
-            let bx = targetX, by = targetY;
-            if (p.x > deadZone.x - bufferHalf && p.x < deadZone.x + deadZone.w + bufferHalf &&
-                p.y > deadZone.y - bufferHalf && p.y < deadZone.y + deadZone.h + bufferHalf) {
-                // Inside expanded zone — push to nearest edge
-                const dLeft = p.x - (deadZone.x - bufferHalf);
-                const dRight = (deadZone.x + deadZone.w + bufferHalf) - p.x;
-                const dTop = p.y - (deadZone.y - bufferHalf);
-                const dBottom = (deadZone.y + deadZone.h + bufferHalf) - p.y;
-                const minD = Math.min(dLeft, dRight, dTop, dBottom);
-                if (minD === dLeft) bx = deadZone.x - bufferHalf;
-                else if (minD === dRight) bx = deadZone.x + deadZone.w + bufferHalf;
-                else if (minD === dTop) by = deadZone.y - bufferHalf;
-                else by = deadZone.y + deadZone.h + bufferHalf;
-            }
-            const dx = bx - p.x;
-            const dy = by - p.y;
-            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            const strength = intensity * 0.8;
-            return { fx: (dx / dist) * strength, fy: (dy / dist) * strength };
-        };
-
-        // --- Phase transition ---
-        const advancePhase = () => {
-            scene.phaseIndex = (scene.phaseIndex + 1) % PHASE_ORDER.length;
-            scene.phase = PHASE_ORDER[scene.phaseIndex];
-            scene.phaseTime = 0;
-
-            if (scene.phase === 'REST') {
-                scene.cycleCount++;
-                randomizeDurations();
-            }
-            if (scene.phase === 'WARP') {
-                scene.warpAngle = Math.random() * Math.PI * 2;
-            }
-        };
-
-        // --- Animation loop ---
-        const dt = 1 / 60; // approximate frame time in seconds
+        // --- Animation ---
         const animate = () => {
-            scene.time += 0.01;
-            scene.phaseTime += dt;
+            scene.time += 0.016;
+            scene.phaseTime += 0.016;
 
-            const phaseDuration = phaseDurations[scene.phase];
+            if (scene.phaseTime >= DURATIONS[scene.phase]) advancePhase();
+            if (prefersReduced) { scene.phase = 'DRIFT'; }
 
-            // Phase transition
-            if (scene.phaseTime >= phaseDuration) {
-                advancePhase();
-            }
-
-            // If reduced motion — freeze in REST with minimal breathing
-            if (prefersReduced) {
-                scene.phase = 'REST';
-                scene.phaseTime = 0;
-            }
-
-            const pt = scene.phaseTime;
-            const pd = phaseDurations[scene.phase];
             const t = scene.time;
+            const pt = scene.phaseTime;
+            const pd = DURATIONS[scene.phase];
+            const progress = pt / pd; // 0..1
 
-            // Phase blend (0.5s crossfade)
-            const fadeZone = 0.5;
-            const nextPhaseIndex = (scene.phaseIndex + 1) % PHASE_ORDER.length;
-            const blendToNext = pt > pd - fadeZone ? smoothstep(pd - fadeZone, pd, pt) : 0;
-
-            // Phase-specific parameters
-            let warpStrength = 0, warpAngle = scene.warpAngle;
-            let embraceIntensity = 0;
-            let dissolveProgress = 0;
-            let breathScale = 1;
-
-            if (scene.phase === 'REST') {
-                scene.restBreathAmplitude = 1 + Math.sin(t * 0.15) * 0.5;
-                breathScale = 1;
-            } else if (scene.phase === 'WARP') {
-                warpAngle = scene.warpAngle + Math.sin(pt * 2) * Math.PI;
-                warpStrength = Math.sin((pt / pd) * Math.PI);
-                breathScale = 0.3;
-            } else if (scene.phase === 'EMBRACE') {
-                embraceIntensity = Math.sin((pt / pd) * Math.PI);
-                scene.embraceIntensity = embraceIntensity;
-                breathScale = 0.5;
-            } else if (scene.phase === 'DISSOLVE') {
-                dissolveProgress = Math.min(pt / pd, 1);
-                scene.dissolveProgress = dissolveProgress;
-                breathScale = 0.2;
-            }
-
-            // Blend with next phase
-            const nextPhase = PHASE_ORDER[nextPhaseIndex];
-            if (blendToNext > 0) {
-                if (nextPhase === 'WARP') {
-                    warpStrength = warpStrength * (1 - blendToNext);
-                }
-                if (nextPhase === 'REST') {
-                    breathScale = breathScale * (1 - blendToNext) + 1 * blendToNext;
-                }
-            }
-
-            ctx.clearRect(0, 0, width, canvasH);
-
+            ctx.clearRect(0, 0, W, H);
             const particles = particlesRef.current;
-            const breathAmp = scene.restBreathAmplitude * breathScale;
 
             for (const p of particles) {
-                // --- Breathing ---
-                const breatheX = Math.sin(t + p.phase) * 4 * breathAmp;
-                const breatheY = Math.cos(t * 0.8 + p.phase) * 4 * breathAmp;
-                const targetX = p.originX + breatheX;
-                const targetY = p.originY + breatheY;
+                let fx = 0, fy = 0;
 
-                // --- Spring to origin (weakened during EMBRACE) ---
-                const springK = scene.phase === 'EMBRACE' ? 0.04 * (1 - embraceIntensity * 0.8) :
-                    scene.phase === 'DISSOLVE' ? 0.08 : 0.04;
-                const springX = (targetX - p.x) * springK;
-                const springY = (targetY - p.y) * springK;
+                const toCenterX = centerX - p.x;
+                const toCenterY = centerY - p.y;
+                const distToCenter = Math.sqrt(toCenterX * toCenterX + toCenterY * toCenterY) || 1;
+                const normToCX = toCenterX / distToCenter;
+                const normToCY = toCenterY / distToCenter;
 
-                // --- Forces ---
-                const dead = getDeadZoneForce(p);
+                // Perpendicular for orbit
+                const perpX = -normToCY * p.orbitDir;
+                const perpY = normToCX * p.orbitDir;
+
+                if (scene.phase === 'LAUNCH') {
+                    // Powerful pull toward center — warp speed
+                    const pullStrength = 4 + progress * 8;
+                    fx += normToCX * pullStrength;
+                    fy += normToCY * pullStrength;
+                    // Slight tangential to start orbit
+                    fx += perpX * progress * 3;
+                    fy += perpY * progress * 3;
+
+                } else if (scene.phase === 'ORBIT') {
+                    // Orbital: tangential + centripetal
+                    const orbitSpeed = 3 + Math.sin(t + p.phase) * 1;
+                    const centripetal = 1.5 + Math.sin(t * 0.5 + p.phase) * 0.5;
+                    fx += perpX * orbitSpeed;
+                    fy += perpY * orbitSpeed;
+                    // Pull inward (but dead zone blocks)
+                    fx += normToCX * centripetal;
+                    fy += normToCY * centripetal;
+                    // Breathing
+                    fx += Math.sin(t + p.phase) * 0.3;
+                    fy += Math.cos(t * 0.7 + p.phase) * 0.3;
+
+                } else if (scene.phase === 'PULSE') {
+                    // Pulsating waves — push out then pull in
+                    const wave = Math.sin(progress * Math.PI * 4 + p.phase * 0.5);
+                    const pulseForce = wave * 4;
+                    fx += normToCX * pulseForce;
+                    fy += normToCY * pulseForce;
+                    // Keep orbiting slowly
+                    fx += perpX * 1.5;
+                    fy += perpY * 1.5;
+
+                } else if (scene.phase === 'DRIFT') {
+                    // Gentle return to grid + slow breathing
+                    const springX = (p.originX - p.x) * 0.02;
+                    const springY = (p.originY - p.y) * 0.02;
+                    fx += springX;
+                    fy += springY;
+                    fx += Math.sin(t + p.phase) * 0.5;
+                    fy += Math.cos(t * 0.6 + p.phase) * 0.5;
+                    // Last second: start pulling to center again for next LAUNCH
+                    if (progress > 0.75) {
+                        const ramp = (progress - 0.75) * 4;
+                        fx += normToCX * ramp * 2;
+                        fy += normToCY * ramp * 2;
+                    }
+                }
+
+                // Always: dead zone + mouse
+                const dead = getDeadZoneForce(p, scene.phase === 'LAUNCH' ? 5 : 2.5);
                 const mouse = getMouseForce(p);
+                fx += dead.fx + mouse.fx;
+                fy += dead.fy + mouse.fy;
 
-                let fx = springX + dead.fx + mouse.fx;
-                let fy = springY + dead.fy + mouse.fy;
-
-                // WARP: global directional force
-                if (warpStrength > 0.01) {
-                    fx += Math.cos(warpAngle) * warpStrength * 3;
-                    fy += Math.sin(warpAngle) * warpStrength * 3;
-                }
-
-                // EMBRACE: attract to text boundary
-                if (embraceIntensity > 0.01) {
-                    const emb = getEmbraceForce(p, embraceIntensity);
-                    fx += emb.fx;
-                    fy += emb.fy;
-                }
-
-                // --- Velocity ---
                 p.vx += fx;
                 p.vy += fy;
-                p.vx *= 0.85;
-                p.vy *= 0.85;
+
+                // Damping (less during LAUNCH for speed lines)
+                const damp = scene.phase === 'LAUNCH' ? 0.92 : 0.88;
+                p.vx *= damp;
+                p.vy *= damp;
+
                 p.x += p.vx;
                 p.y += p.vy;
 
-                // --- DISSOLVE: wave opacity ---
-                if (scene.phase === 'DISSOLVE') {
-                    const normDist = p.distanceFromCenter / maxDistFromCenter;
-                    let targetOpacity;
-                    const isReverse = scene.cycleCount % 2 === 1;
-                    const nd = isReverse ? (1 - normDist) : normDist;
+                // Trail
+                p.trail.push({ x: p.x, y: p.y });
+                if (p.trail.length > p.trailLength) p.trail.shift();
 
-                    if (dissolveProgress < 0.5) {
-                        // Disappear wave: edges first (or center first if reverse)
-                        const wp = 1 - dissolveProgress * 2;
-                        targetOpacity = smoothstep(wp - 0.15, wp + 0.15, nd);
-                    } else {
-                        // Reappear wave: center first (or edges first if reverse)
-                        const wp = (dissolveProgress - 0.5) * 2;
-                        targetOpacity = smoothstep(wp - 0.15, wp + 0.15, 1 - nd);
-                    }
-                    p.opacity += (targetOpacity - p.opacity) * 0.1;
-                } else {
-                    // Restore opacity
-                    p.opacity += (1 - p.opacity) * 0.05;
-                }
-
-                // --- Render ---
-                if (p.opacity < 0.01) continue;
-
+                // Speed for visual
                 const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
                 const angle = Math.atan2(p.vy, p.vx);
-                const stretch = 1 + Math.min(speed * 0.8, 2);
 
+                // --- Render trail (speed lines) ---
+                if (speed > 1.5 && p.trail.length > 2) {
+                    ctx.save();
+                    ctx.strokeStyle = particleColor;
+                    ctx.lineWidth = Math.min(p.size * 0.6, 2);
+                    ctx.globalAlpha = Math.min(speed * 0.06, 0.4);
+                    ctx.beginPath();
+                    ctx.moveTo(p.trail[0].x, p.trail[0].y);
+                    for (let j = 1; j < p.trail.length; j++) {
+                        ctx.lineTo(p.trail[j].x, p.trail[j].y);
+                    }
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                    ctx.restore();
+                }
+
+                // --- Render particle ---
+                const stretch = 1 + Math.min(speed * 0.5, 3);
                 ctx.save();
-                ctx.globalAlpha = p.opacity;
                 ctx.translate(p.x, p.y);
                 ctx.rotate(angle);
                 ctx.fillStyle = particleColor;
+                ctx.globalAlpha = Math.min(0.4 + speed * 0.08, 1);
                 ctx.beginPath();
                 ctx.ellipse(0, 0, p.size * stretch, p.size / stretch, 0, 0, Math.PI * 2);
                 ctx.fill();
@@ -353,38 +271,31 @@ export default function ParticleHero({
                 ctx.restore();
             }
 
-            // --- Debug (uncomment to tune timings) ---
-            // ctx.fillStyle = 'rgba(0,0,0,0.5)';
-            // ctx.font = '11px monospace';
-            // ctx.fillText(`${scene.phase} ${pt.toFixed(1)}s / ${pd.toFixed(1)}s  cycle:${scene.cycleCount}`, width - 280, 20);
-
             rafRef.current = requestAnimationFrame(animate);
         };
 
-        // --- Events ---
-        const handleMouseMove = (e) => {
-            const rect = container.getBoundingClientRect();
-            mouseRef.current.x = e.clientX - rect.left;
-            mouseRef.current.y = e.clientY - rect.top;
+        const onMove = (e) => {
+            const r = container.getBoundingClientRect();
+            mouseRef.current.x = e.clientX - r.left;
+            mouseRef.current.y = e.clientY - r.top;
             mouseRef.current.active = true;
         };
-        const handleMouseLeave = () => { mouseRef.current.active = false; };
-        const handleResize = () => { initParticles(); };
+        const onLeave = () => { mouseRef.current.active = false; };
+        const onResize = () => { init(); };
 
-        initParticles();
+        init();
         animate();
 
-        container.addEventListener('mousemove', handleMouseMove);
-        container.addEventListener('mouseleave', handleMouseLeave);
-        window.addEventListener('resize', handleResize);
-
+        container.addEventListener('mousemove', onMove);
+        container.addEventListener('mouseleave', onLeave);
+        window.addEventListener('resize', onResize);
         return () => {
             if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-            container.removeEventListener('mousemove', handleMouseMove);
-            container.removeEventListener('mouseleave', handleMouseLeave);
-            window.removeEventListener('resize', handleResize);
+            container.removeEventListener('mousemove', onMove);
+            container.removeEventListener('mouseleave', onLeave);
+            window.removeEventListener('resize', onResize);
         };
-    }, [text, height, particleCount, gridCols, gridRows, particleColor]);
+    }, [text, height, particleCount, particleColor]);
 
     return (
         <div

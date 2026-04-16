@@ -1,7 +1,7 @@
 export default function ChefPicksSection({ items = [], headline }) {
     if (items.length === 0) return null;
     return (
-        <section className="inverted section">
+        <section className="section" style={{ background: '#1a1a18', color: 'var(--paper)' }}>
             <div className="shell">
                 <div className="text-center mb-16">
                     <h2 className="t-h2">{headline || 'Рекомендации от шефа'}</h2>

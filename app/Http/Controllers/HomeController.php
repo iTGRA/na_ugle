@@ -62,7 +62,6 @@ class HomeController extends Controller
                 'chefPicks' => MenuItem::with('category')
                     ->available()->chefPicks()
                     ->orderBy('sort_order')
-                    ->limit(6)
                     ->get()
                     ->map(fn ($i) => $this->mapItem($i))
                     ->all(),

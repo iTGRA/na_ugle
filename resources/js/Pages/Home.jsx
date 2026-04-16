@@ -28,7 +28,6 @@ export default function Home({ settings = {}, featuredItems = [], chefPicks = []
                 <ManifestoSection
                     headline={settings.manifesto_headline}
                     text={settings.manifesto_text}
-                    durnyashaQuote={settings.durnyasha_quote}
                     barMenuPdf={settings.bar_menu_pdf}
                     wineCardPdf={settings.wine_card_pdf}
                 />

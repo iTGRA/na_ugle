@@ -8,13 +8,10 @@ export default function Lab() {
             <Head title="Lab" />
             <div className="relative">
                 <ParticleHero
-                    text="Swipe"
+                    text="swipe base"
                     height={typeof window !== 'undefined' ? window.innerHeight : 800}
-                    particleCount={120}
-                    gridCols={14}
-                    gridRows={10}
-                    bgColor="#F5F0E8"
-                    particleColor="#0A0A08"
+                    particleCount={200}
+                    bgColor="#FFFFFF"
                     textClassName="font-bold"
                 />
                 {/* ImageButton centered below the title */}

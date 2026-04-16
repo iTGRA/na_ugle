@@ -1,16 +1,14 @@
 /**
- * ParticleHero — WARP-DRIVE digital liquid hero.
+ * ParticleHero — WARP-DRIVE with gradient color phases.
  *
- * Частицы стартуют мгновенно и летят к центру (тексту) как звёзды в гиперпространстве.
- * Текст — гравитационный центр. Частицы притягиваются, разгоняются, вытягиваются в линии,
- * огибают мёртвую зону текста и уносятся дальше, создавая вихрь вокруг слова.
+ * Color narrative (art direction):
+ *   LAUNCH → cold energy (lime #CEFF88 → olive #92B075) — fresh blast
+ *   ORBIT  → warm vortex (coral #FF7960 → peach #FFC3B9) — passion
+ *   PULSE  → digital chill (lavender #CDCCE8 → cyan #B4F6FF) — pulsation
+ *   DRIFT  → calm fade (lemon #FFF5BC → mist #EDEDED) — rest
  *
- * Фазы:
- *   LAUNCH (0-2s)   — взрыв из краёв к центру, максимальная скорость
- *   ORBIT  (2-8s)   — вихрь вокруг текста, частицы на орбите
- *   PULSE  (8-12s)  — пульсация: притяжение-отталкивание волнами
- *   DRIFT  (12-16s) — спокойный дрейф, затухание перед новым циклом
- *   → повтор
+ * Each particle picks a random position on its phase gradient.
+ * Phase transitions: 0.5s color crossfade via RGB lerp.
  */
 import { useEffect, useRef } from 'react';
 
@@ -19,12 +17,36 @@ function smoothstep(a, b, x) {
     return t * t * (3 - 2 * t);
 }
 
+function hexToRgb(hex) {
+    const v = parseInt(hex.replace('#', ''), 16);
+    return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+}
+
+function lerpColor(c1, c2, t) {
+    return [
+        Math.round(c1[0] + (c2[0] - c1[0]) * t),
+        Math.round(c1[1] + (c2[1] - c1[1]) * t),
+        Math.round(c1[2] + (c2[2] - c1[2]) * t),
+    ];
+}
+
+function rgbStr(c, a = 1) {
+    return a >= 1 ? `rgb(${c[0]},${c[1]},${c[2]})` : `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+}
+
+// Phase color palettes [start, end]
+const PHASE_COLORS = {
+    LAUNCH: [hexToRgb('#CEFF88'), hexToRgb('#2D3922')],
+    ORBIT:  [hexToRgb('#FF7960'), hexToRgb('#FFC3B9')],
+    PULSE:  [hexToRgb('#B4F6FF'), hexToRgb('#CDCCE8')],
+    DRIFT:  [hexToRgb('#FFF5BC'), hexToRgb('#EDEDED')],
+};
+
 export default function ParticleHero({
-    text = 'Swipe',
+    text = 'swipe base',
     height = 600,
     particleCount = 200,
-    bgColor = '#F5F0E8',
-    particleColor = '#0A0A08',
+    bgColor = '#FFFFFF',
     textClassName = 'font-bold',
 }) {
     const canvasRef = useRef(null);
@@ -78,28 +100,26 @@ export default function ParticleHero({
 
             const particles = [];
             for (let i = 0; i < particleCount; i++) {
-                // Spawn on edges / random positions far from center
                 const angle = Math.random() * Math.PI * 2;
                 const radius = Math.max(W, H) * 0.6 + Math.random() * Math.max(W, H) * 0.4;
                 const x = centerX + Math.cos(angle) * radius;
                 const y = centerY + Math.sin(angle) * radius;
-
-                // Origin = grid position (for drift phase)
                 const col = i % 14;
                 const row = Math.floor(i / 14) % 10;
                 const originX = (col + 0.5) * (W / 14) + (Math.random() - 0.5) * 20;
                 const originY = (row + 0.5) * (H / 10) + (Math.random() - 0.5) * 20;
 
                 particles.push({
-                    x, y,
-                    vx: 0, vy: 0,
+                    x, y, vx: 0, vy: 0,
                     originX, originY,
                     size: 1.5 + Math.random() * 2.5,
                     phase: Math.random() * Math.PI * 2,
                     opacity: 1,
-                    orbitDir: Math.random() > 0.5 ? 1 : -1, // CW or CCW
+                    orbitDir: Math.random() > 0.5 ? 1 : -1,
                     trailLength: 3 + Math.random() * 5,
                     trail: [],
+                    colorSeed: Math.random(), // position on gradient
+                    currentColor: [0, 0, 0],
                 });
             }
             particlesRef.current = particles;
@@ -112,7 +132,6 @@ export default function ParticleHero({
             if (scene.phase === 'LAUNCH') scene.cycle++;
         };
 
-        // --- Forces ---
         const getDeadZoneForce = (p, strength = 2.5) => {
             const cx = deadZone.x + deadZone.w / 2;
             const cy = deadZone.y + deadZone.h / 2;
@@ -139,18 +158,22 @@ export default function ParticleHero({
             return { fx: (dx / len) * s, fy: (dy / len) * s };
         };
 
-        // --- Animation ---
         const animate = () => {
             scene.time += 0.016;
             scene.phaseTime += 0.016;
-
             if (scene.phaseTime >= DURATIONS[scene.phase]) advancePhase();
-            if (prefersReduced) { scene.phase = 'DRIFT'; }
+            if (prefersReduced) scene.phase = 'DRIFT';
 
             const t = scene.time;
             const pt = scene.phaseTime;
             const pd = DURATIONS[scene.phase];
-            const progress = pt / pd; // 0..1
+            const progress = pt / pd;
+
+            // Color: current phase palette + crossfade to next
+            const curColors = PHASE_COLORS[scene.phase];
+            const nextPhase = PHASES[(scene.phaseIdx + 1) % PHASES.length];
+            const nextColors = PHASE_COLORS[nextPhase];
+            const colorBlend = pt > pd - 0.5 ? smoothstep(pd - 0.5, pd, pt) : 0;
 
             ctx.clearRect(0, 0, W, H);
             const particles = particlesRef.current;
@@ -163,52 +186,29 @@ export default function ParticleHero({
                 const distToCenter = Math.sqrt(toCenterX * toCenterX + toCenterY * toCenterY) || 1;
                 const normToCX = toCenterX / distToCenter;
                 const normToCY = toCenterY / distToCenter;
-
-                // Perpendicular for orbit
                 const perpX = -normToCY * p.orbitDir;
                 const perpY = normToCX * p.orbitDir;
 
                 if (scene.phase === 'LAUNCH') {
-                    // Powerful pull toward center — warp speed
-                    const pullStrength = 4 + progress * 8;
-                    fx += normToCX * pullStrength;
-                    fy += normToCY * pullStrength;
-                    // Slight tangential to start orbit
+                    const pull = 4 + progress * 8;
+                    fx += normToCX * pull;
+                    fy += normToCY * pull;
                     fx += perpX * progress * 3;
                     fy += perpY * progress * 3;
-
                 } else if (scene.phase === 'ORBIT') {
-                    // Orbital: tangential + centripetal
                     const orbitSpeed = 3 + Math.sin(t + p.phase) * 1;
                     const centripetal = 1.5 + Math.sin(t * 0.5 + p.phase) * 0.5;
-                    fx += perpX * orbitSpeed;
-                    fy += perpY * orbitSpeed;
-                    // Pull inward (but dead zone blocks)
-                    fx += normToCX * centripetal;
-                    fy += normToCY * centripetal;
-                    // Breathing
+                    fx += perpX * orbitSpeed + normToCX * centripetal;
+                    fy += perpY * orbitSpeed + normToCY * centripetal;
                     fx += Math.sin(t + p.phase) * 0.3;
                     fy += Math.cos(t * 0.7 + p.phase) * 0.3;
-
                 } else if (scene.phase === 'PULSE') {
-                    // Pulsating waves — push out then pull in
                     const wave = Math.sin(progress * Math.PI * 4 + p.phase * 0.5);
-                    const pulseForce = wave * 4;
-                    fx += normToCX * pulseForce;
-                    fy += normToCY * pulseForce;
-                    // Keep orbiting slowly
-                    fx += perpX * 1.5;
-                    fy += perpY * 1.5;
-
+                    fx += normToCX * wave * 4 + perpX * 1.5;
+                    fy += normToCY * wave * 4 + perpY * 1.5;
                 } else if (scene.phase === 'DRIFT') {
-                    // Gentle return to grid + slow breathing
-                    const springX = (p.originX - p.x) * 0.02;
-                    const springY = (p.originY - p.y) * 0.02;
-                    fx += springX;
-                    fy += springY;
-                    fx += Math.sin(t + p.phase) * 0.5;
-                    fy += Math.cos(t * 0.6 + p.phase) * 0.5;
-                    // Last second: start pulling to center again for next LAUNCH
+                    fx += (p.originX - p.x) * 0.02 + Math.sin(t + p.phase) * 0.5;
+                    fy += (p.originY - p.y) * 0.02 + Math.cos(t * 0.6 + p.phase) * 0.5;
                     if (progress > 0.75) {
                         const ramp = (progress - 0.75) * 4;
                         fx += normToCX * ramp * 2;
@@ -216,7 +216,6 @@ export default function ParticleHero({
                     }
                 }
 
-                // Always: dead zone + mouse
                 const dead = getDeadZoneForce(p, scene.phase === 'LAUNCH' ? 5 : 2.5);
                 const mouse = getMouseForce(p);
                 fx += dead.fx + mouse.fx;
@@ -224,50 +223,55 @@ export default function ParticleHero({
 
                 p.vx += fx;
                 p.vy += fy;
-
-                // Damping (less during LAUNCH for speed lines)
                 const damp = scene.phase === 'LAUNCH' ? 0.92 : 0.88;
                 p.vx *= damp;
                 p.vy *= damp;
-
                 p.x += p.vx;
                 p.y += p.vy;
 
-                // Trail
                 p.trail.push({ x: p.x, y: p.y });
                 if (p.trail.length > p.trailLength) p.trail.shift();
 
-                // Speed for visual
                 const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
                 const angle = Math.atan2(p.vy, p.vx);
 
-                // --- Render trail (speed lines) ---
+                // --- Color per particle ---
+                // Each particle has a colorSeed (0..1) that picks its position on the gradient
+                // Speed also shifts the color: fast particles → end of gradient
+                const speedShift = Math.min(speed * 0.05, 0.4);
+                const gradPos = Math.min(p.colorSeed * 0.6 + speedShift, 1);
+
+                let targetColor = lerpColor(curColors[0], curColors[1], gradPos);
+                if (colorBlend > 0) {
+                    const nextTarget = lerpColor(nextColors[0], nextColors[1], gradPos);
+                    targetColor = lerpColor(targetColor, nextTarget, colorBlend);
+                }
+
+                // Smooth color transition
+                p.currentColor = lerpColor(p.currentColor, targetColor, 0.08);
+                const colorRgb = p.currentColor;
+
+                // --- Trail ---
                 if (speed > 1.5 && p.trail.length > 2) {
                     ctx.save();
-                    ctx.strokeStyle = particleColor;
+                    ctx.strokeStyle = rgbStr(colorRgb, Math.min(speed * 0.05, 0.35));
                     ctx.lineWidth = Math.min(p.size * 0.6, 2);
-                    ctx.globalAlpha = Math.min(speed * 0.06, 0.4);
                     ctx.beginPath();
                     ctx.moveTo(p.trail[0].x, p.trail[0].y);
-                    for (let j = 1; j < p.trail.length; j++) {
-                        ctx.lineTo(p.trail[j].x, p.trail[j].y);
-                    }
+                    for (let j = 1; j < p.trail.length; j++) ctx.lineTo(p.trail[j].x, p.trail[j].y);
                     ctx.stroke();
-                    ctx.globalAlpha = 1;
                     ctx.restore();
                 }
 
-                // --- Render particle ---
+                // --- Particle ---
                 const stretch = 1 + Math.min(speed * 0.5, 3);
                 ctx.save();
                 ctx.translate(p.x, p.y);
                 ctx.rotate(angle);
-                ctx.fillStyle = particleColor;
-                ctx.globalAlpha = Math.min(0.4 + speed * 0.08, 1);
+                ctx.fillStyle = rgbStr(colorRgb, Math.min(0.5 + speed * 0.06, 1));
                 ctx.beginPath();
                 ctx.ellipse(0, 0, p.size * stretch, p.size / stretch, 0, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.globalAlpha = 1;
                 ctx.restore();
             }
 
@@ -295,7 +299,7 @@ export default function ParticleHero({
             container.removeEventListener('mouseleave', onLeave);
             window.removeEventListener('resize', onResize);
         };
-    }, [text, height, particleCount, particleColor]);
+    }, [text, height, particleCount]);
 
     return (
         <div
@@ -308,7 +312,7 @@ export default function ParticleHero({
                 <div
                     ref={textRef}
                     className={textClassName}
-                    style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', letterSpacing: '-0.03em' }}
+                    style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', letterSpacing: '-0.03em', color: '#0A0A08' }}
                 >
                     {text}
                 </div>

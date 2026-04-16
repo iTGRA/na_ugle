@@ -34,12 +34,12 @@ function rgbStr(c, a = 1) {
     return a >= 1 ? `rgb(${c[0]},${c[1]},${c[2]})` : `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 }
 
-// Phase color palettes [start, end]
+// Phase color palettes — high contrast (Google/Apple inspired)
 const PHASE_COLORS = {
-    LAUNCH: [hexToRgb('#CEFF88'), hexToRgb('#2D3922')],
-    ORBIT:  [hexToRgb('#FF7960'), hexToRgb('#FFC3B9')],
-    PULSE:  [hexToRgb('#B4F6FF'), hexToRgb('#CDCCE8')],
-    DRIFT:  [hexToRgb('#FFF5BC'), hexToRgb('#EDEDED')],
+    LAUNCH: [hexToRgb('#4285F4'), hexToRgb('#1A73E8')],  // Google Blue
+    ORBIT:  [hexToRgb('#EA4335'), hexToRgb('#D93025')],   // Google Red
+    PULSE:  [hexToRgb('#A259FF'), hexToRgb('#7B2FBE')],   // Purple (Apple-ish)
+    DRIFT:  [hexToRgb('#34A853'), hexToRgb('#1E8E3E')],   // Google Green
 };
 
 export default function ParticleHero({
@@ -254,7 +254,7 @@ export default function ParticleHero({
                 // --- Trail ---
                 if (speed > 1.5 && p.trail.length > 2) {
                     ctx.save();
-                    ctx.strokeStyle = rgbStr(colorRgb, Math.min(speed * 0.05, 0.35));
+                    ctx.strokeStyle = rgbStr(colorRgb, Math.min(speed * 0.06, 0.5));
                     ctx.lineWidth = Math.min(p.size * 0.6, 2);
                     ctx.beginPath();
                     ctx.moveTo(p.trail[0].x, p.trail[0].y);
@@ -268,7 +268,7 @@ export default function ParticleHero({
                 ctx.save();
                 ctx.translate(p.x, p.y);
                 ctx.rotate(angle);
-                ctx.fillStyle = rgbStr(colorRgb, Math.min(0.5 + speed * 0.06, 1));
+                ctx.fillStyle = rgbStr(colorRgb, Math.min(0.75 + speed * 0.04, 1));
                 ctx.beginPath();
                 ctx.ellipse(0, 0, p.size * stretch, p.size / stretch, 0, 0, Math.PI * 2);
                 ctx.fill();

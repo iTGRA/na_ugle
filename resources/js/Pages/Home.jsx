@@ -13,10 +13,10 @@ import ManifestoSection from '../Components/Sections/ManifestoSection';
 import GallerySection from '../Components/Sections/GallerySection';
 import MenuHitsSection from '../Components/Sections/MenuHitsSection';
 import ChefSection from '../Components/Sections/ChefSection';
-import ChefPicksSection from '../Components/Sections/ChefPicksSection';
+// ChefPicksSection removed in v0.2 — chef picks still available via /menu filter
 import ContactsSection from '../Components/Sections/ContactsSection';
 
-export default function Home({ settings = {}, featuredItems = [], chefPicks = [], atmospherePhotos = [], teamPhotos = [], chef }) {
+export default function Home({ settings = {}, featuredItems = [], atmospherePhotos = [], teamPhotos = [], chef }) {
     return (
         <>
             <Head title="Главная" />
@@ -42,7 +42,6 @@ export default function Home({ settings = {}, featuredItems = [], chefPicks = []
                     headline={settings.hits_headline}
                 />
                 <ChefSection chef={chef} teamPhotos={teamPhotos} />
-                <ChefPicksSection items={chefPicks} headline={settings.chef_picks_headline} />
                 <ContactsSection settings={settings} headline={settings.contacts_headline} />
             </main>
             <Footer />

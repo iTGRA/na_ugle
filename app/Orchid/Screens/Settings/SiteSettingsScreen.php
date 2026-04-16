@@ -23,7 +23,7 @@ class SiteSettingsScreen extends Screen
         'durnyasha_quote',
         'manifesto_headline', 'manifesto_text',
         // Section headlines (editable)
-        'gallery_headline', 'hits_headline', 'chef_picks_headline', 'contacts_headline',
+        'gallery_headline', 'hits_headline', 'contacts_headline',
         // Contacts
         'how_to_find', 'instagram_url', 'telegram_url',
         'yandex_maps_url', '2gis_url', 'map_embed',
@@ -119,9 +119,6 @@ class SiteSettingsScreen extends Screen
                     Input::make('settings.hits_headline')
                         ->title('Заголовок «Хиты с хоспера»')
                         ->placeholder('Хиты с хоспера'),
-                    Input::make('settings.chef_picks_headline')
-                        ->title('Заголовок «Рекомендации шефа»')
-                        ->placeholder('Рекомендации от шефа'),
                     Input::make('settings.contacts_headline')
                         ->title('Заголовок «Контакты»')
                         ->placeholder('Как нас найти'),

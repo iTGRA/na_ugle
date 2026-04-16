@@ -50,7 +50,7 @@ class HomeController extends Controller
                     'wine_card_pdf' => $s['wine_card_pdf'] ?? null,
                     'gallery_headline' => $s['gallery_headline'] ?? null,
                     'hits_headline' => $s['hits_headline'] ?? null,
-                    'chef_picks_headline' => $s['chef_picks_headline'] ?? null,
+                    // chef_picks_headline removed in v0.2
                     'contacts_headline' => $s['contacts_headline'] ?? null,
                 ],
                 'heroSlides' => HeroSlide::active()->get()->map(fn ($s) => [
@@ -69,12 +69,7 @@ class HomeController extends Controller
                     ->get()
                     ->map(fn ($i) => $this->mapItem($i))
                     ->all(),
-                'chefPicks' => MenuItem::with('category')
-                    ->available()->chefPicks()
-                    ->orderBy('sort_order')
-                    ->get()
-                    ->map(fn ($i) => $this->mapItem($i))
-                    ->all(),
+                // chefPicks removed in v0.2 — chef picks available via /menu filter
                 'atmospherePhotos' => GalleryPhoto::active()->section('atmosphere')->get()
                     ->map(fn ($p) => ['id' => $p->id, 'photo' => $p->photo, 'alt' => $p->alt_text])
                     ->all(),

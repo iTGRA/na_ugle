@@ -21,9 +21,11 @@ export default function MenuHitsSection({ items = [], menuPdf, headline }) {
                         <div className="t-label text-muted mb-3">Меню</div>
                         <h2 className="t-h2">{headline || 'Хиты с хоспера'}</h2>
                     </div>
-                    <Link href="/menu" className="btn-secondary btn-sm">
-                        Полное меню
-                    </Link>
+                    {menuPdf && (
+                        <a href={menuPdf} target="_blank" rel="noopener" download className="btn-secondary btn-sm">
+                            Скачать меню
+                        </a>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
@@ -77,13 +79,11 @@ export default function MenuHitsSection({ items = [], menuPdf, headline }) {
                     ))}
                 </div>
 
-                {menuPdf && (
-                    <div className="mt-16 text-center">
-                        <a href={menuPdf} target="_blank" rel="noopener" download className="btn-secondary">
-                            Скачать меню
-                        </a>
-                    </div>
-                )}
+                <div className="mt-16 text-center">
+                    <Link href="/menu" className="btn-secondary">
+                        Полное меню
+                    </Link>
+                </div>
             </div>
         </section>
     );

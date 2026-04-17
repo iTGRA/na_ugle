@@ -1,4 +1,10 @@
 import { Link } from '@inertiajs/react';
+import MenuCardCarousel from '../UI/MenuCardCarousel';
+
+function formatPrice(price) {
+    if (!price || price <= 0) return 'уточняйте';
+    return `${price} ₽`;
+}
 
 export default function MenuHitsSection({ items = [], menuPdf, headline }) {
     if (items.length === 0) {
@@ -28,7 +34,13 @@ export default function MenuHitsSection({ items = [], menuPdf, headline }) {
                     )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
+                {/* Mobile: horizontal carousel */}
+                <div className="md:hidden -mx-6">
+                    <MenuCardCarousel items={items} formatPrice={formatPrice} />
+                </div>
+
+                {/* Desktop: grid */}
+                <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
                     {items.map((i) => (
                         <article
                             key={i.id}

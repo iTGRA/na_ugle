@@ -22,7 +22,7 @@ export default function MenuHitsSection({ items = [], menuPdf, headline }) {
     return (
         <section id="menu" className="section bg-paper">
             <div className="shell">
-                <div className="flex items-end justify-between flex-wrap gap-4 mb-12">
+                <div className="flex items-end justify-between flex-wrap gap-4 mb-4 md:mb-12">
                     <div>
                         <div className="t-label text-muted mb-3">Меню</div>
                         <h2 className="t-h2">{headline || 'Хиты с хоспера'}</h2>

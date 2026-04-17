@@ -30,6 +30,14 @@ export default function MenuCardCarousel({ items = [], formatPrice }) {
 
     return (
         <div>
+            {/* Counter — left-aligned над первой карточкой */}
+            {count > 1 && (
+                <div className="mb-3" style={{ paddingLeft: '24px' }}>
+                    <span className="t-label text-muted">
+                        {String(current + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
+                    </span>
+                </div>
+            )}
             <div
                 ref={trackRef}
                 className="flex gap-3 overflow-x-auto no-scrollbar"
@@ -38,6 +46,8 @@ export default function MenuCardCarousel({ items = [], formatPrice }) {
                     WebkitOverflowScrolling: 'touch',
                     paddingLeft: '24px',
                     paddingRight: '24px',
+                    paddingTop: '4px',
+                    paddingBottom: '12px',
                 }}
             >
                 {items.map((i, idx) => (
@@ -80,14 +90,6 @@ export default function MenuCardCarousel({ items = [], formatPrice }) {
                     </article>
                 ))}
             </div>
-            {/* Counter */}
-            {count > 1 && (
-                <div className="text-center mt-4">
-                    <span className="t-label text-muted">
-                        {String(current + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
-                    </span>
-                </div>
-            )}
         </div>
     );
 }

@@ -120,7 +120,7 @@ export default function Footer() {
                                         href={`/menu#cat-${c.slug}`}
                                         className="t-small link-hover"
                                     >
-                                        {c.icon ? `${c.icon} ` : ''}{c.name}
+                                        {c.name}
                                     </Link>
                                 </li>
                             ))}

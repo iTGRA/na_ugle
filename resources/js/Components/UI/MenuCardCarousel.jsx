@@ -71,12 +71,6 @@ export default function MenuCardCarousel({ items = [], formatPrice }) {
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center text-paper/40 t-label">НА УГЛЕ</div>
                             )}
-                            {(i.is_featured || i.is_chef_pick) && (
-                                <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
-                                    {i.is_chef_pick && <span className="chip chip-chef" style={{ fontSize: '10px', padding: '3px 7px' }}>👨‍🍳 Шеф</span>}
-                                    {i.is_featured && <span className="chip chip-hit" style={{ fontSize: '10px', padding: '3px 7px' }}>★ Хит</span>}
-                                </div>
-                            )}
                         </div>
                         <div className="px-1">
                             <div className="flex items-baseline justify-between gap-3 mb-1">
